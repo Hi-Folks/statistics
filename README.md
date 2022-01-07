@@ -4,6 +4,8 @@
 [![Tests](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=flat-square)](https://packagist.org/packages/hi-folks/statistics)
 
+PHP package that provides functions for calculating mathematical statistics of numeric data.
+
 In this package I'm collecting some useful statistic functions.
 Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Hearth Rate, Speed, Cadence, Power etc.
 I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like:

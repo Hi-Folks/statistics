@@ -23,7 +23,7 @@ class Statistics
         array $values = []
     ) {
         $this->values = array_values($values);
-        $this->originalValues = $values;
+        $this->originalArray = $values;
         sort($this->values);
     }
 
@@ -186,6 +186,17 @@ class Statistics
     {
         $frequences = $this->getFrequences();
         if (count($frequences) === 0) {
+            return null;
+        }
+        $sameMode = true;
+        foreach ($frequences as $key => $value) {
+            if ($value > 1) {
+                $sameMode = false;
+
+                break;
+            }
+        }
+        if ($sameMode) {
             return null;
         }
         $highestFreq = max($frequences);

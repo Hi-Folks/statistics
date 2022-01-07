@@ -1,9 +1,9 @@
 <?php
 
-use HiFolks\Statistics\StatisticsClass;
+use HiFolks\Statistics\Statistics;
 
 it('can calculate frequencies', function () {
-    $s = StatisticsClass::make(
+    $s = Statistics::make(
         [98, 90, 70,18,92,92,55,83,45,95,88,76]
     );
     expect($s->getCount())->toEqual(12);
@@ -15,7 +15,7 @@ it('can calculate frequencies', function () {
 
 it('can calculate frequencies again', function () {
     // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
-    $s = StatisticsClass::make(
+    $s = Statistics::make(
         [3,5,4,7,5,2]
     );
     expect($s->getCount())->toEqual(6);
@@ -28,18 +28,18 @@ it('can calculate frequencies again', function () {
 });
 
 it('can strip zeros', function () {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
-    $s = StatisticsClass::make(
+    $s = Statistics::make(
         [3,5,0,0.1,4,7,5,2]
     )->stripZeroes();
     expect($s->getCount())->toEqual(7);
 });
 it('can calculate mean', function () {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
-    $s = StatisticsClass::make(
+    $s = Statistics::make(
         [3,5,4,7,5,2]
     );
     expect($s->getCount())->toEqual(6);
     expect($s->getMean())->toEqual(13 / 3);
-    $s = StatisticsClass::make(
+    $s = Statistics::make(
         []
     );
     expect($s->getCount())->toEqual(0);

@@ -2,7 +2,7 @@
 
 namespace HiFolks\Statistics;
 
-class StatisticsClass
+class Statistics
 {
     /**
      * Table of Frequency
@@ -194,6 +194,9 @@ class StatisticsClass
         return $modes[0];
     }
 
+    /**
+     * Returns a string with values joined with a separator
+     */
     public function valuesToString($sample = false): string
     {
         if ($sample) {

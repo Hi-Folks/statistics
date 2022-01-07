@@ -5,20 +5,20 @@ namespace HiFolks\Statistics;
 class Statistics
 {
     /**
-     * Table of Frequency
-     */
-    private array $frequences = [];
-
-    /**
      * Original array (no sorted and with original keys)
+     * @var array<mixed>
      */
     private array $originalArray = [];
 
     /**
      * Sorted values, with 0 index
+     * @var array<mixed>
      */
     private array $values = [];
 
+    /**
+     * @param array<mixed> $values
+     */
     public function __construct(
         array $values = []
     ) {
@@ -27,6 +27,10 @@ class Statistics
         sort($this->values);
     }
 
+    /**
+     * @param array<mixed> $values
+     * @return self
+     */
     public static function make(array $values): self
     {
         $freqTable = new self($values);
@@ -44,7 +48,19 @@ class Statistics
         return $this;
     }
 
-    public function getFrequences($transformToInteger = false): array
+    /**
+     * @return mixed[]
+     */
+    public function getOriginalArray(): array
+    {
+        return $this->originalArray;
+    }
+
+    /**
+     * @param bool $transformToInteger
+     * @return array<int>
+     */
+    public function getFrequencies(bool $transformToInteger = false): array
     {
         if ($this->getCount() === 0) {
             return [];
@@ -64,17 +80,23 @@ class Statistics
         return $frequences;
     }
 
+    /**
+     * @return array<double>
+     */
     public function getRelativeFrequencies(): array
     {
         $returnArray = [];
         $n = $this->getCount();
-        foreach ($this->getFrequences() as $key => $value) {
+        foreach ($this->getFrequencies() as $key => $value) {
             $returnArray[$key] = $value * 100 / $n;
         }
 
         return $returnArray;
     }
 
+    /**
+     * @return array<double>
+     */
     public function getCumulativeRelativeFrequencies(): array
     {
         $freqCumul = [];
@@ -87,11 +109,14 @@ class Statistics
         return $freqCumul;
     }
 
+    /**
+     * @return array<double>
+     */
     public function getCumulativeFrequences(): array
     {
         $freqCumul = [];
         $cumul = 0;
-        foreach ($this->getFrequences() as $key => $value) {
+        foreach ($this->getFrequencies() as $key => $value) {
             $cumul = $cumul + $value;
             $freqCumul[$key] = $cumul;
         }
@@ -174,6 +199,9 @@ class Statistics
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getInterQuartileRange()
     {
         return $this->getHigherPercentile() - $this->getLowerPercentile();
@@ -184,7 +212,7 @@ class Statistics
      */
     public function getMode(): mixed
     {
-        $frequences = $this->getFrequences();
+        $frequences = $this->getFrequencies();
         if (count($frequences) === 0) {
             return null;
         }
@@ -208,7 +236,7 @@ class Statistics
     /**
      * Returns a string with values joined with a separator
      */
-    public function valuesToString($sample = false): string
+    public function valuesToString(bool|int $sample = false): string
     {
         if ($sample) {
             return implode(",", array_slice($this->values, 0, $sample));

@@ -62,7 +62,7 @@ class Statistics
      */
     public function getFrequencies(bool $transformToInteger = false): array
     {
-        if ($this->getCount() === 0) {
+        if ($this->count() === 0) {
             return [];
         }
 
@@ -86,7 +86,7 @@ class Statistics
     public function getRelativeFrequencies(): array
     {
         $returnArray = [];
-        $n = $this->getCount();
+        $n = $this->count();
         foreach ($this->getFrequencies() as $key => $value) {
             $returnArray[$key] = $value * 100 / $n;
         }
@@ -139,27 +139,27 @@ class Statistics
         return $this->getMax() - $this->getMin();
     }
 
-    public function getCount(): int
+    public function count(): int
     {
         return count($this->values);
     }
 
-    public function getMean(): mixed
+    public function mean(): mixed
     {
         $sum = 0;
-        if ($this->getCount() === 0) {
+        if ($this->count() === 0) {
             return null;
         }
         foreach ($this->values as $key => $value) {
             $sum = $sum + $value;
         }
 
-        return $sum / $this->getCount();
+        return $sum / $this->count();
     }
 
-    public function getMedian(): mixed
+    public function median(): mixed
     {
-        $count = $this->getCount();
+        $count = $this->count();
         if (! $count) {
             return null;
         }
@@ -171,9 +171,9 @@ class Statistics
         }
     }
 
-    public function getLowerPercentile(): mixed
+    public function lowerPercentile(): mixed
     {
-        $count = $this->getCount();
+        $count = $this->count();
         if (! $count) {
             return null;
         }
@@ -185,9 +185,9 @@ class Statistics
         }
     }
 
-    public function getHigherPercentile(): mixed
+    public function higherPercentile(): mixed
     {
-        $count = $this->getCount();
+        $count = $this->count();
         if (! $count) {
             return null;
         }
@@ -204,13 +204,13 @@ class Statistics
      */
     public function getInterQuartileRange()
     {
-        return $this->getHigherPercentile() - $this->getLowerPercentile();
+        return $this->higherPercentile() - $this->lowerPercentile();
     }
 
     /**
      * The most frequent value
      */
-    public function getMode(): mixed
+    public function mode(): mixed
     {
         $frequences = $this->getFrequencies();
         if (count($frequences) === 0) {

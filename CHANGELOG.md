@@ -7,11 +7,11 @@ All notable changes to `statistics` will be documented in this file.
 Initial release with:
 
 - getMean()
-- getCount()
-- getMedian()
-- getLowerPercentile()
-- getHigherPercentile()
-- getMode()
+- count()
+- median()
+- lowerPercentile()
+- higherPercentile()
+- mode()
 - getFrequencies(): a frequency is the number of times a value of the data occurs;
 - getRelativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
 - getCumulativeFrequences(): is the accumulation of the previous relative frequencies.;
@@ -22,11 +22,11 @@ Initial release with:
 Initial release with:
 
 - getMean()
-- getCount()
-- getMedian()
-- getLowerPercentile()
-- getHigherPercentile()
-- getMode()
+- count()
+- median()
+- lowerPercentile()
+- higherPercentile()
+- mode()
 - getFrequencies(): a frequency is the number of times a value of the data occurs;
 - getRelativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
 - getCumulativeFrequences(): is the accumulation of the previous relative frequencies.;

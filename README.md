@@ -39,15 +39,15 @@ echo $stat->valuesToString(5) . PHP_EOL;
 // 2,3,4,5,5
 echo "Mean              : " . $stat->getMean() . PHP_EOL;
 // Mean              : 4.3333333333333
-echo "Count             : " . $stat->getCount() . PHP_EOL;
+echo "Count             : " . $stat->count() . PHP_EOL;
 // Count             : 6
-echo "Median            : " . $stat->getMedian() . PHP_EOL;
+echo "Median            : " . $stat->median() . PHP_EOL;
 // Median            : 4.5
-echo "Lower Percentile  : " . $stat->getLowerPercentile() . PHP_EOL;
+echo "Lower Percentile  : " . $stat->lowerPercentile() . PHP_EOL;
 // Lower Percentile  : 2.5
-echo "Higher Percentile : " . $stat->getHigherPercentile() . PHP_EOL;
+echo "Higher Percentile : " . $stat->higherPercentile() . PHP_EOL;
 // Higher Percentile : 5
-echo "Mode              : " . $stat->getMode() . PHP_EOL;
+echo "Mode              : " . $stat->mode() . PHP_EOL;
 // Mode              : 5
 ```
 

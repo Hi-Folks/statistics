@@ -141,34 +141,32 @@ class Statistics
 
     public function count(): int
     {
-        return count($this->values);
+        return Stat::count($this->values);
     }
 
+    /**
+     * Return the sample arithmetic mean of data
+     * The arithmetic mean is the sum of the data divided by the number of data points.
+     * It is commonly called “the average”,
+     * although it is only one of many different mathematical averages.
+     * It is a measure of the central location of the data.
+     * If data is empty, null is returned
+     * @return mixed
+     */
     public function mean(): mixed
     {
-        $sum = 0;
-        if ($this->count() === 0) {
-            return null;
-        }
-        foreach ($this->values as $key => $value) {
-            $sum = $sum + $value;
-        }
-
-        return $sum / $this->count();
+        return Stat::mean($this->values);
     }
 
+    /**
+     * Return the median (middle value) of numeric data,
+     * using the common “mean of middle two” method.
+     * If data is empty, null is returned
+     * @return mixed
+     */
     public function median(): mixed
     {
-        $count = $this->count();
-        if (! $count) {
-            return null;
-        }
-        $index = floor($count / 2);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $this->values[$index];
-        } else {                   // count is even
-            return ($this->values[$index - 1] + $this->values[$index]) / 2;
-        }
+        return Stat::median($this->values);
     }
 
     public function lowerPercentile(): mixed
@@ -202,7 +200,7 @@ class Statistics
     /**
      * @return mixed
      */
-    public function getInterQuartileRange()
+    public function interquartileRange()
     {
         return $this->higherPercentile() - $this->lowerPercentile();
     }

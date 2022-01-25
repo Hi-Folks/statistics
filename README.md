@@ -37,7 +37,7 @@ $stat = HiFolks\Statistics\Statistics::make(
 );
 echo $stat->valuesToString(5) . PHP_EOL;
 // 2,3,4,5,5
-echo "Mean              : " . $stat->getMean() . PHP_EOL;
+echo "Mean              : " . $stat->mean() . PHP_EOL;
 // Mean              : 4.3333333333333
 echo "Count             : " . $stat->count() . PHP_EOL;
 // Count             : 6

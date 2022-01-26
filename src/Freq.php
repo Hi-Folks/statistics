@@ -64,4 +64,21 @@ class Freq
 
         return $returnArray;
     }
+
+    /**
+     * @param mixed[] $data
+     * @return float[]
+     */
+    public static function cumulativeRelativeFrequencies(array $data): array
+    {
+        $freqCumul = [];
+        $cumul = 0;
+        $relFreqs = self::relativeFrequencies($data);
+        foreach ($relFreqs as $key => $value) {
+            $cumul = $cumul + $value;
+            $freqCumul[$key] = $cumul;
+        }
+
+        return $freqCumul;
+    }
 }

@@ -57,6 +57,9 @@ class Statistics
     }
 
     /**
+     * Create a frequencies table.
+     * It counts the occurrences of each value in the array
+     * For not discrete elements you can try to transform to integer
      * @param bool $transformToInteger
      * @return array<int>
      */
@@ -76,16 +79,9 @@ class Statistics
     /**
      * @return array<double>
      */
-    public function getCumulativeRelativeFrequencies(): array
+    public function cumulativeRelativeFrequencies(): array
     {
-        $freqCumul = [];
-        $cumul = 0;
-        foreach ($this->relativeFrequencies() as $key => $value) {
-            $cumul = $cumul + $value;
-            $freqCumul[$key] = $cumul;
-        }
-
-        return $freqCumul;
+        return Freq::cumulativeRelativeFrequencies($this->values);
     }
 
     /**

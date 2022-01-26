@@ -51,7 +51,7 @@ class Statistics
     /**
      * @return mixed[]
      */
-    public function getOriginalArray(): array
+    public function originalArray(): array
     {
         return $this->originalArray;
     }
@@ -60,38 +60,17 @@ class Statistics
      * @param bool $transformToInteger
      * @return array<int>
      */
-    public function getFrequencies(bool $transformToInteger = false): array
+    public function frequencies(bool $transformToInteger = false): array
     {
-        if ($this->count() === 0) {
-            return [];
-        }
-
-        if (($transformToInteger) | (
-            ! is_int($this->values[0])
-        )
-            ) {
-            foreach ($this->values as $key => $value) {
-                $this->values[$key] = intval($value);
-            }
-        }
-        $frequences = array_count_values($this->values);
-        ksort($frequences);
-
-        return $frequences;
+        return Freq::frequencies($this->values, $transformToInteger);
     }
 
     /**
      * @return array<double>
      */
-    public function getRelativeFrequencies(): array
+    public function relativeFrequencies(): array
     {
-        $returnArray = [];
-        $n = $this->count();
-        foreach ($this->getFrequencies() as $key => $value) {
-            $returnArray[$key] = $value * 100 / $n;
-        }
-
-        return $returnArray;
+        return Freq::relativeFrequencies($this->values);
     }
 
     /**
@@ -101,7 +80,7 @@ class Statistics
     {
         $freqCumul = [];
         $cumul = 0;
-        foreach ($this->getRelativeFrequencies() as $key => $value) {
+        foreach ($this->relativeFrequencies() as $key => $value) {
             $cumul = $cumul + $value;
             $freqCumul[$key] = $cumul;
         }
@@ -116,7 +95,7 @@ class Statistics
     {
         $freqCumul = [];
         $cumul = 0;
-        foreach ($this->getFrequencies() as $key => $value) {
+        foreach ($this->frequencies() as $key => $value) {
             $cumul = $cumul + $value;
             $freqCumul[$key] = $cumul;
         }
@@ -210,25 +189,7 @@ class Statistics
      */
     public function mode(): mixed
     {
-        $frequences = $this->getFrequencies();
-        if (count($frequences) === 0) {
-            return null;
-        }
-        $sameMode = true;
-        foreach ($frequences as $key => $value) {
-            if ($value > 1) {
-                $sameMode = false;
-
-                break;
-            }
-        }
-        if ($sameMode) {
-            return null;
-        }
-        $highestFreq = max($frequences);
-        $modes = array_keys($frequences, $highestFreq, true);
-
-        return $modes[0];
+        return Stat::mode($this->values);
     }
 
     /**

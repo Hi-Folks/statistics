@@ -11,6 +11,8 @@ it('can calculate statistics', function () {
     expect($s->lowerPercentile())->toEqual(62.5);
     expect($s->higherPercentile())->toEqual(92);
     expect($s->interquartileRange())->toEqual(29.5);
+
+    expect($s->originalArray())->toHaveCount(12);
 });
 
 it('can calculate statistics again', function () {

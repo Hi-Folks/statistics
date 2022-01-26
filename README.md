@@ -54,12 +54,10 @@ echo "Mode              : " . $stat->mode() . PHP_EOL;
 ### Calculate Frequencies Table
 
 Statistics packages has some methods for generating Frequencies Table:
-- getFrequencies(): a frequency is the number of times a value of the data occurs;
-- getRelativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
+- frequencies(): a frequency is the number of times a value of the data occurs;
+- relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
 - getCumulativeFrequences(): is the accumulation of the previous relative frequencies.;
 - getCumulativeRelativeFrequencies(): is the accumulation of the previous relative ratio.
-
-
 
 ```php
 use HiFolks\Statistics\Statistics;
@@ -67,7 +65,7 @@ use HiFolks\Statistics\Statistics;
 $s = Statistics::make(
     [98, 90, 70,18,92,92,55,83,45,95,88,76]
 );
-$a = $s->getFrequencies();
+$a = $s->frequencies();
 print_r($a);
 /*
 Array
@@ -86,7 +84,7 @@ Array
 )
  */
 
-$a = $s->getRelativeFrequencies();
+$a = $s->relativeFrequencies();
 print_r($a);
 /*
 Array

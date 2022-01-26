@@ -4,10 +4,11 @@ require(__DIR__ . "/../vendor/autoload.php");
 
 use HiFolks\Statistics\Statistics;
 
+
 $s = Statistics::make(
     [98, 90, 70,18,92,92,55,83,45,95,88,76]
 );
-$a = $s->getFrequencies();
+$a = $s->frequencies();
 print_r($a);
 /*
 Array
@@ -26,7 +27,7 @@ Array
 )
  */
 
-$a = $s->getRelativeFrequencies();
+$a = $s->relativeFrequencies();
 print_r($a);
 /*
 Array

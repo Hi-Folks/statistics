@@ -47,3 +47,48 @@ it('can calculate median high (static)', function () {
         Stat::medianHigh([])
     )->toBeNull();
 });
+
+it('calculates mode (static)', function () {
+    expect(
+        Stat::mode([1, 1, 2, 3, 3, 3, 3, 4])
+    )->toEqual(3);
+    expect(
+        Stat::mode([])
+    )->toBeNull();
+    expect(
+        Stat::mode([1,2,3])
+    )->toBeNull();
+    expect(
+        Stat::mode(["red", "blue", "blue", "red", "green", "red", "red"])
+    )->toEqual("red");
+});
+
+it('calculates multimode (static)', function () {
+    expect(
+        Stat::multimode([1, 1, 2, 3, 3, 3, 3, 4])
+    )->toMatchArray([3]);
+    expect(
+        Stat::multimode([1, 1, 2, 3, 3, 3, 3, 1, 1, 4])
+    )->toMatchArray([1, 3]);
+    $result = Stat::multimode(str_split('aabbbbccddddeeffffgg'));
+    expect(
+        $result
+    )->toMatchArray(['b', 'd', 'f']);
+    expect(
+        $result
+    )->toHaveCount(3);
+
+    expect(
+        $result[0]
+    )->toEqual('b');
+    expect(
+        $result[1]
+    )->toEqual('d');
+    expect(
+        $result[2]
+    )->toEqual('f');
+
+    expect(
+        Stat::multimode([])
+    )->toMatchArray([]);
+});

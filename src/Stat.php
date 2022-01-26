@@ -94,4 +94,49 @@ class Stat
     {
         return self::median($data, self::MEDIAN_TYPE_HIGH);
     }
+
+    /**
+     * Return the single most common data point from discrete or nominal data.
+     * The mode (when it exists) is the most typical value and serves as a measure of central location.
+     * If there are multiple modes with the same frequency, returns the first one encountered in the data.
+     * If all elements occurs once, null is returned.
+     * @param mixed[] $data
+     * @param bool $multimode
+     * @return mixed
+     */
+    public static function mode(array $data, bool $multimode = false): mixed
+    {
+        $frequencies = Freq::frequencies($data);
+        if (self::count($frequencies) === 0) {
+            return null;
+        }
+        $sameMode = true;
+        foreach ($frequencies as $key => $value) {
+            if ($value > 1) {
+                $sameMode = false;
+
+                break;
+            }
+        }
+        if ($sameMode) {
+            return null;
+        }
+        $highestFreq = max($frequencies);
+        $modes = array_keys($frequencies, $highestFreq, true);
+        if ($multimode) {
+            return $modes;
+        }
+
+        return $modes[0];
+    }
+
+    /**
+     * Return a list of the most frequently occurring values
+     * @param mixed[] $data
+     * @return mixed
+     */
+    public static function multimode(array $data): mixed
+    {
+        return self::mode($data, true);
+    }
 }

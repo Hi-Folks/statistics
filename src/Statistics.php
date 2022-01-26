@@ -144,18 +144,12 @@ class Statistics
         return Stat::median($this->values);
     }
 
+    /**
+     * @return mixed
+     */
     public function lowerPercentile(): mixed
     {
-        $count = $this->count();
-        if (! $count) {
-            return null;
-        }
-        $index = floor($count / 4);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $this->values[$index];
-        } else {                   // count is even
-            return ($this->values[$index - 1] + $this->values[$index]) / 2;
-        }
+        return Freq::lowerPercentile($this->values);
     }
 
     public function higherPercentile(): mixed

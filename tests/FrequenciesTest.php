@@ -42,3 +42,43 @@ it('can calculate cumulative relative frequencies', function () {
     expect($a)->toHaveCount(3);
     expect($s->originalArray())->toHaveCount(4);
 });
+
+it('can calculate lowerPercentile', function () {
+    $s = Statistics::make(
+        [3,4,3,1]
+    );
+    $a = $s->lowerPercentile();
+    expect($a)->toEqual(2);
+
+    $s = Statistics::make(
+        [3,4,3]
+    );
+    $a = $s->lowerPercentile();
+    expect($a)->toEqual(3);
+
+    $s = Statistics::make(
+        []
+    );
+    $a = $s->lowerPercentile();
+    expect($a)->toBeNull();
+});
+it('can calculate higherPercentile', function () {
+    $s = Statistics::make(
+        [3,4,3,1]
+    );
+    $a = $s->higherPercentile();
+    expect($a)->toEqual(3.5);
+
+    $s = Statistics::make(
+        [3,4,3]
+    );
+    $a = $s->higherPercentile();
+    expect($a)->toEqual(4);
+
+    $s = Statistics::make(
+        []
+    );
+    $a = $s->higherPercentile();
+
+    expect($a)->toBeNull();
+});

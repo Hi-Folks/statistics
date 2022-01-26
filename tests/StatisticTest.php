@@ -96,3 +96,11 @@ it('can calculate mean again', function () { // https://docs.python.org/3/librar
     );
     expect($s->mean())->toEqual(4.25);
 });
+
+it('can valuesToString', function () {
+    $s = Statistics::make(
+        [1, 2, 3, 4, 4]
+    );
+    expect($s->valuesToString())->toEqual("1,2,3,4,4");
+    expect($s->valuesToString(3))->toEqual("1,2,3");
+});

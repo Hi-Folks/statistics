@@ -154,16 +154,7 @@ class Statistics
 
     public function higherPercentile(): mixed
     {
-        $count = $this->count();
-        if (! $count) {
-            return null;
-        }
-        $index = floor(($count * 3) / 4);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $this->values[$index];
-        } else {                   // count is even
-            return ($this->values[$index - 1] + $this->values[$index]) / 2;
-        }
+        return Freq::higherPercentile($this->values);
     }
 
     /**

@@ -34,7 +34,19 @@ composer require hi-folks/statistics
 
 ## Usage
 
-### Frequencies
+### Stat class
+This class provides methods for calculating mathematical statistics of numeric data.
+Stat class has methods to calculate an average or typical value from a population or sample like:
+- mean(): arithmetic mean or "average" of data;
+- median(): median or "middle value" of data;
+- medianLow(): low median of data;
+- medianHigh(): high median of data;
+- mode(): single mode (most common value) of discrete or nominal data;
+- multimode(): list of modes (most common values) of discrete or nominal data;
+- higherPercentile(): 3rd quartile, is the value at which 75 percent of the data is below it;
+- lowerPercentile(): first quartile, is the value at which 25 percent of the data is below it.
+
+### Freq class
 With Statistics package you can calculate frequencies table.
 A frequencies table is ...
 

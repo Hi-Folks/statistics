@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1 - WIP
+## 0.1.1 - 2022-01-27
 - Create Freq class with static method for managing frequencies table
 - Create Stat class with static methods for basci statistic functions like: mean, mode, median, multimode...
 - Refactor Statistics class in order to use logic provided by Freq and Stat class

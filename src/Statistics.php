@@ -140,12 +140,12 @@ class Statistics
      */
     public function lowerPercentile(): mixed
     {
-        return Freq::lowerPercentile($this->values);
+        return Stat::lowerPercentile($this->values);
     }
 
     public function higherPercentile(): mixed
     {
-        return Freq::higherPercentile($this->values);
+        return Stat::higherPercentile($this->values);
     }
 
     /**

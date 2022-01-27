@@ -94,40 +94,4 @@ class Freq
 
         return $freqCumul;
     }
-
-    /**
-     * @param mixed[] $data
-     * @return mixed
-     */
-    public static function lowerPercentile(array $data): mixed
-    {
-        $count = Stat::count($data);
-        if (! $count) {
-            return null;
-        }
-        $index = floor($count / 4);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $data[$index];
-        } else {                   // count is even
-            return ($data[$index - 1] + $data[$index]) / 2;
-        }
-    }
-
-    /**
-     * @param mixed[] $data
-     * @return mixed
-     */
-    public static function higherPercentile(array $data): mixed
-    {
-        $count = Stat::count($data);
-        if (! $count) {
-            return null;
-        }
-        $index = floor(($count * 3) / 4);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $data[$index];
-        } else {                   // count is even
-            return ($data[$index - 1] + $data[$index]) / 2;
-        }
-    }
 }

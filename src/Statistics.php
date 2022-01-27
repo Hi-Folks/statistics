@@ -40,10 +40,7 @@ class Statistics
 
     public function stripZeroes(): self
     {
-        $del_val = 0;
-        $this->values = array_values(array_filter($this->values, function ($e) use ($del_val) {
-            return ($e != $del_val);
-        }));
+        $this->values = ArrUtil::stripZeroes($this->values);
 
         return $this;
     }
@@ -69,11 +66,12 @@ class Statistics
     }
 
     /**
+     * @param int $round
      * @return array<double>
      */
-    public function relativeFrequencies(): array
+    public function relativeFrequencies(int $round = null): array
     {
-        return Freq::relativeFrequencies($this->values);
+        return Freq::relativeFrequencies($this->values, $round);
     }
 
     /**
@@ -168,13 +166,11 @@ class Statistics
 
     /**
      * Returns a string with values joined with a separator
+     * @param bool|int $sample
+     * @return string
      */
     public function valuesToString(bool|int $sample = false): string
     {
-        if ($sample) {
-            return implode(",", array_slice($this->values, 0, $sample));
-        }
-
-        return implode(",", $this->values);
+        return ArrUtil::toString($this->values, $sample);
     }
 }

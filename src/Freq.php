@@ -4,10 +4,6 @@ namespace HiFolks\Statistics;
 
 class Freq
 {
-    public const MEDIAN_TYPE_LOW = "LOW";
-    public const MEDIAN_TYPE_HIGH = "HIGH";
-    public const MEDIAN_TYPE_MIDDLE = "MIDDLE";
-
     /**
      * Return true is the type of the variable is integer, boolean or string
      * @param mixed $value

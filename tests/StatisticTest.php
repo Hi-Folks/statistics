@@ -101,6 +101,6 @@ it('can valuesToString', function () {
     $s = Statistics::make(
         [1, 2, 3, 4, 4]
     );
-    expect($s->valuesToString())->toEqual("1,2,3,4,4");
-    expect($s->valuesToString(3))->toEqual("1,2,3");
+    expect($s->valuesToString(false, $s))->toEqual("1,2,3,4,4");
+    expect($s->valuesToString(3, $s))->toEqual("1,2,3");
 });

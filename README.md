@@ -31,6 +31,46 @@ composer require hi-folks/statistics
 
 ## Usage
 
+### Frequencies
+With Statistics package you can calculate frequencies table.
+A frequencies table is ...
+
+
+```php
+use HiFolks\Statistics\Freq;
+
+
+$fruits = ['🍈', '🍈', '🍈', '🍉','🍉','🍉','🍉','🍉','🍌'];
+$freqTable = Freq::frequencies($fruits);
+print_r($freqTable);
+```
+You can see the frequencies table as an array:
+```
+Array
+(
+    [🍈] => 3
+    [🍉] => 5
+    [🍌] => 1
+)
+```
+
+You can retrieve the frequencies table in relative format (percentage):
+```php
+$freqTable = Freq::relativeFrequencies($fruits, 2);
+print_r($freqTable);
+```
+You can see the frequencies table as an array with percentage of the occurrences:
+```
+Array
+(
+    [🍈] => 33.33
+    [🍉] => 55.56
+    [🍌] => 11.11
+)
+```
+
+### Statistics class
+
 ```php
 $stat = HiFolks\Statistics\Statistics::make(
     [3,5,4,7,5,2]

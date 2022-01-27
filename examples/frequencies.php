@@ -3,7 +3,31 @@
 require(__DIR__ . "/../vendor/autoload.php");
 
 use HiFolks\Statistics\Statistics;
+use HiFolks\Statistics\Freq;
 
+
+$fruits = ['🍈', '🍈', '🍈', '🍉','🍉','🍉','🍉','🍉','🍌'];
+$freqTable = Freq::frequencies($fruits);
+print_r($freqTable);
+/*
+Array
+(
+    [🍈] => 3
+    [🍉] => 5
+    [🍌] => 1
+)
+ */
+
+$freqTable = Freq::relativeFrequencies($fruits, 2);
+print_r($freqTable);
+/*
+Array
+(
+    [🍈] => 33.33
+    [🍉] => 55.56
+    [🍌] => 11.11
+)
+ */
 
 $s = Statistics::make(
     [98, 90, 70,18,92,92,55,83,45,95,88,76]

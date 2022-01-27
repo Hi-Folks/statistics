@@ -1,8 +1,11 @@
+![PHP package for Statistics](https://repository-images.githubusercontent.com/445609326/e2539776-0f8f-4556-be1d-887ea2368813)
+
 # Statistics PHP package
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=flat-square)](https://packagist.org/packages/hi-folks/statistics)
 [![Tests](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=flat-square)](https://packagist.org/packages/hi-folks/statistics)
+
 
 PHP package that provides functions for calculating mathematical statistics of numeric data.
 

@@ -25,7 +25,7 @@ it('can calculate cumulative frequencies', function () {
     $s = Statistics::make(
         [3,4,3,1]
     );
-    $a = $s->getCumulativeFrequences();
+    $a = $s->cumulativeFrequencies();
 
     expect($a[3])->toEqual(3);
     expect($a)->toHaveCount(3);

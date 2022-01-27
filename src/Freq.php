@@ -49,6 +49,23 @@ class Freq
 
     /**
      * @param mixed[] $data
+     * @return float[]
+     */
+    public static function cumulativeFrequencies(array $data): array
+    {
+        $freqCumul = [];
+        $cumul = 0;
+        $freqs = self::frequencies($data);
+        foreach ($freqs as $key => $value) {
+            $cumul = $cumul + $value;
+            $freqCumul[$key] = $cumul;
+        }
+
+        return $freqCumul;
+    }
+
+    /**
+     * @param mixed[] $data
      * @param int $round
      * @return array<double>
      */

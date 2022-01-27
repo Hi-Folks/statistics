@@ -56,7 +56,7 @@ echo "Mode              : " . $stat->mode() . PHP_EOL;
 Statistics packages has some methods for generating Frequencies Table:
 - frequencies(): a frequency is the number of times a value of the data occurs;
 - relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
-- getCumulativeFrequences(): is the accumulation of the previous relative frequencies.;
+- cumulativeFrequencies(): is the accumulation of the previous relative frequencies.;
 - cumulativeRelativeFrequencies(): is the accumulation of the previous relative ratio.
 
 ```php

@@ -87,16 +87,9 @@ class Statistics
     /**
      * @return array<double>
      */
-    public function getCumulativeFrequences(): array
+    public function cumulativeFrequencies(): array
     {
-        $freqCumul = [];
-        $cumul = 0;
-        foreach ($this->frequencies() as $key => $value) {
-            $cumul = $cumul + $value;
-            $freqCumul[$key] = $cumul;
-        }
-
-        return $freqCumul;
+        return Freq::cumulativeFrequencies($this->values);
     }
 
     public function getMax(): mixed

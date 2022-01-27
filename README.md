@@ -16,12 +16,10 @@ I needed to apply some statistic functions to understand better the numbers and 
 - mode: the most common number in data set;
 - median: the middle of the set of values;
 - range: the difference between the largest and smallest values
-- lowest percentile;
-- highest percentile;
-- frequency table;
+- first quartile ( or lowest percentile);
+- third quartile (or highest percentile);
+- frequency table (cumulative, relative);
 - etc...
-
-
 
 
 ## Installation
@@ -45,6 +43,53 @@ Stat class has methods to calculate an average or typical value from a populatio
 - multimode(): list of modes (most common values) of discrete or nominal data;
 - higherPercentile(): 3rd quartile, is the value at which 75 percent of the data is below it;
 - lowerPercentile(): first quartile, is the value at which 25 percent of the data is below it.
+
+#### Stat::mean( array $data )
+Return the sample arithmetic mean of the array _$data_.
+The arithmetic mean is the sum of the data divided by the number of data points. It is commonly called “the average”, although it is only one of many mathematical averages. It is a measure of the central location of the data.
+
+```php
+use HiFolks\Statistics\Stat;
+$mean = Stat::mean([1, 2, 3, 4, 4]);
+// 2.8
+$mean = Stat::mean([-1.0, 2.5, 3.25, 5.75]);
+// 2.625
+```
+
+#### Stat::median( array $data )
+Return the median (middle value) of numeric data, using the common “mean of middle two” method.
+
+```php
+use HiFolks\Statistics\Stat;
+$median = Stat::median([1, 3, 5]);
+// 3
+$median = Stat::median([1, 3, 5, 7]);
+// 4
+```
+
+#### Stat::medianLow( array $data )
+Return the low median of numeric data.
+The low median is always a member of the data set. When the number of data points is odd, the middle value is returned. When it is even, the smaller of the two middle values is returned.
+
+```php
+use HiFolks\Statistics\Stat;
+$median = Stat::medianLow([1, 3, 5]);
+// 3
+$median = Stat::medianLow([1, 3, 5, 7]);
+// 3
+```
+
+#### Stat::medianHigh( array $data )
+Return the high median of data.
+The high median is always a member of the data set. When the number of data points is odd, the middle value is returned. When it is even, the larger of the two middle values is returned.
+
+```php
+use HiFolks\Statistics\Stat;
+$median = Stat::medianHigh([1, 3, 5]);
+// 3
+$median = Stat::medianHigh([1, 3, 5, 7]);
+// 5
+```
 
 ### Freq class
 With Statistics package you can calculate frequencies table.

@@ -13,6 +13,13 @@
 - Create ArrUtil with some helpers/functions to manage arrays
 - Add CICD test for PHP 8.1
 
+## 0.1.1 - 2022-01-27
+
+- Create Freq class with static method for managing frequencies table
+- Create Stat class with static methods for basci statistic functions like: mean, mode, median, multimode...
+- Refactor Statistics class in order to use logic provided by Freq and Stat class
+- Create ArrUtil with some helpers/functions to manage arrays
+- Add CICD test for PHP 8.1
 
 ## Initial release - 2022-01-08
 

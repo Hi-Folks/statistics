@@ -3,7 +3,9 @@
 ## 0.1.3 - WIP
 - geometricMean(): geometric mean
 
+
 ## 0.1.2 - 2022-01-28
+
 - pstdev(): Population standard deviation
 - stdev(): Sample standard deviation
 - pvariance(): variance for a population

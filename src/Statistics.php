@@ -193,6 +193,15 @@ class Statistics
     }
 
     /**
+     * @param int|null $round
+     * @return mixed
+     */
+    public function geometricMean(?int $round = null): mixed
+    {
+        return Stat::geometricMean($this->values, $round);
+    }
+
+    /**
      * Returns a string with values joined with a separator
      * @param bool|int $sample
      * @return string

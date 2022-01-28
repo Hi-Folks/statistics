@@ -157,3 +157,15 @@ it('calculates pvariance', function () {
         Statistics::make([1, 2, 3, 3])->pvariance()
     )->toEqual(0.6875);
 });
+
+it('calculates geometric mean', function () {
+    expect(
+        Statistics::make([54, 24, 36])->geometricMean()
+    )->toEqual(36);
+    expect(
+        Statistics::make([4,8, 3,9, 17])->geometricMean(2)
+    )->toEqual(6.81);
+    expect(
+        Statistics::make([])->geometricMean()
+    )->toBeNull();
+});

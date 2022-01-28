@@ -254,4 +254,24 @@ class Stat
 
         return Math::round($sumSquareDifferences / ($num_of_elements - 1), $round);
     }
+
+    /**
+     * @param mixed[] $data
+     * @param int|null $round
+     * @return float|null
+     */
+    public static function geometricMean(array $data, ?int $round = null): ?float
+    {
+        $count = self::count($data);
+        if ($count === 0) {
+            return null;
+        }
+        $product = 1;
+        foreach ($data as $key => $value) {
+            $product = $product * $value;
+        }
+        $geometricMean = pow($product, 1 / $count);
+
+        return Math::round($geometricMean, $round);
+    }
 }

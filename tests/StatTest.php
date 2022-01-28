@@ -141,3 +141,12 @@ it('calculates pvariance (static)', function () {
         Stat::pvariance([1, 2, 3, 3])
     )->toEqual(0.6875);
 });
+
+it('calculates geometric mean (static)', function () {
+    expect(
+        Stat::geometricMean([54, 24, 36])
+    )->toEqual(36);
+    expect(
+        Stat::geometricMean([])
+    )->toBeNull();
+});

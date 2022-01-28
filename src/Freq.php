@@ -72,7 +72,7 @@ class Freq
         $freq = self::frequencies($data);
         foreach ($freq as $key => $value) {
             $relValue = $value * 100 / $n;
-            $returnArray[$key] = is_null($round) ? $relValue : round($relValue, $round);
+            $returnArray[$key] = Math::round($relValue, $round);
         }
 
         return $returnArray;

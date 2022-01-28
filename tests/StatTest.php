@@ -92,3 +92,52 @@ it('calculates multimode (static)', function () {
         Stat::multimode([])
     )->toMatchArray([]);
 });
+it('calculates Population standard deviation (static)', function () {
+    expect(
+        Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])
+    )->toEqual(0.986893273527251);
+    expect(
+        Stat::pstdev([1, 2, 4, 5, 8], 4)
+    )->toEqual(2.4495);
+    expect(
+        Stat::pstdev([])
+    )->toBeNull();
+    expect(
+        Stat::pstdev([1])
+    )->toEqual(0);
+    expect(
+        Stat::pstdev([1, 2, 3, 3], 7)
+    )->toEqual(0.8291562);
+});
+it('calculates Sample standard deviation (static)', function () {
+    expect(
+        Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])
+    )->toEqual(1.0810874155219827);
+    expect(
+        Stat::stdev([1, 2, 2, 4, 6])
+    )->toEqual(2);
+    expect(
+        Stat::stdev([1, 2, 4, 5, 8], 4)
+    )->toEqual(2.7386);
+    expect(
+        Stat::stdev([])
+    )->toBeNull();
+    expect(
+        Stat::stdev([1])
+    )->toBeNull();
+});
+
+it('calculates variance (static)', function () {
+    expect(
+        Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5])
+    )->toEqual(1.3720238095238095);
+});
+
+it('calculates pvariance (static)', function () {
+    expect(
+        Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])
+    )->toEqual(1.25);
+    expect(
+        Stat::pvariance([1, 2, 3, 3])
+    )->toEqual(0.6875);
+});

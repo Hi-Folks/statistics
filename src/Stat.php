@@ -175,4 +175,83 @@ class Stat
             return ($data[$index - 1] + $data[$index]) / 2;
         }
     }
+
+    /**
+     * Return the **Population** standard deviation,
+     * a measure of the amount of variation or dispersion of a set of values.
+     * A low standard deviation indicates that
+     * the values tend to be close to the mean of the set,
+     * while a high standard deviation indicates that
+     * the values are spread out over a wider range.
+     * @param mixed[] $data
+     * @return float|null
+     */
+    public static function pstdev(array $data, int $round = null): ?float
+    {
+        $variance = self::pvariance($data);
+        if (is_null($variance)) {
+            return null;
+        }
+
+        return (float)Math::round(sqrt($variance), $round);
+    }
+
+    /**
+     * @param mixed[] $data
+     * @return float|null
+     */
+    public static function pvariance(array $data, ?int $round = null): ?float
+    {
+        $num_of_elements = self::count($data);
+        if ($num_of_elements == 0) {
+            return null;
+        }
+        $sumSquareDifferences = 0.0;
+        $average = self::mean($data);
+
+        foreach ($data as $i) {
+            // sum of squares of differences between
+            // all numbers and means.
+            $sumSquareDifferences += pow(($i - $average), 2);
+        }
+
+        return Math::round($sumSquareDifferences / ($num_of_elements), $round);
+    }
+
+    /**
+     * @param mixed[] $data
+     * @param int|null $round
+     * @return float|null
+     */
+    public static function stdev(array $data, int $round = null): ?float
+    {
+        $variance = self::variance($data);
+        if (is_null($variance)) {
+            return null;
+        }
+
+        return (float)Math::round(sqrt(self::variance($data)), $round);
+    }
+
+    /**
+     * @param mixed[] $data
+     * @return float|null
+     */
+    public static function variance(array $data, ?int $round = null): ?float
+    {
+        $num_of_elements = self::count($data);
+        if ($num_of_elements <= 1) {
+            return null;
+        }
+        $sumSquareDifferences = 0.0;
+        $average = self::mean($data);
+
+        foreach ($data as $i) {
+            // sum of squares of differences between
+            // all numbers and means.
+            $sumSquareDifferences += pow(($i - $average), 2);
+        }
+
+        return Math::round($sumSquareDifferences / ($num_of_elements - 1), $round);
+    }
 }

@@ -79,6 +79,8 @@ $median = Stat::medianLow([1, 3, 5, 7]);
 // 3
 ```
 
+
+
 #### Stat::medianHigh( array $data )
 Return the high median of data.
 The high median is always a member of the data set. When the number of data points is odd, the middle value is returned. When it is even, the larger of the two middle values is returned.
@@ -91,20 +93,64 @@ $median = Stat::medianHigh([1, 3, 5, 7]);
 // 5
 ```
 
-### Freq class
-With Statistics package you can calculate frequencies table.
-A frequencies table is ...
-
+#### Stat::pstdev( array $data )
+Return the **Population** Standard Deviation, a measure of the amount of variation or dispersion of a set of values.
+A low standard deviation indicates that the values tend to be close to the mean of the set, while a high standard deviation indicates that the values are spread out over a wider range.
 
 ```php
-use HiFolks\Statistics\Freq;
+use HiFolks\Statistics\Stat;
+$stdev = Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])
+// 0.986893273527251
+$stdev = Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4)
+// 0.9869
+```
 
+#### Stat::stdev( array $data )
+Return the **Sample** Standard Deviation, a measure of the amount of variation or dispersion of a set of values.
+A low standard deviation indicates that the values tend to be close to the mean of the set, while a high standard deviation indicates that the values are spread out over a wider range.
+
+```php
+use HiFolks\Statistics\Stat;
+$stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])
+// 1.0810874155219827
+$stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4)
+// 1.0811
+```
+
+#### Stat::variance ( array $data)
+Variance is a measure of dispersion of data points from the mean.
+Low variance indicates that data points are generally similar and do not vary widely from the mean.
+High variance indicates that data values have greater variability and are more widely dispersed from the mean.
+
+For calculate variance from a *sample*:
+```php
+use HiFolks\Statistics\Stat;
+$variance = Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]);
+// 1.3720238095238095
+```
+
+If you need to calculate the variance on the whole population and not just on a sample you need to use *pvariance* method:
+```php
+use HiFolks\Statistics\Stat;
+$variance = Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])
+// 1.25
+```
+
+### Freq class
+With *Statistics* package you can calculate frequency table.
+A frequency table is list the frequency of various outcomes in a sample.
+Each entry in the table contains the frequency or count of the occurrences of values within a particular group or interval.
+
+
+#### Freq::frequencies( array $data )
+```php
+use HiFolks\Statistics\Freq;
 
 $fruits = ['🍈', '🍈', '🍈', '🍉','🍉','🍉','🍉','🍉','🍌'];
 $freqTable = Freq::frequencies($fruits);
 print_r($freqTable);
 ```
-You can see the frequencies table as an array:
+You can see the frequency table as an array:
 ```
 Array
 (
@@ -113,13 +159,13 @@ Array
     [🍌] => 1
 )
 ```
-
-You can retrieve the frequencies table in relative format (percentage):
+#### Freq::relativeFrequencies( array $data )
+You can retrieve the frequency table in relative format (percentage):
 ```php
 $freqTable = Freq::relativeFrequencies($fruits, 2);
 print_r($freqTable);
 ```
-You can see the frequencies table as an array with percentage of the occurrences:
+You can see the frequency table as an array with percentage of the occurrences:
 ```
 Array
 (
@@ -151,12 +197,12 @@ echo "Mode              : " . $stat->mode() . PHP_EOL;
 // Mode              : 5
 ```
 
-### Calculate Frequencies Table
+### Calculate Frequency Table
 
-Statistics packages has some methods for generating Frequencies Table:
+Statistics packages has some methods for generating Frequency Table:
 - frequencies(): a frequency is the number of times a value of the data occurs;
 - relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
-- cumulativeFrequencies(): is the accumulation of the previous relative frequencies.;
+- cumulativeFrequencies(): is the accumulation of the previous relative frequencies;
 - cumulativeRelativeFrequencies(): is the accumulation of the previous relative ratio.
 
 ```php
@@ -207,8 +253,13 @@ Array
 ## Testing
 
 ```bash
-composer test
+composer run test           Runs the test script
+composer run test-coverage  Runs the test-coverage script
+composer run format         Runs the format script
+composer run static-code    Runs the static-code script
+composer run all-check      Runs the all-check script
 ```
+
 
 ## Changelog
 

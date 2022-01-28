@@ -24,9 +24,9 @@ it('can calculate statistics again', function () {
     expect($s->mean())->toEqual(13 / 3);
     expect($s->median())->toEqual(4.5);
     expect($s->mode())->toEqual(5);
-    expect($s->getMin())->toEqual(2);
-    expect($s->getMax())->toEqual(7);
-    expect($s->getRange())->toEqual(5);
+    expect($s->min())->toEqual(2);
+    expect($s->max())->toEqual(7);
+    expect($s->range())->toEqual(5);
 });
 
 it('can calculate statistics again and again', function () {
@@ -38,9 +38,9 @@ it('can calculate statistics again and again', function () {
     expect($s->mean())->toEqual(15);
     expect($s->median())->toEqual(14);
     expect($s->mode())->toEqual(13);
-    expect($s->getMin())->toEqual(13);
-    expect($s->getMax())->toEqual(21);
-    expect($s->getRange())->toEqual(8);
+    expect($s->min())->toEqual(13);
+    expect($s->max())->toEqual(21);
+    expect($s->range())->toEqual(8);
 
     $s = Statistics::make(
         [1, 2, 4, 7]
@@ -49,9 +49,9 @@ it('can calculate statistics again and again', function () {
     expect($s->mean())->toEqual(3.5);
     expect($s->median())->toEqual(3);
     expect($s->mode())->toBeNull();
-    expect($s->getMin())->toEqual(1);
-    expect($s->getMax())->toEqual(7);
-    expect($s->getRange())->toEqual(6);
+    expect($s->min())->toEqual(1);
+    expect($s->max())->toEqual(7);
+    expect($s->range())->toEqual(6);
 });
 
 
@@ -103,4 +103,57 @@ it('can valuesToString', function () {
     );
     expect($s->valuesToString(false, $s))->toEqual("1,2,3,4,4");
     expect($s->valuesToString(3, $s))->toEqual("1,2,3");
+});
+
+
+it('calculates Population standard deviation', function () {
+    expect(
+        Statistics::make(
+            [1.5, 2.5, 2.5, 2.75, 3.25, 4.75]
+        )->pstdev()
+    )->toEqual(0.986893273527251);
+    expect(
+        Statistics::make([1, 2, 4, 5, 8])->pstdev(4)
+    )->toEqual(2.4495);
+    expect(
+        Statistics::make([])->pstdev()
+    )->toBeNull();
+    expect(
+        Statistics::make([1])->pstdev()
+    )->toEqual(0);
+    expect(
+        Statistics::make([1, 2, 3, 3])->pstdev(7)
+    )->toEqual(0.8291562);
+});
+it('calculates Sample standard deviation', function () {
+    expect(
+        Statistics::make([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 7)->stdev()
+    )->toEqual(1.0810874155219827);
+    expect(
+        Statistics::make([1, 2, 2, 4, 6])->stdev()
+    )->toEqual(2);
+    expect(
+        Statistics::make([1, 2, 4, 5, 8])->stdev(4)
+    )->toEqual(2.7386);
+    expect(
+        Statistics::make([])->stdev()
+    )->toBeNull();
+    expect(
+        Statistics::make([1])->stdev()
+    )->toBeNull();
+});
+
+it('calculates variance', function () {
+    expect(
+        Statistics::make([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5])->variance()
+    )->toEqual(1.3720238095238095);
+});
+
+it('calculates pvariance', function () {
+    expect(
+        Statistics::make([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])->pvariance()
+    )->toEqual(1.25);
+    expect(
+        Statistics::make([1, 2, 3, 3])->pvariance()
+    )->toEqual(0.6875);
 });

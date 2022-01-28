@@ -90,19 +90,19 @@ class Statistics
         return Freq::cumulativeFrequencies($this->values);
     }
 
-    public function getMax(): mixed
+    public function max(): mixed
     {
         return max($this->values);
     }
 
-    public function getMin(): mixed
+    public function min(): mixed
     {
         return min($this->values);
     }
 
-    public function getRange(): mixed
+    public function range(): mixed
     {
-        return $this->getMax() - $this->getMin();
+        return $this->max() - $this->min();
     }
 
     public function count(): int
@@ -162,6 +162,34 @@ class Statistics
     public function mode(): mixed
     {
         return Stat::mode($this->values);
+    }
+
+    /**
+     * @param int|null $round
+     * @return mixed
+     */
+    public function stdev(?int $round = null): mixed
+    {
+        return Stat::stdev($this->values, $round);
+    }
+
+    public function variance(?int $round = null): mixed
+    {
+        return Stat::variance($this->values, $round);
+    }
+
+    /**
+     * @param int|null $round
+     * @return mixed
+     */
+    public function pstdev(?int $round = null): mixed
+    {
+        return Stat::pstdev($this->values, $round);
+    }
+
+    public function pvariance(?int $round = null): mixed
+    {
+        return Stat::pvariance($this->values, $round);
     }
 
     /**

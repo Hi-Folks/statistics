@@ -12,13 +12,15 @@ PHP package that provides functions for calculating mathematical statistics of n
 In this package I'm collecting some useful statistic functions.
 Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Hearth Rate, Speed, Cadence, Power etc.
 I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like:
-- mean: the average of the data set;
-- mode: the most common number in data set;
-- median: the middle of the set of values;
+- mean: the average of the data set (and geometric mean);
+- mode: the most common number in data set (and multi mode);
+- median: the middle of the set of values (median low and median high);
 - range: the difference between the largest and smallest values
 - first quartile ( or lowest percentile);
 - third quartile (or highest percentile);
 - frequency table (cumulative, relative);
+- standard deviation (population and sample);
+- variance (population and sample);
 - etc...
 
 
@@ -42,7 +44,12 @@ Stat class has methods to calculate an average or typical value from a populatio
 - mode(): single mode (most common value) of discrete or nominal data;
 - multimode(): list of modes (most common values) of discrete or nominal data;
 - higherPercentile(): 3rd quartile, is the value at which 75 percent of the data is below it;
-- lowerPercentile(): first quartile, is the value at which 25 percent of the data is below it.
+- lowerPercentile(): first quartile, is the value at which 25 percent of the data is below it;
+- pstdev(): Population standard deviation
+- stdev(): Sample standard deviation
+- pvariance(): variance for a population
+- variance(): variance for a sample
+- geometricMean(): geometric mean
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.

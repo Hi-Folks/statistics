@@ -1,6 +1,14 @@
 # Changelog
 
+## Standard Deviation and Variance - 2022-01-28
+
+- pstdev(): Population standard deviation
+- stdev(): Sample standard deviation
+- pvariance(): variance for a population
+- variance(): variance for a sample
+
 ## 0.1.2 - 2022-01-28
+
 - pstdev(): Population standard deviation
 - stdev(): Sample standard deviation
 - pvariance(): variance for a population

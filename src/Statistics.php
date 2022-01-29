@@ -202,6 +202,15 @@ class Statistics
     }
 
     /**
+     * @param int|null $round
+     * @return mixed
+     */
+    public function harmonicMean(?int $round = null): mixed
+    {
+        return Stat::harmonicMean($this->values, null, $round);
+    }
+
+    /**
      * Returns a string with values joined with a separator
      * @param bool|int $sample
      * @return string

@@ -169,3 +169,12 @@ it('calculates geometric mean', function () {
         Statistics::make([])->geometricMean()
     )->toBeNull();
 });
+
+it('calculates harmonic mean', function () {
+    expect(
+        Statistics::make([40, 60])->harmonicMean(1)
+    )->toEqual(48.0);
+    expect(
+        Statistics::make([])->harmonicMean()
+    )->toBeNull();
+});

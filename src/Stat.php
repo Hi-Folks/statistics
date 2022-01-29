@@ -274,4 +274,30 @@ class Stat
 
         return Math::round($geometricMean, $round);
     }
+
+    /**
+     * @param mixed[] $data
+     * @param mixed[] $weights
+     * @param int|null $round
+     * @return float|null
+     */
+    public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): ?float
+    {
+        $sum = 0;
+        $count = self::count($data);
+        if ($count === 0) {
+            return null;
+        }
+        $sumWeigth = 0;
+        foreach ($data as $key => $value) {
+            if ($value == 0) {
+                return 0;
+            }
+            $weight = is_null($weights) ? 1 : $weights[$key];
+            $sumWeigth = $sumWeigth + $weight;
+            $sum = $sum + ($weight / $value);
+        }
+
+        return Math::round($sumWeigth / $sum, $round);
+    }
 }

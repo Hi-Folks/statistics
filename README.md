@@ -50,6 +50,7 @@ Stat class has methods to calculate an average or typical value from a populatio
 - pvariance(): variance for a population
 - variance(): variance for a sample
 - geometricMean(): geometric mean
+- harmonicMean(): harmonic mean
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.
@@ -62,6 +63,37 @@ $mean = Stat::mean([1, 2, 3, 4, 4]);
 $mean = Stat::mean([-1.0, 2.5, 3.25, 5.75]);
 // 2.625
 ```
+
+#### Stat::geometricMean( array $data )
+The geometric mean indicates the central tendency or typical value of the data using the product of the values (as opposed to the arithmetic mean which uses their sum).
+
+```php
+use HiFolks\Statistics\Stat;
+$mean = Stat::geometicMean([54, 24, 36], 1);
+// 36.0
+```
+#### Stat::harmonicMean( array $data )
+The harmonic mean is the reciprocal of the arithmetic mean() of the reciprocals of the data. For example, the harmonic mean of three values a, b and c will be equivalent to 3/(1/a + 1/b + 1/c). If one of the values is zero, the result will be zero.
+
+```php
+use HiFolks\Statistics\Stat;
+$mean = Stat::harmonicMean([40, 60], 1);
+// 48.0
+```
+
+You can also calculate harmonic weighted mean.
+Suppose a car travels 40 km/hr for 5 km, and when traffic clears, speeds-up to 60 km/hr for the remaining 30 km of the journey. What is the average speed?
+
+```php
+use HiFolks\Statistics\Stat;
+Stat::harmonicMean([40, 60], [5, 30], 1)
+// 56.0
+```
+where:
+- 40, 60 :  are the elements
+- 5, 30: are the weights for each element (first weight is the weight of the first element, the second one is the weight of the second element)
+- 1: is the decimal numbers you want to round
+
 
 #### Stat::median( array $data )
 Return the median (middle value) of numeric data, using the common “mean of middle two” method.

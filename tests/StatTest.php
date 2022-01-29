@@ -150,3 +150,20 @@ it('calculates geometric mean (static)', function () {
         Stat::geometricMean([])
     )->toBeNull();
 });
+it('calculates harmonic mean (static)', function () {
+    expect(
+        Stat::harmonicMean([40, 60])
+    )->toEqual(48);
+    expect(
+        Stat::harmonicMean([10,100,0,1])
+    )->toEqual(0);
+    expect(
+        Stat::harmonicMean([40, 60], [5, 30])
+    )->toEqual(56);
+    expect(
+        Stat::harmonicMean([60, 40], [7, 3], 1)
+    )->toEqual(52.2);
+    expect(
+        Stat::harmonicMean([])
+    )->toBeNull();
+});

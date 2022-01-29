@@ -2,6 +2,7 @@
 
 ## 0.1.3 - WIP
 - geometricMean(): geometric mean
+- harmonicMean(): harmonic mean and weighted harmonic mean 
 
 
 ## 0.1.2 - 2022-01-28

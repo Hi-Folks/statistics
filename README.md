@@ -69,7 +69,7 @@ The geometric mean indicates the central tendency or typical value of the data u
 
 ```php
 use HiFolks\Statistics\Stat;
-$mean = Stat::geometicMean([54, 24, 36], 1);
+$mean = Stat::geometricMean([54, 24, 36], 1);
 // 36.0
 ```
 #### Stat::harmonicMean( array $data )
@@ -77,7 +77,7 @@ The harmonic mean is the reciprocal of the arithmetic mean() of the reciprocals 
 
 ```php
 use HiFolks\Statistics\Stat;
-$mean = Stat::harmonicMean([40, 60], 1);
+$mean = Stat::harmonicMean([40, 60], null, 1);
 // 48.0
 ```
 
@@ -86,7 +86,7 @@ Suppose a car travels 40 km/hr for 5 km, and when traffic clears, speeds-up to 6
 
 ```php
 use HiFolks\Statistics\Stat;
-Stat::harmonicMean([40, 60], [5, 30], 1)
+Stat::harmonicMean([40, 60], [5, 30], 1);
 // 56.0
 ```
 where:
@@ -138,9 +138,9 @@ A low standard deviation indicates that the values tend to be close to the mean 
 
 ```php
 use HiFolks\Statistics\Stat;
-$stdev = Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])
+$stdev = Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75]);
 // 0.986893273527251
-$stdev = Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4)
+$stdev = Stat::pstdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4);
 // 0.9869
 ```
 
@@ -150,9 +150,9 @@ A low standard deviation indicates that the values tend to be close to the mean 
 
 ```php
 use HiFolks\Statistics\Stat;
-$stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])
+$stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75]);
 // 1.0810874155219827
-$stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4)
+$stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4);
 // 1.0811
 ```
 
@@ -171,7 +171,7 @@ $variance = Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]);
 If you need to calculate the variance on the whole population and not just on a sample you need to use *pvariance* method:
 ```php
 use HiFolks\Statistics\Stat;
-$variance = Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])
+$variance = Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25]);
 // 1.25
 ```
 

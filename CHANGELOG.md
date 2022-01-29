@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.3 - WIP
+## 0.1.3 - 2022-01-29
 - geometricMean(): geometric mean
 - harmonicMean(): harmonic mean and weighted harmonic mean 
 

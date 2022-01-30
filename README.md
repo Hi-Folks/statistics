@@ -23,6 +23,7 @@ I needed to apply some statistic functions to understand better the numbers and 
 - variance (population and sample);
 - etc...
 
+> This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html) 
 
 ## Installation
 

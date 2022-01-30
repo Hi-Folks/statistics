@@ -142,38 +142,71 @@ class Stat
 
     /**
      * @param mixed[] $data
-     * @return mixed
+     * @param int $n
+     * @param int|null $round
+     * @return mixed[]|null
      */
-    public static function lowerPercentile(array $data): mixed
+    public static function quantiles(array $data, int $n = 4, ?int $round = null): ?array
     {
         $count = Stat::count($data);
-        if (! $count) {
+        if ($count < 2) {
             return null;
         }
-        $index = floor($count / 4);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $data[$index];
-        } else {                   // count is even
-            return ($data[$index - 1] + $data[$index]) / 2;
+        if ($n < 1) {
+            return null;
         }
+        sort($data);
+        $m = $count + 1;
+        $result = [];
+        foreach (range(1, $n - 1) as $i) {
+            $j = floor($i * $m / $n);
+            if ($j < 1) {
+                $j = 1;
+            } elseif ($j > $count - 1) {
+                $j = $count - 1;
+            }
+            $delta = $i * $m - $j * $n;
+            $interpolated = ($data[$j - 1] * ($n - $delta) + $data[$j] * $delta) / $n;
+            $result[] = Math::round($interpolated, $round);
+        }
+
+        return $result;
+    }
+
+    /**
+     * REturn the rank at th 25th percentile.
+     * Return a number that is exist in the array
+     * @param mixed[] $data
+     * @return mixed
+     */
+    public static function firstQuartile(array $data, ?int $round = null): mixed
+    {
+        $quartiles = self::quantiles($data, 4, $round);
+        if (is_null($quartiles)) {
+            return null;
+        }
+        if (count($quartiles) !== 3) {
+            return null;
+        }
+
+        return $quartiles[0];
     }
 
     /**
      * @param mixed[] $data
      * @return mixed
      */
-    public static function higherPercentile(array $data): mixed
+    public static function thirdQuartile(array $data): mixed
     {
-        $count = Stat::count($data);
-        if (! $count) {
+        $quartiles = self::quantiles($data, 4);
+        if (is_null($quartiles)) {
             return null;
         }
-        $index = floor(($count * 3) / 4);  // cache the index
-        if ($count & 1) {    // count is odd
-            return $data[$index];
-        } else {                   // count is even
-            return ($data[$index - 1] + $data[$index]) / 2;
+        if (count($quartiles) !== 3) {
+            return null;
         }
+
+        return $quartiles[2];
     }
 
     /**

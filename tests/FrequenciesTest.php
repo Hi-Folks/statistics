@@ -43,42 +43,42 @@ it('can calculate cumulative relative frequencies', function () {
     expect($s->originalArray())->toHaveCount(4);
 });
 
-it('can calculate lowerPercentile', function () {
+it('can calculate firstQuartile', function () {
     $s = Statistics::make(
         [3,4,3,1]
     );
-    $a = $s->lowerPercentile();
-    expect($a)->toEqual(2);
+    $a = $s->firstQuartile();
+    expect($a)->toEqual(1.5);
 
     $s = Statistics::make(
         [3,4,3]
     );
-    $a = $s->lowerPercentile();
+    $a = $s->firstQuartile();
     expect($a)->toEqual(3);
 
     $s = Statistics::make(
         []
     );
-    $a = $s->lowerPercentile();
+    $a = $s->firstQuartile();
     expect($a)->toBeNull();
 });
-it('can calculate higherPercentile', function () {
+it('can calculate thirdQuartile', function () {
     $s = Statistics::make(
         [3,4,3,1]
     );
-    $a = $s->higherPercentile();
-    expect($a)->toEqual(3.5);
+    $a = $s->thirdQuartile();
+    expect($a)->toEqual(3.75);
 
     $s = Statistics::make(
         [3,4,3]
     );
-    $a = $s->higherPercentile();
+    $a = $s->thirdQuartile();
     expect($a)->toEqual(4);
 
     $s = Statistics::make(
         []
     );
-    $a = $s->higherPercentile();
+    $a = $s->thirdQuartile();
 
     expect($a)->toBeNull();
 });

@@ -13,4 +13,13 @@ class Math
     {
         return is_null($round) ? $value : round($value, $round);
     }
+
+    /**
+     * @param int $number
+     * @return bool
+     */
+    public static function isOdd(int $number): bool
+    {
+        return ($number % 2) == 1;
+    }
 }

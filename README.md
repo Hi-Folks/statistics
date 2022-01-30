@@ -11,17 +11,7 @@ PHP package that provides functions for calculating mathematical statistics of n
 
 In this package I'm collecting some useful statistic functions.
 Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Hearth Rate, Speed, Cadence, Power etc.
-I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like:
-- mean: the average of the data set (and geometric mean);
-- mode: the most common number in data set (and multi mode);
-- median: the middle of the set of values (median low and median high);
-- range: the difference between the largest and smallest values
-- first quartile ( or lowest percentile);
-- third quartile (or highest percentile);
-- frequency table (cumulative, relative);
-- standard deviation (population and sample);
-- variance (population and sample);
-- etc...
+I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like mean, mode, median, range, quantiles, first quartile ( or 25th percentile), third quartile (or 75th percentile), frequency table (cumulative, relative), standard deviation (population and sample), variance (population and sample) etc...
 
 > This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html) 
 
@@ -44,8 +34,9 @@ Stat class has methods to calculate an average or typical value from a populatio
 - medianHigh(): high median of data;
 - mode(): single mode (most common value) of discrete or nominal data;
 - multimode(): list of modes (most common values) of discrete or nominal data;
-- higherPercentile(): 3rd quartile, is the value at which 75 percent of the data is below it;
-- lowerPercentile(): first quartile, is the value at which 25 percent of the data is below it;
+- quantiles(): cut points dividing the range of a probability distribution into continuous intervals with equal probabilities;
+- thirdQuartile(): 3rd quartile, is the value at which 75 percent of the data is below it;
+- firstQuartile(): first quartile, is the value at which 25 percent of the data is below it;
 - pstdev(): Population standard deviation
 - stdev(): Sample standard deviation
 - pvariance(): variance for a population
@@ -131,6 +122,36 @@ $median = Stat::medianHigh([1, 3, 5]);
 // 3
 $median = Stat::medianHigh([1, 3, 5, 7]);
 // 5
+```
+
+#### Stat::quantiles( array $data, $n=4, $round=null  )
+Divide data into n continuous intervals with equal probability. Returns a list of n - 1 cut points separating the intervals.
+Set n to 4 for quartiles (the default). Set n to 10 for deciles. Set n to 100 for percentiles which gives the 99 cuts points that separate data into 100 equal sized groups.
+
+
+```php
+use HiFolks\Statistics\Stat;
+$quantiles = Stat::quantiles([98, 90, 70,18,92,92,55,83,45,95,88]);
+// [ 55.0, 88.0, 92.0 ]
+$quantiles = Stat::quantiles([105, 129, 87, 86, 111, 111, 89, 81, 108, 92, 110,100, 75, 105, 103, 109, 76, 119, 99, 91, 103, 129,106, 101, 84, 111, 74, 87, 86, 103, 103, 106, 86,111, 75, 87, 102, 121, 111, 88, 89, 101, 106, 95,103, 107, 101, 81, 109, 104], 10);
+// [81.0, 86.2, 89.0, 99.4, 102.5, 103.6, 106.0, 109.8, 111.0]
+```
+#### Stat::firstQuartile( array $data, $round=null  )
+The lower quartile, or first quartile (Q1), is the value under which 25% of data points are found when they are arranged in increasing order.
+
+```php
+use HiFolks\Statistics\Stat;
+$percentile = Stat::firstQuartile([98, 90, 70,18,92,92,55,83,45,95,88]);
+// 55.0
+```
+
+#### Stat::thirdQuartile( array $data, $round=null  )
+The upper quartile, or third quartile (Q3), is the value under which 75% of data points are found when arranged in increasing order.
+
+```php
+use HiFolks\Statistics\Stat;
+$percentile = Stat::thirdQuartile([98, 90, 70,18,92,92,55,83,45,95,88]);
+// 92.0
 ```
 
 #### Stat::pstdev( array $data )
@@ -229,10 +250,10 @@ echo "Count             : " . $stat->count() . PHP_EOL;
 // Count             : 6
 echo "Median            : " . $stat->median() . PHP_EOL;
 // Median            : 4.5
-echo "Lower Percentile  : " . $stat->lowerPercentile() . PHP_EOL;
-// Lower Percentile  : 2.5
-echo "Higher Percentile : " . $stat->higherPercentile() . PHP_EOL;
-// Higher Percentile : 5
+echo "First Quartile  : " . $stat->firstQuartile() . PHP_EOL;
+// First Quartile  : 2.5
+echo "Third Quartile : " . $stat->thirdQuartile() . PHP_EOL;
+// Third Quartile : 5
 echo "Mode              : " . $stat->mode() . PHP_EOL;
 // Mode              : 5
 ```

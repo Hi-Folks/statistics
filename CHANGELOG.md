@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4 - 2022-01-30
+- quantiles()
+- firstQuartile()
+- thirdQuartile()
+- 
 ## 0.1.3 - 2022-01-29
 - geometricMean(): geometric mean
 - harmonicMean(): harmonic mean and weighted harmonic mean 
@@ -27,8 +32,8 @@ Initial release with:
 - getMean()
 - count()
 - median()
-- lowerPercentile()
-- higherPercentile()
+- firstQuartile()
+- thirdQuartile()
 - mode()
 - frequencies(): a frequency is the number of times a value of the data occurs;
 - relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
@@ -42,8 +47,8 @@ Initial release with:
 - getMean()
 - count()
 - median()
-- lowerPercentile()
-- higherPercentile()
+- firstQuartile()
+- thirdQuartile()
 - mode()
 - frequencies(): a frequency is the number of times a value of the data occurs;
 - relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;

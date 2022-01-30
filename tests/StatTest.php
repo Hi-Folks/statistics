@@ -167,3 +167,25 @@ it('calculates harmonic mean (static)', function () {
         Stat::harmonicMean([])
     )->toBeNull();
 });
+
+it('calculates quantiles (static)', function () {
+    $q = Stat::quantiles([98, 90, 70,18,92,92,55,83,45,95,88,76]);
+    expect($q[0])->toEqual(58.75);
+    expect($q[1])->toEqual(85.5);
+    expect($q[2])->toEqual(92);
+    $q = Stat::quantiles([98, 90, 70,18,92,92,55,83,45,95,88]);
+    expect($q[0])->toEqual(55);
+    expect($q[1])->toEqual(88);
+    expect($q[2])->toEqual(92);
+    $q = Stat::quantiles([1,2]);
+    expect($q[0])->toEqual(0.75);
+    expect($q[1])->toEqual(1.5);
+    expect($q[2])->toEqual(2.25);
+    $q = Stat::quantiles([1,2,4]);
+    expect($q[0])->toEqual(1);
+    expect($q[1])->toEqual(2);
+    expect($q[2])->toEqual(4);
+    expect(
+        Stat::quantiles([1])
+    )->toBeNull();
+});

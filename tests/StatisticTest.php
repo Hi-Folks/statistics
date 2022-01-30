@@ -8,11 +8,21 @@ it('can calculate statistics', function () {
     );
     expect($s->count())->toEqual(12);
     expect($s->median())->toEqual(85.5);
-    expect($s->lowerPercentile())->toEqual(62.5);
-    expect($s->higherPercentile())->toEqual(92);
-    expect($s->interquartileRange())->toEqual(29.5);
+    expect($s->firstQuartile())->toEqual(58.75);
+    expect($s->thirdQuartile())->toEqual(92);
+    expect($s->interquartileRange())->toEqual(33.25);
 
     expect($s->originalArray())->toHaveCount(12);
+
+    $s = Statistics::make(
+        [98, 90, 70,18,92,92,55,83,45,95,88]
+    );
+    expect($s->count())->toEqual(11);
+    expect($s->median())->toEqual(88);
+    expect($s->firstQuartile())->toEqual(55);
+    expect($s->thirdQuartile())->toEqual(92);
+    expect($s->interquartileRange())->toEqual(37);
+    expect($s->originalArray())->toHaveCount(11);
 });
 
 it('can calculate statistics again', function () {
@@ -27,6 +37,8 @@ it('can calculate statistics again', function () {
     expect($s->min())->toEqual(2);
     expect($s->max())->toEqual(7);
     expect($s->range())->toEqual(5);
+    expect($s->firstQuartile())->toEqual(2.75);
+    expect($s->thirdQuartile())->toEqual(5.5);
 });
 
 it('can calculate statistics again and again', function () {
@@ -41,6 +53,9 @@ it('can calculate statistics again and again', function () {
     expect($s->min())->toEqual(13);
     expect($s->max())->toEqual(21);
     expect($s->range())->toEqual(8);
+    expect($s->firstQuartile())->toEqual(13);
+    expect($s->thirdQuartile())->toEqual(17);
+
 
     $s = Statistics::make(
         [1, 2, 4, 7]

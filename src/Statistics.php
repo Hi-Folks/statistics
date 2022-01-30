@@ -138,14 +138,14 @@ class Statistics
     /**
      * @return mixed
      */
-    public function lowerPercentile(): mixed
+    public function firstQuartile(): mixed
     {
-        return Stat::lowerPercentile($this->values);
+        return Stat::firstQuartile($this->values);
     }
 
-    public function higherPercentile(): mixed
+    public function thirdQuartile(): mixed
     {
-        return Stat::higherPercentile($this->values);
+        return Stat::thirdQuartile($this->values);
     }
 
     /**
@@ -153,7 +153,7 @@ class Statistics
      */
     public function interquartileRange()
     {
-        return $this->higherPercentile() - $this->lowerPercentile();
+        return $this->thirdQuartile() - $this->firstQuartile();
     }
 
     /**

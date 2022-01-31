@@ -5,6 +5,8 @@ namespace HiFolks\Statistics;
 class Math
 {
     /**
+     * Rounds value with the given precision, if the round is not null.
+     *
      * @param float $value
      * @param int|null $round
      * @return float
@@ -15,11 +17,13 @@ class Math
     }
 
     /**
+     * Check if number is odd.
+     *
      * @param int $number
      * @return bool
      */
     public static function isOdd(int $number): bool
     {
-        return ($number % 2) == 1;
+        return (bool) $number & 1;
     }
 }

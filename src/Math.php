@@ -24,6 +24,6 @@ class Math
      */
     public static function isOdd(int $number): bool
     {
-        return (bool) $number & 1;
+        return (bool) ($number & 1);
     }
 }

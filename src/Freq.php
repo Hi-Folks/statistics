@@ -27,16 +27,17 @@ class Freq
      */
     public static function frequencies(array $data, bool $transformToInteger = false): array
     {
-        if (!Stat::count($data)) {
+        if (! Stat::count($data)) {
             return [];
         }
-        if ($transformToInteger || !self::isDiscreteType($data[0])) {
+        if ($transformToInteger || ! self::isDiscreteType($data[0])) {
             foreach ($data as $key => $value) {
                 $data[$key] = intval($value);
             }
         }
         $frequencies = array_count_values($data);
         ksort($frequencies);
+
         return $frequencies;
     }
 

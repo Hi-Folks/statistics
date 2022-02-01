@@ -188,4 +188,15 @@ it('calculates quantiles (static)', function () {
     expect(
         Stat::quantiles([1])
     )->toBeNull();
+    expect(
+        Stat::quantiles([1,2,3], 0)
+    )->toBeNull();
+});
+
+
+it('calculates first quartiles (static)', function () {
+    $q = Stat::firstQuartile([98, 90, 70,18,92,92,55,83,45,95,88,76]);
+    expect($q)->toEqual(58.75);
+    $q = Stat::firstQuartile([]);
+    expect($q)->toBeNull();
 });

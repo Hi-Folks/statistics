@@ -185,9 +185,6 @@ class Stat
         if (is_null($quartiles)) {
             return null;
         }
-        if (count($quartiles) !== 3) {
-            return null;
-        }
 
         return $quartiles[0];
     }
@@ -200,9 +197,6 @@ class Stat
     {
         $quartiles = self::quantiles($data, 4);
         if (is_null($quartiles)) {
-            return null;
-        }
-        if (count($quartiles) !== 3) {
             return null;
         }
 

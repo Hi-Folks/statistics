@@ -1,5 +1,7 @@
 # Changelog
-
+## 0.1.5 - WIP
+- code refactoring and documenting some functions by Artem Trokhymchuk @trokhymchuk [thanks for the PR #2](https://github.com/Hi-Folks/statistics/pull/2)
+- 
 ## 0.1.4 - 2022-01-30
 - quantiles()
 - firstQuartile()

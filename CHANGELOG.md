@@ -1,5 +1,6 @@
 # Changelog
-## 0.1.5 - WIP
+
+## 0.1.5 - 2022-02-05
 - frequencyTable()
 - frequencyTableBySize()
 - code refactoring and documenting some functions by Artem Trokhymchuk @trokhymchuk [thanks for the PR #2](https://github.com/Hi-Folks/statistics/pull/2)

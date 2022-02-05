@@ -69,3 +69,97 @@ it('can calculate relativefreq table (static)', function () {
         $result
     )->toHaveCount(2);
 });
+
+it('can calculate grouped frequency table (static)', function () {
+    $data = [1,1,1,4,4,5,5,5,6,7,8,8,8,9,9,9,9,9,9,10,10,11,12,12,
+        13,14,14,15,15,16,16,16,16,17,17,17,18,18, ];
+    $table = Freq::frequencyTable($data, 7);
+    expect(
+        $table
+    )->toHaveCount(6);
+    expect(
+        $table
+    )->toMatchArray([1 => 3, 4 => 6, 7 => 10, 10 => 5, 13 => 5, 16 => 9]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+
+    $table = Freq::frequencyTable($data, 6);
+    expect(
+        $table
+    )->toHaveCount(6);
+    expect(
+        $table
+    )->toMatchArray([1 => 3, 4 => 6, 7 => 10, 10 => 5, 13 => 5, 16 => 9]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+
+    $table = Freq::frequencyTable($data, 8);
+    expect(
+        $table
+    )->toHaveCount(6);
+    expect(
+        $table
+    )->toMatchArray([1 => 3, 4 => 6, 7 => 10, 10 => 5, 13 => 5, 16 => 9]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+
+    $table = Freq::frequencyTable($data, 3);
+    expect(
+        $table
+    )->toHaveCount(3);
+    expect(
+        $table
+    )->toMatchArray([1 => 9, 7 => 15, 13 => 14]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+
+    $table = Freq::frequencyTable($data);
+    expect(
+        $table
+    )->toHaveCount(18);
+    expect(
+        $table
+    )->toMatchArray([1 => 3, 2 => 0, 3 => 0, 4 => 2,5 => 3, 6 => 1, 7 => 1, 8 => 3, 9 => 6,
+        10 => 2, 11 => 1, 12 => 2, 13 => 1, 14 => 2, 15 => 2, 16 => 4, 17 => 3, 18 => 2, ]);
+});
+
+it('can calculate grouped frequency table by size (static)', function () {
+    $data = [1,1,1,4,4,5,5,5,6,7,8,8,8,9,9,9,9,9,9,10,10,11,12,12,
+        13,14,14,15,15,16,16,16,16,17,17,17,18,18, ];
+    $table = Freq::frequencyTableBySize($data, 4);
+    expect(
+        $table
+    )->toHaveCount(5);
+    expect(
+        $table
+    )->toMatchArray([1 => 5, 5 => 8, 9 => 11, 13 => 9, 17 => 5]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+
+    $table = Freq::frequencyTableBySize($data, 5);
+    expect(
+        $table
+    )->toHaveCount(4);
+    expect(
+        $table
+    )->toMatchArray([1 => 8, 6 => 13, 11 => 8, 16 => 9]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+
+    $table = Freq::frequencyTableBySize($data, 8);
+    expect(
+        $table
+    )->toHaveCount(3);
+    expect(
+        $table
+    )->toMatchArray([1 => 13, 9 => 20, 17 => 5]);
+    expect(
+        array_sum($table)
+    )->toEqual(count($data));
+});

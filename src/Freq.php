@@ -108,4 +108,87 @@ class Freq
 
         return $freqCumul;
     }
+
+    /**
+     * @param mixed[] $data
+     * @param int $chunkSize
+     * @return int[]
+     */
+    public static function frequencyTableBySize(array $data, int $chunkSize = 1): array
+    {
+        $result = [];
+        $min = floor(min($data));
+        $max = ceil(max($data));
+        //$limit = ceil(($max - $min) / $category);
+
+        sort($data);
+        $rangeLow = $min;
+        $rangeHigh = $rangeLow;
+        while ($rangeHigh < $max) {
+            $count = 0;
+            $rangeHigh = ($rangeLow + $chunkSize);
+            foreach ($data as $key => $number) {
+                if (
+                    ($number >= $rangeLow)
+                    &&
+                    ($number < $rangeHigh)
+                ) {
+                    $count++;
+                    //unset($data[$key]);
+                }
+            }
+            $result[strval($rangeLow)] = $count;
+            $rangeLow = $rangeHigh;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the frequency table grouped by class.
+     * The parameter $category set the number of classes.
+     * If $category is null (default value for the optional parameter),
+     * each class is not a range.
+     * @param mixed[] $data
+     * @param ?int $category
+     * @return int[]
+     */
+    public static function frequencyTable(array $data, int $category = null): array
+    {
+        $result = [];
+        $min = floor(min($data));
+        $max = ceil(max($data));
+        if (is_null($category)) {
+            $category = ($max - $min) + 1;
+        }
+
+        $limit = ceil(($max - $min) / $category);
+        sort($data);
+        $rangeLow = $min;
+        for ($i = 0; $i < $category; $i++) {
+            $count = 0;
+            $rangeHigh = $rangeLow + $limit;
+            foreach ($data as $key => $number) {
+                if (
+                    ($number >= $rangeLow)
+                    &&
+                    ($number < $rangeHigh)
+                ) {
+                    $count++;
+                    //unset($data[$key]);
+                }
+            }
+            $result[strval($rangeLow)] = $count;
+            $rangeLow = $rangeHigh;
+        }
+
+        // eliminate
+        foreach ($result as $key => $item) {
+            if ($key > max($data)) {
+                unset($result[$key]);
+            }
+        }
+
+        return $result;
+    }
 }

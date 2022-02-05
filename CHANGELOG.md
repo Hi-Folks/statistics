@@ -1,5 +1,7 @@
 # Changelog
 ## 0.1.5 - WIP
+- frequencyTable()
+- frequencyTableBySize()
 - code refactoring and documenting some functions by Artem Trokhymchuk @trokhymchuk [thanks for the PR #2](https://github.com/Hi-Folks/statistics/pull/2)
 - add tests for Math class
 

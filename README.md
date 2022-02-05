@@ -236,6 +236,53 @@ Array
 )
 ```
 
+#### Freq::frequencyTableBySize( array $data , $size)
+
+If you want to create a frequency table based on class (ranges of values) you can use frequencyTableBySize.
+The first parameter is the array, and the second one is the size of classes.
+
+Calculate the frequency table with classes. Each group size is 4
+```php
+$data = [1,1,1,4,4,5,5,5,6,7,8,8,8,9,9,9,9,9,9,10,10,11,12,12,
+    13,14,14,15,15,16,16,16,16,17,17,17,18,18, ];
+$result = \HiFolks\Statistics\Freq::frequencyTableBySize($data, 4);
+print_r($result);
+/*
+Array
+(
+    [1] => 5
+    [5] => 8
+    [9] => 11
+    [13] => 9
+    [17] => 5
+)
+ */
+```
+
+#### Freq::frequencyTable()
+
+If you want to create a frequency table based on class (ranges of values) you can use frequencyTable.
+The first parameter is the array, and the second one is the number of classes.
+
+Calculate the frequency table with 5 classes.
+```php
+$data = [1,1,1,4,4,5,5,5,6,7,8,8,8,9,9,9,9,9,9,10,10,11,12,12,
+    13,14,14,15,15,16,16,16,16,17,17,17,18,18, ];
+$result = \HiFolks\Statistics\Freq::frequencyTable($data, 5);
+print_r($result);
+/*
+Array
+(
+    [1] => 5
+    [5] => 8
+    [9] => 11
+    [13] => 9
+    [17] => 5
+)
+ */
+```
+
+
 ### Statistics class
 
 ```php

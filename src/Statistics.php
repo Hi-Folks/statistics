@@ -111,15 +111,11 @@ class Statistics
     }
 
     /**
-     * Return the sample arithmetic mean of data
-     * The arithmetic mean is the sum of the data divided by the number of data points.
-     * It is commonly called “the average”,
-     * although it is only one of many different mathematical averages.
-     * It is a measure of the central location of the data.
-     * If data is empty, null is returned
-     * @return mixed
+     * Return the arithmetic mean of numeric data.
+     *
+     * @see Stat::mean()
      */
-    public function mean(): mixed
+    public function mean(): int|float|null
     {
         return Stat::mean($this->values);
     }

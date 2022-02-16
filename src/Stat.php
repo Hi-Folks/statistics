@@ -19,22 +19,22 @@ class Stat
     }
 
     /**
-     * Return the sample arithmetic mean of data
+     * Return the sample arithmetic mean of numeric data
      * The arithmetic mean is the sum of the data divided by the number of data points.
      * It is commonly called “the average”,
      * although it is only one of many different mathematical averages.
      * It is a measure of the central location of the data.
      * If data is empty, null is returned
-     * @param mixed[] $data
-     * @return mixed
+     * @param array<int|float> $data array of data
+     * @return int|float|null arithmetic mean or null if data is empty
      */
-    public static function mean(array $data): mixed
+    public static function mean(array $data): int|float|null
     {
         $sum = 0;
-        if (self::count($data) === 0) {
+        if (! self::count($data)) {
             return null;
         }
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $sum = $sum + $value;
         }
 

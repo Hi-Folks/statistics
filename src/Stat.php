@@ -2,6 +2,9 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Math;
+use HiFolks\Statistics\Freq;
+
 class Stat
 {
     public const MEDIAN_TYPE_LOW = "LOW";

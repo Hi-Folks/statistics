@@ -2,6 +2,8 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Math;
+
 class Freq
 {
     /**

@@ -2,6 +2,9 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\ArrUtil;
+use HiFolks\Statistics\Stat;
+
 class Statistics
 {
     /**

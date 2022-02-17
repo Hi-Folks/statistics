@@ -140,10 +140,11 @@ class Stat
     }
 
     /**
+     * Return the quantiles of the data.
      * @param mixed[] $data
-     * @param int $n
-     * @param int|null $round
-     * @return mixed[]|null
+     * @param int $n number of quantiles
+     * @param int|null $round whether to round the result
+     * @return mixed[]|null array of quntiles or null if number of quantiles is less than 1, or array size is less than 2
      */
     public static function quantiles(array $data, int $n = 4, ?int $round = null): ?array
     {
@@ -173,10 +174,9 @@ class Stat
     }
 
     /**
-     * REturn the rank at th 25th percentile.
-     * Return a number that is exist in the array
+     * Return the first or lower quartile a.k.a. 25th percentile.
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null the first quartile or null, if it cannot be calculated (@see Stat::quantiles())
      */
     public static function firstQuartile(array $data, ?int $round = null): mixed
     {
@@ -189,8 +189,9 @@ class Stat
     }
 
     /**
+     * Return the third or upper quartile a.k.a. 75th percentile.
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null the third quartile or null, if it cannot be calculated (@see Stat::quantiles())
      */
     public static function thirdQuartile(array $data): mixed
     {

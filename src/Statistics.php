@@ -134,12 +134,19 @@ class Statistics
     }
 
     /**
-     * @return mixed
+     * Return the first quartile.
+     *
+     * @see Stat::firstQuartile()
      */
     public function firstQuartile(): mixed
     {
         return Stat::firstQuartile($this->values);
     }
+    /**
+     * Return the third quartile.
+     *
+     * @see Stat::thirdQuartile()
+     */
 
     public function thirdQuartile(): mixed
     {
@@ -147,9 +154,9 @@ class Statistics
     }
 
     /**
-     * @return mixed
+     * Return the interquartile range or midspread.
      */
-    public function interquartileRange()
+    public function interquartileRange(): mixed
     {
         return $this->thirdQuartile() - $this->firstQuartile();
     }

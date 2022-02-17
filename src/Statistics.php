@@ -155,7 +155,9 @@ class Statistics
     }
 
     /**
-     * The most frequent value
+     * Return the most common data point from discrete or nominal data
+     *
+     * @see Stat::mode()
      */
     public function mode(): mixed
     {

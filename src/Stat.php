@@ -96,13 +96,12 @@ class Stat
     }
 
     /**
-     * Return the single most common data point from discrete or nominal data.
+     * Return the most common data point from discrete or nominal data.
      * The mode (when it exists) is the most typical value and serves as a measure of central location.
      * If there are multiple modes with the same frequency, returns the first one encountered in the data.
-     * If all elements occurs once, null is returned.
      * @param mixed[] $data
-     * @param bool $multimode
-     * @return mixed
+     * @param bool $multimode whether to return all the modes
+     * @return mixed|mixed[]|null the most common data point, array of them or null if all elements occurs once
      */
     public static function mode(array $data, bool $multimode = false): mixed
     {
@@ -133,7 +132,7 @@ class Stat
     /**
      * Return a list of the most frequently occurring values
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed[]|null array of the most common data points or null, if all elements occurs once
      */
     public static function multimode(array $data): mixed
     {

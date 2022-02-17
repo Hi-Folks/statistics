@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.6 -2022-02-17
+- Stat::covariance()
+
 ## 0.1.5 - 2022-02-05
 - frequencyTable()
 - frequencyTableBySize()

@@ -200,3 +200,41 @@ it('calculates first quartiles (static)', function () {
     $q = Stat::firstQuartile([]);
     expect($q)->toBeNull();
 });
+
+it('calculates covariance (static)', function () {
+    $covariance = Stat::covariance(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 1, 2, 3, 1, 2, 3]
+    );
+    expect($covariance)->toEqual(0.75);
+
+    $covariance = Stat::covariance(
+        [9, 8, 7, 6, 5, 4, 3, 2, 1],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    );
+    expect($covariance)->toEqual(-7.5);
+
+    $covariance = Stat::covariance(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1]
+    );
+    expect($covariance)->toEqual(-7.5);
+
+    $covariance = Stat::covariance(
+        [9, 8, 7, 6, 5, 4, 3, 2, 1],
+        [1, 2, 3, 4, 5, 6, 7, 8]
+    );
+    expect($covariance)->toBeFalse();
+
+    $covariance = Stat::covariance(
+        [],
+        []
+    );
+    expect($covariance)->toBeFalse();
+
+    $covariance = Stat::covariance(
+        [3],
+        [3]
+    );
+    expect($covariance)->toBeFalse();
+});

@@ -197,6 +197,28 @@ $variance = Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25]);
 // 1.25
 ```
 
+
+#### Stat::covariance ( array $x , array $y )
+Covariance, static method, returns the sample covariance of two inputs *$x* and *$y*.
+Covariance is a measure of the joint variability of two inputs.
+
+```php
+$covariance = Stat::covariance(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 2, 3, 1, 2, 3, 1, 2, 3]
+);
+// 0.75
+```
+
+```php
+$covariance = Stat::covariance(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [9, 8, 7, 6, 5, 4, 3, 2, 1]
+);
+// -7.5
+```
+
+
 ### Freq class
 With *Statistics* package you can calculate frequency table.
 A frequency table is list the frequency of various outcomes in a sample.

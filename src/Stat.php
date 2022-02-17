@@ -45,12 +45,11 @@ class Stat
     }
 
     /**
-     * Return the median (middle value) of numeric data,
+     * Return the median (middle value) of data,
      * using the common “mean of middle two” method.
-     * If data is empty, null is returned
      * @param mixed[] $data
      * @param string $medianType
-     * @return mixed
+     * @return mixed|null median of the data or null if data is empty
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
@@ -71,13 +70,12 @@ class Stat
     }
 
     /**
-     * Return the low median of numeric data.
+     * Return the low median of data.
      * The low median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the smaller of the two middle values is returned.
-     * If data is empty, null is returned
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null low median of the data or null if data is empty
      */
     public static function medianLow(array $data): mixed
     {
@@ -89,9 +87,8 @@ class Stat
      * The high median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the larger of the two middle values is returned.
-     * If data is empty, null is returned
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null high median of the data or null if data is empty
      */
     public static function medianHigh(array $data): mixed
     {

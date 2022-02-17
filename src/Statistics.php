@@ -124,10 +124,9 @@ class Statistics
     }
 
     /**
-     * Return the median (middle value) of numeric data,
-     * using the common “mean of middle two” method.
-     * If data is empty, null is returned
-     * @return mixed
+     * Return the median (middle value) of data.
+     *
+     * @see Stat::median()
      */
     public function median(): mixed
     {

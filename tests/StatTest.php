@@ -202,7 +202,6 @@ it('calculates first quartiles (static)', function () {
 });
 
 it('calculates covariance (static)', function () {
-
     $covariance = Stat::covariance(
         [1, 2, 3, 4, 5, 6, 7, 8, 9],
         [1, 2, 3, 1, 2, 3, 1, 2, 3]
@@ -238,5 +237,4 @@ it('calculates covariance (static)', function () {
         [3]
     );
     expect($covariance)->toBeFalse();
-
 });

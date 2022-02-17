@@ -220,6 +220,10 @@ it('calculates covariance (static)', function () {
     );
     expect($covariance)->toEqual(-7.5);
 
+});
+
+it('calculates covariance, wrong usage (static)', function () {
+
     $covariance = Stat::covariance(
         [9, 8, 7, 6, 5, 4, 3, 2, 1],
         [1, 2, 3, 4, 5, 6, 7, 8]
@@ -237,4 +241,17 @@ it('calculates covariance (static)', function () {
         [3]
     );
     expect($covariance)->toBeFalse();
+
+    $covariance = Stat::covariance(
+        ['a', 1],
+        ['b', 2]
+    );
+    expect($covariance)->toBeFalse();
+
+    $covariance = Stat::covariance(
+        [3, 1],
+        ['b', 2]
+    );
+    expect($covariance)->toBeFalse();
+
 });

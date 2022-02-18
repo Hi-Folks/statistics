@@ -249,9 +249,10 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @param int|null $round
-     * @return float|null
+     * Return the standard deviation of the numeric data.
+     * @param array<int|float> $data
+     * @param int|null $round whether to round the result
+     * @return float|null the standard deviation of the numeric data or null if data size is less than 2
      */
     public static function stdev(array $data, int $round = null): ?float
     {
@@ -264,8 +265,10 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @return float|null
+     * Return the variance from the numeric data.
+     * @param array<int|float> $data
+     * @param int|null $round whether to round the result
+     * @return float|null the variance or null if data size is less than 2
      */
     public static function variance(array $data, ?int $round = null): ?float
     {
@@ -297,7 +300,7 @@ class Stat
             return null;
         }
         $product = 1;
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $product = $product * $value;
         }
         $geometricMean = pow($product, 1 / $count);

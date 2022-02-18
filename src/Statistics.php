@@ -172,15 +172,22 @@ class Statistics
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the standard deviation of the numeric data.
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::stdev()
      */
-    public function stdev(?int $round = null): mixed
+    public function stdev(?int $round = null): ?float
     {
         return Stat::stdev($this->values, $round);
     }
-
-    public function variance(?int $round = null): mixed
+    /**
+     * Return the variance from the numeric data
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::variance()
+     */
+    public function variance(?int $round = null): ?float
     {
         return Stat::variance($this->values, $round);
     }

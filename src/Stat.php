@@ -2,9 +2,6 @@
 
 namespace HiFolks\Statistics;
 
-use HiFolks\Statistics\Math;
-use HiFolks\Statistics\Freq;
-
 class Stat
 {
     public const MEDIAN_TYPE_LOW = "LOW";
@@ -211,7 +208,7 @@ class Stat
      * while a high standard deviation indicates that
      * the values are spread out over a wider range.
      * @param array<int|float> $data
-     * @param int|null whether to round the result
+     * @param int|null $round whether to round the result
      * @return float|null the population standard deviation or null, if data is empty
      */
     public static function pstdev(array $data, ?int $round = null): ?float
@@ -227,7 +224,7 @@ class Stat
     /**
      * Return dispersion of the numeric data.
      * @param array<int|float> $data
-     * @param int|null whether to round the result
+     * @param int|null $round whether to round the result
      * @return float|null the dispersion of data or null if data is empty
      */
     public static function pvariance(array $data, ?int $round = null): ?float

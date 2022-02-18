@@ -2,10 +2,6 @@
 
 namespace HiFolks\Statistics;
 
-use HiFolks\Statistics\ArrUtil;
-use HiFolks\Statistics\Stat;
-use HiFolks\Statistics\Freq;
-
 class Statistics
 {
     /**
@@ -41,6 +37,7 @@ class Statistics
 
         return $freqTable;
     }
+
     /**
      * Remove '0' values from the array.
      *
@@ -180,12 +177,12 @@ class Statistics
     {
         return Stat::firstQuartile($this->values);
     }
+
     /**
      * Return the third quartile.
      *
      * @see Stat::thirdQuartile()
      */
-
     public function thirdQuartile(): mixed
     {
         return Stat::thirdQuartile($this->values);
@@ -219,6 +216,7 @@ class Statistics
     {
         return Stat::stdev($this->values, $round);
     }
+
     /**
      * Return the variance from the numeric data
      *
@@ -233,7 +231,7 @@ class Statistics
     /**
      * Return the **population** standard deviation.
      *
-     * @param int|null whether to round the result
+     * @param int|null $round whether to round the result
      * @see Stat::pstdev()
      */
     public function pstdev(?int $round = null): ?float
@@ -244,7 +242,7 @@ class Statistics
     /**
      * Return dispersion of the numeric data.
      *
-     * @param int|null whether to round the result
+     * @param int|null $round whether to round the result
      * @see Stat::pvariance()
      */
     public function pvariance(?int $round = null): ?float

@@ -334,4 +334,42 @@ class Stat
 
         return Math::round($sumWeigth / $sum, $round);
     }
+
+    /**
+     * Return the sample covariance of two inputs *$x* and *$y*.
+     * Covariance is a measure of the joint variability of two inputs.
+     * @param mixed[] $x
+     * @param mixed[] $y
+     * @return false|float
+     */
+    public static function covariance(array $x, array $y): false|float
+    {
+        $countX = count($x);
+        $countY = count($y);
+        if ($countX != $countY) {
+            return false;
+        }
+        if ($countX < 2) {
+            return false;
+        }
+        $meanX = array_sum($x) / floatval($countX);
+        $meanY = array_sum($y) / floatval($countY);
+        $add = 0.0;
+
+        for ($pos = 0; $pos < $countX; $pos++) {
+            $valueX = $x[ $pos ];
+            if (! is_numeric($valueX)) {
+                return false;
+            }
+            $valueY = $y[ $pos ];
+            if (! is_numeric($valueY)) {
+                return false;
+            }
+            $diffX = $valueX - $meanX;
+            $diffY = $valueY - $meanY;
+            $add += ($diffX * $diffY);
+        }
+        // covariance for sample: N - 1
+        return $add / floatval($countX - 1);
+    }
 }

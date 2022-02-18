@@ -4,6 +4,7 @@ namespace HiFolks\Statistics;
 
 use HiFolks\Statistics\ArrUtil;
 use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Freq;
 
 class Statistics
 {
@@ -40,7 +41,11 @@ class Statistics
 
         return $freqTable;
     }
-
+    /**
+     * Remove '0' values from the array.
+     *
+     * @return self
+     */
     public function stripZeroes(): self
     {
         $this->values = ArrUtil::stripZeroes($this->values);
@@ -49,6 +54,8 @@ class Statistics
     }
 
     /**
+     * Get the original array.
+     *
      * @return mixed[]
      */
     public function originalArray(): array
@@ -60,6 +67,8 @@ class Statistics
      * Create a frequencies table.
      * It counts the occurrences of each value in the array
      * For not discrete elements you can try to transform to integer
+     *
+     * @see Freq::frequencies()
      * @param bool $transformToInteger
      * @return array<int>
      */
@@ -69,8 +78,11 @@ class Statistics
     }
 
     /**
-     * @param int $round
-     * @return array<double>
+     * Return relative frequencies table.
+     *
+     * @see Freq::relativeFrequencies()
+     * @param int $round whether to round the result
+     * @return array<float>
      */
     public function relativeFrequencies(int $round = null): array
     {
@@ -78,7 +90,10 @@ class Statistics
     }
 
     /**
-     * @return array<double>
+     * Return cumulative relative frequencies table.
+     *
+     * @see Freq::cumulativeRelativeFrequencies()
+     * @return array<float>
      */
     public function cumulativeRelativeFrequencies(): array
     {
@@ -86,28 +101,51 @@ class Statistics
     }
 
     /**
-     * @return array<double>
+     * Return cumulative frequencies table.
+     *
+     * @see Freq::cumulativeFrequencies()
+     * @return array<float>
      */
     public function cumulativeFrequencies(): array
     {
         return Freq::cumulativeFrequencies($this->values);
     }
 
+    /**
+     * Get the highest value.
+     *
+     * @return mixed
+     */
     public function max(): mixed
     {
         return max($this->values);
     }
 
+    /**
+     * Get the lowest value.
+     *
+     * @return mixed
+     */
     public function min(): mixed
     {
         return min($this->values);
     }
 
-    public function range(): mixed
+    /**
+     * Get the range (max value - min value).
+     *
+     * @return int|float
+     */
+    public function range(): int|float
     {
         return $this->max() - $this->min();
     }
 
+    /**
+     * Count elements.
+     *
+     * @return int
+     */
     public function count(): int
     {
         return Stat::count($this->values);

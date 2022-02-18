@@ -215,19 +215,22 @@ class Statistics
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the geometric mean of the numeric data.
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::geometricMean()
      */
-    public function geometricMean(?int $round = null): mixed
+    public function geometricMean(?int $round = null): ?float
     {
         return Stat::geometricMean($this->values, $round);
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the harmonic mean of the numeric data.
+     * @param int|null $round whether to round the result
+     * @see Stat::harmonicMean()
      */
-    public function harmonicMean(?int $round = null): mixed
+    public function harmonicMean(?int $round = null): ?float
     {
         return Stat::harmonicMean($this->values, null, $round);
     }

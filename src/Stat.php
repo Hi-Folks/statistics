@@ -289,19 +289,22 @@ class Stat
     }
 
     /**
+     * Return the geometric mean of the numeric data.
+     * That is the number that can replace each of these numbers so that their product
+     * does not change.
      * @param mixed[] $data
-     * @param int|null $round
-     * @return float|null
+     * @param int|null $round whether to round the result
+     * @return float|null geometric mean or null if data is empty
      */
     public static function geometricMean(array $data, ?int $round = null): ?float
     {
         $count = self::count($data);
-        if ($count === 0) {
+        if (! $count) {
             return null;
         }
         $product = 1;
         foreach ($data as $value) {
-            $product = $product * $value;
+            $product *= $value;
         }
         $geometricMean = pow($product, 1 / $count);
 
@@ -309,26 +312,27 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @param mixed[] $weights
-     * @param int|null $round
-     * @return float|null
+     * Return the harmonic mean (the reciprocal of the arithmetic mean) of the numeric data.
+     * @param array<int|float> $data
+     * @param mixed[] $weights additional weight to the elements (as if there were several of them)
+     * @param int|null $round whether to round the result
+     * @return float|null harmonic mean or null if data is empty
      */
     public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): ?float
     {
         $sum = 0;
         $count = self::count($data);
-        if ($count === 0) {
+        if (! $count) {
             return null;
         }
         $sumWeigth = 0;
         foreach ($data as $key => $value) {
-            if ($value == 0) {
+            if (! $value) {
                 return 0;
             }
             $weight = is_null($weights) ? 1 : $weights[$key];
-            $sumWeigth = $sumWeigth + $weight;
-            $sum = $sum + ($weight / $value);
+            $sumWeigth += $weight;
+            $sum += $weight / $value;
         }
 
         return Math::round($sumWeigth / $sum, $round);

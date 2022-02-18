@@ -38,6 +38,11 @@ class Statistics
         return $freqTable;
     }
 
+    /**
+     * Remove '0' values from the array.
+     *
+     * @return self
+     */
     public function stripZeroes(): self
     {
         $this->values = ArrUtil::stripZeroes($this->values);
@@ -46,6 +51,8 @@ class Statistics
     }
 
     /**
+     * Get the original array.
+     *
      * @return mixed[]
      */
     public function originalArray(): array
@@ -57,6 +64,8 @@ class Statistics
      * Create a frequencies table.
      * It counts the occurrences of each value in the array
      * For not discrete elements you can try to transform to integer
+     *
+     * @see Freq::frequencies()
      * @param bool $transformToInteger
      * @return array<int>
      */
@@ -66,8 +75,11 @@ class Statistics
     }
 
     /**
-     * @param int $round
-     * @return array<double>
+     * Return relative frequencies table.
+     *
+     * @see Freq::relativeFrequencies()
+     * @param int $round whether to round the result
+     * @return array<float>
      */
     public function relativeFrequencies(int $round = null): array
     {
@@ -75,7 +87,10 @@ class Statistics
     }
 
     /**
-     * @return array<double>
+     * Return cumulative relative frequencies table.
+     *
+     * @see Freq::cumulativeRelativeFrequencies()
+     * @return array<float>
      */
     public function cumulativeRelativeFrequencies(): array
     {
@@ -83,52 +98,70 @@ class Statistics
     }
 
     /**
-     * @return array<double>
+     * Return cumulative frequencies table.
+     *
+     * @see Freq::cumulativeFrequencies()
+     * @return array<float>
      */
     public function cumulativeFrequencies(): array
     {
         return Freq::cumulativeFrequencies($this->values);
     }
 
+    /**
+     * Get the highest value.
+     *
+     * @return mixed
+     */
     public function max(): mixed
     {
         return max($this->values);
     }
 
+    /**
+     * Get the lowest value.
+     *
+     * @return mixed
+     */
     public function min(): mixed
     {
         return min($this->values);
     }
 
-    public function range(): mixed
+    /**
+     * Get the range (max value - min value).
+     *
+     * @return int|float
+     */
+    public function range(): int|float
     {
         return $this->max() - $this->min();
     }
 
+    /**
+     * Count elements.
+     *
+     * @return int
+     */
     public function count(): int
     {
         return Stat::count($this->values);
     }
 
     /**
-     * Return the sample arithmetic mean of data
-     * The arithmetic mean is the sum of the data divided by the number of data points.
-     * It is commonly called “the average”,
-     * although it is only one of many different mathematical averages.
-     * It is a measure of the central location of the data.
-     * If data is empty, null is returned
-     * @return mixed
+     * Return the arithmetic mean of numeric data.
+     *
+     * @see Stat::mean()
      */
-    public function mean(): mixed
+    public function mean(): int|float|null
     {
         return Stat::mean($this->values);
     }
 
     /**
-     * Return the median (middle value) of numeric data,
-     * using the common “mean of middle two” method.
-     * If data is empty, null is returned
-     * @return mixed
+     * Return the median (middle value) of data.
+     *
+     * @see Stat::median()
      */
     public function median(): mixed
     {
@@ -136,28 +169,37 @@ class Statistics
     }
 
     /**
-     * @return mixed
+     * Return the first quartile.
+     *
+     * @see Stat::firstQuartile()
      */
     public function firstQuartile(): mixed
     {
         return Stat::firstQuartile($this->values);
     }
 
+    /**
+     * Return the third quartile.
+     *
+     * @see Stat::thirdQuartile()
+     */
     public function thirdQuartile(): mixed
     {
         return Stat::thirdQuartile($this->values);
     }
 
     /**
-     * @return mixed
+     * Return the interquartile range or midspread.
      */
-    public function interquartileRange()
+    public function interquartileRange(): mixed
     {
         return $this->thirdQuartile() - $this->firstQuartile();
     }
 
     /**
-     * The most frequent value
+     * Return the most common data point from discrete or nominal data
+     *
+     * @see Stat::mode()
      */
     public function mode(): mixed
     {
@@ -165,47 +207,66 @@ class Statistics
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the standard deviation of the numeric data.
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::stdev()
      */
-    public function stdev(?int $round = null): mixed
+    public function stdev(?int $round = null): ?float
     {
         return Stat::stdev($this->values, $round);
     }
 
-    public function variance(?int $round = null): mixed
+    /**
+     * Return the variance from the numeric data
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::variance()
+     */
+    public function variance(?int $round = null): ?float
     {
         return Stat::variance($this->values, $round);
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the **population** standard deviation.
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::pstdev()
      */
-    public function pstdev(?int $round = null): mixed
+    public function pstdev(?int $round = null): ?float
     {
         return Stat::pstdev($this->values, $round);
     }
 
-    public function pvariance(?int $round = null): mixed
+    /**
+     * Return dispersion of the numeric data.
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::pvariance()
+     */
+    public function pvariance(?int $round = null): ?float
     {
         return Stat::pvariance($this->values, $round);
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the geometric mean of the numeric data.
+     *
+     * @param int|null $round whether to round the result
+     * @see Stat::geometricMean()
      */
-    public function geometricMean(?int $round = null): mixed
+    public function geometricMean(?int $round = null): ?float
     {
         return Stat::geometricMean($this->values, $round);
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the harmonic mean of the numeric data.
+     * @param int|null $round whether to round the result
+     * @see Stat::harmonicMean()
      */
-    public function harmonicMean(?int $round = null): mixed
+    public function harmonicMean(?int $round = null): ?float
     {
         return Stat::harmonicMean($this->values, null, $round);
     }

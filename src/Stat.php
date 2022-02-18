@@ -19,22 +19,22 @@ class Stat
     }
 
     /**
-     * Return the sample arithmetic mean of data
+     * Return the sample arithmetic mean of numeric data
      * The arithmetic mean is the sum of the data divided by the number of data points.
      * It is commonly called “the average”,
      * although it is only one of many different mathematical averages.
      * It is a measure of the central location of the data.
      * If data is empty, null is returned
-     * @param mixed[] $data
-     * @return mixed
+     * @param array<int|float> $data array of data
+     * @return int|float|null arithmetic mean or null if data is empty
      */
-    public static function mean(array $data): mixed
+    public static function mean(array $data): int|float|null
     {
         $sum = 0;
-        if (self::count($data) === 0) {
+        if (! self::count($data)) {
             return null;
         }
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $sum = $sum + $value;
         }
 
@@ -42,12 +42,11 @@ class Stat
     }
 
     /**
-     * Return the median (middle value) of numeric data,
+     * Return the median (middle value) of data,
      * using the common “mean of middle two” method.
-     * If data is empty, null is returned
      * @param mixed[] $data
      * @param string $medianType
-     * @return mixed
+     * @return mixed|null median of the data or null if data is empty
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
@@ -68,13 +67,12 @@ class Stat
     }
 
     /**
-     * Return the low median of numeric data.
+     * Return the low median of data.
      * The low median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the smaller of the two middle values is returned.
-     * If data is empty, null is returned
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null low median of the data or null if data is empty
      */
     public static function medianLow(array $data): mixed
     {
@@ -86,9 +84,8 @@ class Stat
      * The high median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the larger of the two middle values is returned.
-     * If data is empty, null is returned
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null high median of the data or null if data is empty
      */
     public static function medianHigh(array $data): mixed
     {
@@ -96,13 +93,12 @@ class Stat
     }
 
     /**
-     * Return the single most common data point from discrete or nominal data.
+     * Return the most common data point from discrete or nominal data.
      * The mode (when it exists) is the most typical value and serves as a measure of central location.
      * If there are multiple modes with the same frequency, returns the first one encountered in the data.
-     * If all elements occurs once, null is returned.
      * @param mixed[] $data
-     * @param bool $multimode
-     * @return mixed
+     * @param bool $multimode whether to return all the modes
+     * @return mixed|mixed[]|null the most common data point, array of them or null if all elements occurs once
      */
     public static function mode(array $data, bool $multimode = false): mixed
     {
@@ -133,7 +129,7 @@ class Stat
     /**
      * Return a list of the most frequently occurring values
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed[]|null array of the most common data points or null, if all elements occurs once
      */
     public static function multimode(array $data): mixed
     {
@@ -141,10 +137,11 @@ class Stat
     }
 
     /**
+     * Return the quantiles of the data.
      * @param mixed[] $data
-     * @param int $n
-     * @param int|null $round
-     * @return mixed[]|null
+     * @param int $n number of quantiles
+     * @param int|null $round whether to round the result
+     * @return mixed[]|null array of quntiles or null if number of quantiles is less than 1, or array size is less than 2
      */
     public static function quantiles(array $data, int $n = 4, ?int $round = null): ?array
     {
@@ -174,10 +171,9 @@ class Stat
     }
 
     /**
-     * REturn the rank at th 25th percentile.
-     * Return a number that is exist in the array
+     * Return the first or lower quartile a.k.a. 25th percentile.
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null the first quartile or null, if it cannot be calculated (@see Stat::quantiles())
      */
     public static function firstQuartile(array $data, ?int $round = null): mixed
     {
@@ -190,8 +186,9 @@ class Stat
     }
 
     /**
+     * Return the third or upper quartile a.k.a. 75th percentile.
      * @param mixed[] $data
-     * @return mixed
+     * @return mixed|null the third quartile or null, if it cannot be calculated (@see Stat::quantiles())
      */
     public static function thirdQuartile(array $data): mixed
     {
@@ -204,16 +201,17 @@ class Stat
     }
 
     /**
-     * Return the **Population** standard deviation,
+     * Return the **population** standard deviation,
      * a measure of the amount of variation or dispersion of a set of values.
      * A low standard deviation indicates that
      * the values tend to be close to the mean of the set,
      * while a high standard deviation indicates that
      * the values are spread out over a wider range.
-     * @param mixed[] $data
-     * @return float|null
+     * @param array<int|float> $data
+     * @param int|null $round whether to round the result
+     * @return float|null the population standard deviation or null, if data is empty
      */
-    public static function pstdev(array $data, int $round = null): ?float
+    public static function pstdev(array $data, ?int $round = null): ?float
     {
         $variance = self::pvariance($data);
         if (is_null($variance)) {
@@ -224,8 +222,10 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @return float|null
+     * Return dispersion of the numeric data.
+     * @param array<int|float> $data
+     * @param int|null $round whether to round the result
+     * @return float|null the dispersion of data or null if data is empty
      */
     public static function pvariance(array $data, ?int $round = null): ?float
     {
@@ -246,9 +246,10 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @param int|null $round
-     * @return float|null
+     * Return the standard deviation of the numeric data.
+     * @param array<int|float> $data
+     * @param int|null $round whether to round the result
+     * @return float|null the standard deviation of the numeric data or null if data size is less than 2
      */
     public static function stdev(array $data, int $round = null): ?float
     {
@@ -261,8 +262,10 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @return float|null
+     * Return the variance from the numeric data.
+     * @param array<int|float> $data
+     * @param int|null $round whether to round the result
+     * @return float|null the variance or null if data size is less than 2
      */
     public static function variance(array $data, ?int $round = null): ?float
     {
@@ -283,19 +286,22 @@ class Stat
     }
 
     /**
+     * Return the geometric mean of the numeric data.
+     * That is the number that can replace each of these numbers so that their product
+     * does not change.
      * @param mixed[] $data
-     * @param int|null $round
-     * @return float|null
+     * @param int|null $round whether to round the result
+     * @return float|null geometric mean or null if data is empty
      */
     public static function geometricMean(array $data, ?int $round = null): ?float
     {
         $count = self::count($data);
-        if ($count === 0) {
+        if (! $count) {
             return null;
         }
         $product = 1;
-        foreach ($data as $key => $value) {
-            $product = $product * $value;
+        foreach ($data as $value) {
+            $product *= $value;
         }
         $geometricMean = pow($product, 1 / $count);
 
@@ -303,26 +309,27 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @param mixed[] $weights
-     * @param int|null $round
-     * @return float|null
+     * Return the harmonic mean (the reciprocal of the arithmetic mean) of the numeric data.
+     * @param array<int|float> $data
+     * @param mixed[] $weights additional weight to the elements (as if there were several of them)
+     * @param int|null $round whether to round the result
+     * @return float|null harmonic mean or null if data is empty
      */
     public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): ?float
     {
         $sum = 0;
         $count = self::count($data);
-        if ($count === 0) {
+        if (! $count) {
             return null;
         }
         $sumWeigth = 0;
         foreach ($data as $key => $value) {
-            if ($value == 0) {
+            if (! $value) {
                 return 0;
             }
             $weight = is_null($weights) ? 1 : $weights[$key];
-            $sumWeigth = $sumWeigth + $weight;
-            $sum = $sum + ($weight / $value);
+            $sumWeigth += $weight;
+            $sum += $weight / $value;
         }
 
         return Math::round($sumWeigth / $sum, $round);

@@ -204,16 +204,17 @@ class Stat
     }
 
     /**
-     * Return the **Population** standard deviation,
+     * Return the **population** standard deviation,
      * a measure of the amount of variation or dispersion of a set of values.
      * A low standard deviation indicates that
      * the values tend to be close to the mean of the set,
      * while a high standard deviation indicates that
      * the values are spread out over a wider range.
-     * @param mixed[] $data
-     * @return float|null
+     * @param array<int|float> $data
+     * @param int|null whether to round the result
+     * @return float|null the population standard deviation or null, if data is empty
      */
-    public static function pstdev(array $data, int $round = null): ?float
+    public static function pstdev(array $data, ?int $round = null): ?float
     {
         $variance = self::pvariance($data);
         if (is_null($variance)) {
@@ -224,8 +225,10 @@ class Stat
     }
 
     /**
-     * @param mixed[] $data
-     * @return float|null
+     * Return dispersion of the numeric data.
+     * @param array<int|float> $data
+     * @param int|null whether to round the result
+     * @return float|null the dispersion of data or null if data is empty
      */
     public static function pvariance(array $data, ?int $round = null): ?float
     {

@@ -186,15 +186,23 @@ class Statistics
     }
 
     /**
-     * @param int|null $round
-     * @return mixed
+     * Return the **population** standard deviation.
+     *
+     * @param int|null whether to round the result
+     * @see Stat::pstdev()
      */
-    public function pstdev(?int $round = null): mixed
+    public function pstdev(?int $round = null): ?float
     {
         return Stat::pstdev($this->values, $round);
     }
 
-    public function pvariance(?int $round = null): mixed
+    /**
+     * Return dispersion of the numeric data.
+     *
+     * @param int|null whether to round the result
+     * @see Stat::pvariance()
+     */
+    public function pvariance(?int $round = null): ?float
     {
         return Stat::pvariance($this->values, $round);
     }

@@ -258,7 +258,7 @@ class Stat
             return null;
         }
 
-        return (float)Math::round(sqrt(self::variance($data)), $round);
+        return (float)Math::round(sqrt($variance), $round);
     }
 
     /**

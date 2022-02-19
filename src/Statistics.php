@@ -2,6 +2,9 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Exception\InvalidDataException;
+use HiFolks\Statistics\Exception\InvalidTypeException;
+
 class Statistics
 {
     /**
@@ -161,7 +164,7 @@ class Statistics
      */
     public function mean(): int|float|null
     {
-        return (is_null($this->numericalArray())) ? null : Stat::mean($this->numericalArray());
+        return Stat::mean($this->numericalArray());
     }
 
     /**
@@ -218,9 +221,9 @@ class Statistics
      * @param int|null $round whether to round the result
      * @see Stat::stdev()
      */
-    public function stdev(?int $round = null): ?float
+    public function stdev(?int $round = null): float
     {
-        return (is_null($this->numericalArray())) ? null : Stat::stdev($this->numericalArray(), $round);
+        return Stat::stdev($this->numericalArray(), $round);
     }
 
     /**
@@ -229,9 +232,9 @@ class Statistics
      * @param int|null $round whether to round the result
      * @see Stat::variance()
      */
-    public function variance(?int $round = null): ?float
+    public function variance(?int $round = null): float
     {
-        return (is_null($this->numericalArray())) ? null : Stat::variance($this->numericalArray(), $round);
+        return Stat::variance($this->numericalArray(), $round);
     }
 
     /**
@@ -240,9 +243,9 @@ class Statistics
      * @param int|null $round whether to round the result
      * @see Stat::pstdev()
      */
-    public function pstdev(?int $round = null): ?float
+    public function pstdev(?int $round = null): float
     {
-        return (is_null($this->numericalArray())) ? null : Stat::pstdev($this->numericalArray(), $round);
+        return Stat::pstdev($this->numericalArray(), $round);
     }
 
     /**
@@ -251,9 +254,9 @@ class Statistics
      * @param int|null $round whether to round the result
      * @see Stat::pvariance()
      */
-    public function pvariance(?int $round = null): ?float
+    public function pvariance(?int $round = null): float
     {
-        return (is_null($this->numericalArray())) ? null : Stat::pvariance($this->numericalArray(), $round);
+        return Stat::pvariance($this->numericalArray(), $round);
     }
 
     /**
@@ -262,9 +265,9 @@ class Statistics
      * @param int|null $round whether to round the result
      * @see Stat::geometricMean()
      */
-    public function geometricMean(?int $round = null): ?float
+    public function geometricMean(?int $round = null): float
     {
-        return (is_null($this->numericalArray())) ? null : Stat::geometricMean($this->numericalArray(), $round);
+        return Stat::geometricMean($this->numericalArray(), $round);
     }
 
     /**
@@ -274,13 +277,9 @@ class Statistics
      * @param mixed[] $weights additional weight to the elements (as if there were several of them)
      * @see Stat::harmonicMean()
      */
-    public function harmonicMean(?int $round = null, ?array $weights = null): ?float
+    public function harmonicMean(?int $round = null, ?array $weights = null): float
     {
-        return (is_null($this->numericalArray())) ? null : Stat::harmonicMean(
-            $this->numericalArray(),
-            $weights,
-            $round
-        );
+        return Stat::harmonicMean($this->numericalArray(), $weights, $round);
     }
 
     /**
@@ -296,9 +295,9 @@ class Statistics
     /**
      * Caching-check for array to be numerical (for some functions).
      *
-     * @return array<int|float>|null
+     * @return array<int|float>
      */
-    public function numericalArray(): array|null
+    public function numericalArray(): array
     {
         if ($this->containsNan === null) {
             foreach ($this->values as $value) {
@@ -310,7 +309,7 @@ class Statistics
             }
         }
         if ($this->containsNan) {
-            return null;
+            throw new InvalidTypeException('The data must not contain non-number elements.');
         }
         /** @var array<int|float> */
         $numericalArray = $this->values;

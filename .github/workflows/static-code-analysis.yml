@@ -33,5 +33,5 @@ jobs:
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Execute tests
+      - name: Execute static code analysis
         run: vendor/bin/phpstan analyse src --level 9 --error-format=github --no-progress --no-ansi

@@ -35,6 +35,9 @@ class Stat
             return null;
         }
         foreach ($data as $value) {
+            if (! is_numeric($value)) {
+                return null;
+            }
             $sum = $sum + $value;
         }
 
@@ -352,8 +355,8 @@ class Stat
         if ($countX < 2) {
             return false;
         }
-        $meanX = array_sum($x) / floatval($countX);
-        $meanY = array_sum($y) / floatval($countY);
+        $meanX = self::mean($x);
+        $meanY = self::mean($y);
         $add = 0.0;
 
         for ($pos = 0; $pos < $countX; $pos++) {
@@ -371,5 +374,49 @@ class Stat
         }
         // covariance for sample: N - 1
         return $add / floatval($countX - 1);
+    }
+
+    /**
+     * Return the Pearson’s correlation coefficient for two inputs.
+     * Pearson’s correlation coefficient r takes values between -1 and +1.
+     * It measures the strength and direction of the linear relationship,
+     * where +1 means very strong, positive linear relationship,
+     * -1 very strong, negative linear relationship,
+     * and 0 no linear relationship.
+     * @param mixed[] $x
+     * @param mixed[] $y
+     * @return false|float
+     */
+    public static function correlation(array $x, array $y): false|float
+    {
+        $countX = count($x);
+        $countY = count($y);
+        if ($countX != $countY) {
+            return false;
+        }
+        if ($countX < 2) {
+            return false;
+        }
+        $meanX = self::mean($x);
+        $meanY = self::mean($y);
+        if (is_null($meanX) || is_null($meanY)) {
+            return false;
+        }
+        $a = 0;
+        $bx = 0;
+        $by = 0;
+        for ($i = 0;$i < count($x);$i++) {
+            $xr = $x[$i] - $meanX;
+            $yr = $y[$i] - $meanY;
+            $a += $xr * $yr;
+            $bx += pow($xr, 2);
+            $by += pow($yr, 2);
+        }
+        $b = sqrt($bx * $by);
+        if ($b == 0) {
+            return false;
+        }
+
+        return $a / $b;
     }
 }

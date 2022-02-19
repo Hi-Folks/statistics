@@ -47,7 +47,7 @@ composer all-check
 
 to launch
 - **[PSR-12 Coding Standard](https://www.php-fig.org/psr/psr-12/)**, under the hood is used [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer);
-- **PHPstan** with [level 6](https://phpstan.org/user-guide/rule-levels)
+- **PHPstan** with [level 8](https://phpstan.org/user-guide/rule-levels)
 - **PestPHP** to execute all tests from ./tests/*
 
 I suggest you to launch *composer all-check* before committing and creating a PR.

@@ -134,9 +134,17 @@ class Stat
      * @param mixed[] $data
      * @return mixed[]|null array of the most common data points or null, if all elements occurs once
      */
-    public static function multimode(array $data): mixed
+    public static function multimode(array $data): array|null
     {
-        return self::mode($data, true);
+        $multimode = self::mode($data, true);
+        if (is_null($multimode)) {
+            return null;
+        }
+        if (is_array($multimode)) {
+            return $multimode;
+        }
+
+        return [$multimode];
     }
 
     /**
@@ -341,8 +349,8 @@ class Stat
     /**
      * Return the sample covariance of two inputs *$x* and *$y*.
      * Covariance is a measure of the joint variability of two inputs.
-     * @param mixed[] $x
-     * @param mixed[] $y
+     * @param array<int|float> $x
+     * @param array<int|float> $y
      * @return false|float
      */
     public static function covariance(array $x, array $y): false|float
@@ -383,8 +391,8 @@ class Stat
      * where +1 means very strong, positive linear relationship,
      * -1 very strong, negative linear relationship,
      * and 0 no linear relationship.
-     * @param mixed[] $x
-     * @param mixed[] $y
+     * @param array<int|float> $x
+     * @param array<int|float> $y
      * @return false|float
      */
     public static function correlation(array $x, array $y): false|float

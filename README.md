@@ -218,6 +218,24 @@ $covariance = Stat::covariance(
 // -7.5
 ```
 
+#### Stat::correlation ( array $x , array $y )
+Return the Pearson’s correlation coefficient for two inputs. Pearson’s correlation coefficient r takes values between -1 and +1. It measures the strength and direction of the linear relationship, where +1 means very strong, positive linear relationship, -1 very strong, negative linear relationship, and 0 no linear relationship.
+
+```php
+$correlation = Stat::correlation(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+);
+// 1.0
+```
+
+```php
+$correlation = Stat::correlation(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [9, 8, 7, 6, 5, 4, 3, 2, 1]
+);
+// -1.0
+```
 
 ### Freq class
 With *Statistics* package you can calculate frequency table.

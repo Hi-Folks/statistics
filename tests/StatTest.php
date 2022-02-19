@@ -252,3 +252,64 @@ it('calculates covariance, wrong usage (static)', function () {
     );
     expect($covariance)->toBeFalse();
 });
+
+it('calculates correlation (static)', function () {
+    $correlation = Stat::correlation(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    );
+    expect($correlation)->toBeFloat();
+    expect($correlation)->toEqual(1);
+
+    $correlation = Stat::correlation(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        [9, 8, 7, 6, 5, 4, 3, 2, 1]
+    );
+    expect($correlation)->toBeFloat();
+    expect($correlation)->toEqual(-1);
+
+    $correlation = Stat::correlation(
+        [3, 6, 9],
+        [70, 75, 80]
+    );
+    expect($correlation)->toBeFloat();
+    expect($correlation)->toEqual(1);
+});
+
+it('calculates correlation, wrong usage (static)', function () {
+    $correlation = Stat::correlation(
+        [9, 8, 7, 6, 5, 4, 3, 2, 1],
+        [1, 2, 3, 4, 5, 6, 7, 8]
+    );
+    expect($correlation)->toBeFalse();
+
+    $correlation = Stat::correlation(
+        [],
+        []
+    );
+    expect($correlation)->toBeFalse();
+
+    $correlation = Stat::correlation(
+        [3],
+        [3]
+    );
+    expect($correlation)->toBeFalse();
+
+    $correlation = Stat::correlation(
+        ['a', 1],
+        ['b', 2]
+    );
+    expect($correlation)->toBeFalse();
+
+    $correlation = Stat::correlation(
+        [3, 1],
+        ['b', 2]
+    );
+    expect($correlation)->toBeFalse();
+
+    $correlation = Stat::correlation(
+        [3, 1, 2],
+        [2, 2, 2]
+    );
+    expect($correlation)->toBeFalse();
+});

@@ -3,6 +3,7 @@
 ## 0.1.7 - WIP
 - Code refactoring by @trokhymchuk
 - Clean phpdoc blocks by @trokhymchuk
+- Stat::correlation()
 - 
 ## 0.1.6 -2022-02-17
 - Stat::covariance()

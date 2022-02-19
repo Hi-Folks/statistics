@@ -1,5 +1,6 @@
 <?php
 
+use HiFolks\Statistics\Exception\InvalidDataException;
 use HiFolks\Statistics\Statistics;
 
 it('can calculate frequencies', function () {
@@ -59,8 +60,7 @@ it('can calculate firstQuartile', function () {
     $s = Statistics::make(
         []
     );
-    $a = $s->firstQuartile();
-    expect($a)->toBeNull();
+    expect(fn () => $s->firstQuartile())->toThrow(InvalidDataException::class);
 });
 it('can calculate thirdQuartile', function () {
     $s = Statistics::make(
@@ -78,7 +78,5 @@ it('can calculate thirdQuartile', function () {
     $s = Statistics::make(
         []
     );
-    $a = $s->thirdQuartile();
-
-    expect($a)->toBeNull();
+    expect(fn () => $s->thirdQuartile())->toThrow(InvalidDataException::class);
 });

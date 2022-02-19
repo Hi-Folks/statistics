@@ -1,5 +1,6 @@
 <?php
 
+use HiFolks\Statistics\Exception\InvalidDataException;
 use HiFolks\Statistics\Stat;
 
 it('can calculate mean (static)', function () {
@@ -10,8 +11,8 @@ it('can calculate mean (static)', function () {
         Stat::mean([-1.0, 2.5, 3.25, 5.75])
     )->toEqual(2.625);
     expect(
-        Stat::mean([])
-    )->toBeNull();
+        fn () => Stat::mean([])
+    )->toThrow(InvalidDataException::class);
 });
 
 it('can calculate median (static)', function () {
@@ -22,8 +23,8 @@ it('can calculate median (static)', function () {
         Stat::median([1, 3, 5, 7])
     )->toEqual(4);
     expect(
-        Stat::median([])
-    )->toBeNull();
+        fn () => Stat::median([])
+    )->toThrow(InvalidDataException::class);
 });
 it('can calculate median low (static)', function () {
     expect(
@@ -33,8 +34,8 @@ it('can calculate median low (static)', function () {
         Stat::medianLow([1, 3, 5, 7])
     )->toEqual(3);
     expect(
-        Stat::medianLow([])
-    )->toBeNull();
+        fn () => Stat::medianLow([])
+    )->toThrow(InvalidDataException::class);
 });
 it('can calculate median high (static)', function () {
     expect(
@@ -44,8 +45,8 @@ it('can calculate median high (static)', function () {
         Stat::medianHigh([1, 3, 5, 7])
     )->toEqual(5);
     expect(
-        Stat::medianHigh([])
-    )->toBeNull();
+        fn () => Stat::medianHigh([])
+    )->toThrow(InvalidDataException::class);
 });
 
 it('calculates mode (static)', function () {
@@ -53,8 +54,8 @@ it('calculates mode (static)', function () {
         Stat::mode([1, 1, 2, 3, 3, 3, 3, 4])
     )->toEqual(3);
     expect(
-        Stat::mode([])
-    )->toBeNull();
+        fn () => Stat::mode([])
+    )->toThrow(InvalidDataException::class);
     expect(
         Stat::mode([1,2,3])
     )->toBeNull();
@@ -87,10 +88,9 @@ it('calculates multimode (static)', function () {
     expect(
         $result[2]
     )->toEqual('f');
-
     expect(
-        Stat::multimode([])
-    )->toMatchArray([]);
+        fn () => Stat::multimode([])
+    )->toThrow(InvalidDataException::class);
 });
 it('calculates Population standard deviation (static)', function () {
     expect(
@@ -100,8 +100,8 @@ it('calculates Population standard deviation (static)', function () {
         Stat::pstdev([1, 2, 4, 5, 8], 4)
     )->toEqual(2.4495);
     expect(
-        Stat::pstdev([])
-    )->toBeNull();
+        fn () => Stat::pstdev([])
+    )->toThrow(InvalidDataException::class);
     expect(
         Stat::pstdev([1])
     )->toEqual(0);
@@ -120,11 +120,11 @@ it('calculates Sample standard deviation (static)', function () {
         Stat::stdev([1, 2, 4, 5, 8], 4)
     )->toEqual(2.7386);
     expect(
-        Stat::stdev([])
-    )->toBeNull();
+        fn () => Stat::stdev([])
+    )->toThrow(InvalidDataException::class);
     expect(
-        Stat::stdev([1])
-    )->toBeNull();
+        fn () => Stat::stdev([1])
+    )->toThrow(InvalidDataException::class);
 });
 
 it('calculates variance (static)', function () {
@@ -147,8 +147,8 @@ it('calculates geometric mean (static)', function () {
         Stat::geometricMean([54, 24, 36])
     )->toEqual(36);
     expect(
-        Stat::geometricMean([])
-    )->toBeNull();
+        fn () => Stat::geometricMean([])
+    )->toThrow(InvalidDataException::class);
 });
 it('calculates harmonic mean (static)', function () {
     expect(
@@ -164,8 +164,8 @@ it('calculates harmonic mean (static)', function () {
         Stat::harmonicMean([60, 40], [7, 3], 1)
     )->toEqual(52.2);
     expect(
-        Stat::harmonicMean([])
-    )->toBeNull();
+        fn () => Stat::harmonicMean([])
+    )->toThrow(InvalidDataException::class);
 });
 
 it('calculates quantiles (static)', function () {
@@ -186,19 +186,20 @@ it('calculates quantiles (static)', function () {
     expect($q[1])->toEqual(2);
     expect($q[2])->toEqual(4);
     expect(
-        Stat::quantiles([1])
-    )->toBeNull();
+        fn () => Stat::quantiles([1])
+    )->toThrow(InvalidDataException::class);
     expect(
-        Stat::quantiles([1,2,3], 0)
-    )->toBeNull();
+        fn () => Stat::quantiles([1,2,3], 0)
+    )->toThrow(InvalidDataException::class);
 });
 
 
 it('calculates first quartiles (static)', function () {
     $q = Stat::firstQuartile([98, 90, 70,18,92,92,55,83,45,95,88,76]);
     expect($q)->toEqual(58.75);
-    $q = Stat::firstQuartile([]);
-    expect($q)->toBeNull();
+    expect(
+        fn () => Stat::firstQuartile([])
+    )->toThrow(InvalidDataException::class);
 });
 
 it('calculates covariance (static)', function () {
@@ -299,18 +300,6 @@ it('calculates correlation, wrong usage (static)', function () {
     $correlation = Stat::correlation(
         [3],
         [3]
-    );
-    expect($correlation)->toBeFalse();
-
-    $correlation = Stat::correlation(
-        ['a', 1],
-        ['b', 2]
-    );
-    expect($correlation)->toBeFalse();
-
-    $correlation = Stat::correlation(
-        [3, 1],
-        ['b', 2]
     );
     expect($correlation)->toBeFalse();
 

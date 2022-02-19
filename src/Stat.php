@@ -38,6 +38,7 @@ class Stat
             throw new InvalidDataException('The data must not be empty.');
         }
         $sum = array_sum($data);
+
         return $sum / self::count($data);
     }
 
@@ -138,8 +139,9 @@ class Stat
      */
     public static function multimode(array $data): array|null
     {
-        /** @var mixed[]|null*/
+        /** @var mixed[]|null */
         $mode = self::mode($data, true);
+
         return $mode;
     }
 
@@ -187,6 +189,7 @@ class Stat
     public static function firstQuartile(array $data, ?int $round = null): mixed
     {
         $quartiles = self::quantiles($data, 4, $round);
+
         return $quartiles[0];
     }
 
@@ -199,6 +202,7 @@ class Stat
     public static function thirdQuartile(array $data): mixed
     {
         $quartiles = self::quantiles($data, 4);
+
         return $quartiles[2];
     }
 
@@ -217,6 +221,7 @@ class Stat
     public static function pstdev(array $data, ?int $round = null): float
     {
         $variance = self::pvariance($data);
+
         return (float)Math::round(sqrt($variance), $round);
     }
 
@@ -255,6 +260,7 @@ class Stat
     public static function stdev(array $data, int $round = null): float
     {
         $variance = self::variance($data);
+
         return (float)Math::round(sqrt($variance), $round);
     }
 

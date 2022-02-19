@@ -2,7 +2,6 @@
 
 namespace HiFolks\Statistics;
 
-use HiFolks\Statistics\Exception\InvalidDataException;
 use HiFolks\Statistics\Exception\InvalidTypeException;
 
 class Statistics

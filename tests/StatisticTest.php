@@ -1,5 +1,7 @@
 <?php
 
+use HiFolks\Statistics\Exception\InvalidDataException;
+use HiFolks\Statistics\Exception\InvalidTypeException;
 use HiFolks\Statistics\Statistics;
 
 it('can calculate statistics', function () {
@@ -87,7 +89,7 @@ it('can calculate mean', function () {    // https://www.youtube.com/watch?v=6z7
         []
     );
     expect($s->count())->toEqual(0);
-    expect($s->mean())->toBeNull();
+    expect(fn () => $s->mean())->toThrow(InvalidDataException::class);
 });
 
 it('can calculate mean again', function () { // https://docs.python.org/3/library/statistics.html#statistics.mean
@@ -131,8 +133,8 @@ it('calculates Population standard deviation', function () {
         Statistics::make([1, 2, 4, 5, 8])->pstdev(4)
     )->toEqual(2.4495);
     expect(
-        Statistics::make([])->pstdev()
-    )->toBeNull();
+        fn () => Statistics::make([])->pstdev()
+    )->toThrow(InvalidDataException::class);
     expect(
         Statistics::make([1])->pstdev()
     )->toEqual(0);
@@ -151,11 +153,11 @@ it('calculates Sample standard deviation', function () {
         Statistics::make([1, 2, 4, 5, 8])->stdev(4)
     )->toEqual(2.7386);
     expect(
-        Statistics::make([])->stdev()
-    )->toBeNull();
+        fn () => Statistics::make([])->stdev()
+    )->toThrow(InvalidDataException::class);
     expect(
-        Statistics::make([1])->stdev()
-    )->toBeNull();
+        fn () => Statistics::make([1])->stdev()
+    )->toThrow(InvalidDataException::class);
 });
 
 it('calculates variance', function () {
@@ -181,8 +183,8 @@ it('calculates geometric mean', function () {
         Statistics::make([4,8, 3,9, 17])->geometricMean(2)
     )->toEqual(6.81);
     expect(
-        Statistics::make([])->geometricMean()
-    )->toBeNull();
+        fn () => Statistics::make([])->geometricMean()
+    )->toThrow(InvalidDataException::class);
 });
 
 it('calculates harmonic mean', function () {
@@ -190,13 +192,13 @@ it('calculates harmonic mean', function () {
         Statistics::make([40, 60])->harmonicMean(1)
     )->toEqual(48.0);
     expect(
-        Statistics::make([])->harmonicMean()
-    )->toBeNull();
+        fn () => Statistics::make([])->harmonicMean()
+    )->toThrow(InvalidDataException::class);
 });
 
 it('can distinct numeric array', function () {
     expect(Statistics::make([1, 2, 3])->numericalArray())->toEqual([1, 2, 3]);
     expect(Statistics::make([1, '2', 3])->numericalArray())->toEqual([1, '2', 3]);
     expect(Statistics::make([])->numericalArray())->toEqual([]);
-    expect(Statistics::make([1, 'some string', 3])->numericalArray())->toBeNull();
+    expect(fn () => Statistics::make([1, 'some string', 3])->numericalArray())->toThrow(InvalidTypeException::class);
 });

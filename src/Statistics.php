@@ -15,6 +15,12 @@ class Statistics
      * @var array<mixed>
      */
     private array $values = [];
+    /**
+     * Whether array contains not a numbers
+     *
+     * @var bool
+     */
+    private ?bool $containsNan = null;
 
     /**
      * @param array<mixed> $values
@@ -155,7 +161,7 @@ class Statistics
      */
     public function mean(): int|float|null
     {
-        return Stat::mean($this->values);
+        return (is_null($this->numericalArray())) ? null : Stat::mean($this->numericalArray());
     }
 
     /**
@@ -214,7 +220,7 @@ class Statistics
      */
     public function stdev(?int $round = null): ?float
     {
-        return Stat::stdev($this->values, $round);
+        return (is_null($this->numericalArray())) ? null : Stat::stdev($this->numericalArray(), $round);
     }
 
     /**
@@ -225,7 +231,7 @@ class Statistics
      */
     public function variance(?int $round = null): ?float
     {
-        return Stat::variance($this->values, $round);
+        return (is_null($this->numericalArray())) ? null : Stat::variance($this->numericalArray(), $round);
     }
 
     /**
@@ -236,7 +242,7 @@ class Statistics
      */
     public function pstdev(?int $round = null): ?float
     {
-        return Stat::pstdev($this->values, $round);
+        return (is_null($this->numericalArray())) ? null : Stat::pstdev($this->numericalArray(), $round);
     }
 
     /**
@@ -247,7 +253,7 @@ class Statistics
      */
     public function pvariance(?int $round = null): ?float
     {
-        return Stat::pvariance($this->values, $round);
+        return (is_null($this->numericalArray())) ? null : Stat::pvariance($this->numericalArray(), $round);
     }
 
     /**
@@ -258,17 +264,23 @@ class Statistics
      */
     public function geometricMean(?int $round = null): ?float
     {
-        return Stat::geometricMean($this->values, $round);
+        return (is_null($this->numericalArray())) ? null : Stat::geometricMean($this->numericalArray(), $round);
     }
 
     /**
      * Return the harmonic mean of the numeric data.
+     *
      * @param int|null $round whether to round the result
+     * @param mixed[] $weights additional weight to the elements (as if there were several of them)
      * @see Stat::harmonicMean()
      */
-    public function harmonicMean(?int $round = null): ?float
+    public function harmonicMean(?int $round = null, ?array $weights = null): ?float
     {
-        return Stat::harmonicMean($this->values, null, $round);
+        return (is_null($this->numericalArray())) ? null : Stat::harmonicMean(
+            $this->numericalArray(),
+            $weights,
+            $round
+        );
     }
 
     /**
@@ -279,5 +291,30 @@ class Statistics
     public function valuesToString(bool|int $sample = false): string
     {
         return ArrUtil::toString($this->values, $sample);
+    }
+
+    /**
+     * Caching-check for array to be numerical (for some functions).
+     *
+     * @return array<int|float>|null
+     */
+    public function numericalArray(): array|null
+    {
+        if ($this->containsNan === null) {
+            foreach ($this->values as $value) {
+                if (! is_numeric($value)) {
+                    $this->containsNan = true;
+
+                    break;
+                }
+            }
+        }
+        if ($this->containsNan) {
+            return null;
+        }
+        /** @var array<int|float> */
+        $numericalArray = $this->values;
+
+        return $numericalArray;
     }
 }

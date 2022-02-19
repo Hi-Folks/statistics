@@ -194,7 +194,7 @@ it('calculates harmonic mean', function () {
     )->toBeNull();
 });
 
-it('cat distict numeric array', function () {
+it('can distinct numeric array', function () {
     expect(Statistics::make([1, 2, 3])->numericalArray())->toEqual([1, 2, 3]);
     expect(Statistics::make([1, '2', 3])->numericalArray())->toEqual([1, '2', 3]);
     expect(Statistics::make([])->numericalArray())->toEqual([]);

@@ -274,6 +274,13 @@ it('calculates correlation (static)', function () {
     );
     expect($correlation)->toBeFloat();
     expect($correlation)->toEqual(1);
+
+    $correlation = Stat::correlation(
+        [20, 23, 8, 29, 14, 11, 11, 20, 17, 17],
+        [30, 35, 21, 33, 33, 26, 22, 31, 33, 36]
+    );
+    expect($correlation)->toBeFloat();
+    expect($correlation)->toEqual(0.71);
 });
 
 it('calculates correlation, wrong usage (static)', function () {

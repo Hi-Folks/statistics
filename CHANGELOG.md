@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.7 - WIP
+## 0.1.7 - 2022-02-19
 - Code refactoring by @trokhymchuk
 - Clean phpdoc blocks by @trokhymchuk
 - Stat::correlation()

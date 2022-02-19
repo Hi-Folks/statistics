@@ -193,3 +193,10 @@ it('calculates harmonic mean', function () {
         Statistics::make([])->harmonicMean()
     )->toBeNull();
 });
+
+it('cat distict numeric array', function () {
+    expect(Statistics::make([1, 2, 3])->numericalArray())->toEqual([1, 2, 3]);
+    expect(Statistics::make([1, '2', 3])->numericalArray())->toEqual([1, '2', 3]);
+    expect(Statistics::make([])->numericalArray())->toEqual([]);
+    expect(Statistics::make([1, 'some string', 3])->numericalArray())->toBeNull();
+});

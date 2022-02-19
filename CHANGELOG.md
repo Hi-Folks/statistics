@@ -1,10 +1,14 @@
 # Changelog
 
+## 0.1.8 - WIP
+- PHPStan, level 9
+
 ## 0.1.7 - 2022-02-19
 - Code refactoring by @trokhymchuk
 - Clean phpdoc blocks by @trokhymchuk
 - Stat::correlation()
-- 
+- PHPStan, level 8
+
 ## 0.1.6 -2022-02-17
 - Stat::covariance()
 

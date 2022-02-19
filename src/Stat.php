@@ -25,7 +25,7 @@ class Stat
      * although it is only one of many different mathematical averages.
      * It is a measure of the central location of the data.
      * If data is empty, null is returned
-     * @param array<mixed> $data array of data
+     * @param array<int|float> $data array of data
      * @return int|float|null arithmetic mean or null if data is empty
      */
     public static function mean(array $data): int|float|null
@@ -218,7 +218,7 @@ class Stat
      * the values tend to be close to the mean of the set,
      * while a high standard deviation indicates that
      * the values are spread out over a wider range.
-     * @param array<mixed> $data
+     * @param array<int|float> $data
      * @param int|null $round whether to round the result
      * @return float|null the population standard deviation or null, if data is empty
      */
@@ -234,7 +234,7 @@ class Stat
 
     /**
      * Return dispersion of the numeric data.
-     * @param array<mixed> $data
+     * @param array<int|float> $data
      * @param int|null $round whether to round the result
      * @return float|null the dispersion of data or null if data is empty
      */
@@ -258,7 +258,7 @@ class Stat
 
     /**
      * Return the standard deviation of the numeric data.
-     * @param array<mixed> $data
+     * @param array<int|float> $data
      * @param int|null $round whether to round the result
      * @return float|null the standard deviation of the numeric data or null if data size is less than 2
      */
@@ -274,7 +274,7 @@ class Stat
 
     /**
      * Return the variance from the numeric data.
-     * @param array<mixed> $data
+     * @param array<int|float> $data
      * @param int|null $round whether to round the result
      * @return float|null the variance or null if data size is less than 2
      */
@@ -300,7 +300,7 @@ class Stat
      * Return the geometric mean of the numeric data.
      * That is the number that can replace each of these numbers so that their product
      * does not change.
-     * @param mixed[] $data
+     * @param array<int|float> $data
      * @param int|null $round whether to round the result
      * @return float|null geometric mean or null if data is empty
      */
@@ -321,7 +321,7 @@ class Stat
 
     /**
      * Return the harmonic mean (the reciprocal of the arithmetic mean) of the numeric data.
-     * @param array<mixed> $data
+     * @param array<int|float> $data
      * @param mixed[] $weights additional weight to the elements (as if there were several of them)
      * @param int|null $round whether to round the result
      * @return float|null harmonic mean or null if data is empty

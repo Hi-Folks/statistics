@@ -223,35 +223,41 @@ it('calculates covariance (static)', function () {
 });
 
 it('calculates covariance, wrong usage (static)', function () {
-    $covariance = Stat::covariance(
-        [9, 8, 7, 6, 5, 4, 3, 2, 1],
-        [1, 2, 3, 4, 5, 6, 7, 8]
-    );
-    expect($covariance)->toBeFalse();
+    expect(
+        fn () => Stat::covariance(
+            [9, 8, 7, 6, 5, 4, 3, 2, 1],
+            [1, 2, 3, 4, 5, 6, 7, 8]
+        )
+    )->toThrow(InvalidDataInputException::class);
 
-    $covariance = Stat::covariance(
-        [],
-        []
-    );
-    expect($covariance)->toBeFalse();
+    expect(
+        fn () => Stat::covariance(
+            [],
+            []
+        )
+    )->toThrow(InvalidDataInputException::class);
 
-    $covariance = Stat::covariance(
-        [3],
-        [3]
-    );
-    expect($covariance)->toBeFalse();
+    expect(
+        fn () => Stat::covariance(
+            [3],
+            [3]
+        )
+    )->toThrow(InvalidDataInputException::class);
 
-    $covariance = Stat::covariance(
-        ['a', 1],
-        ['b', 2]
-    );
-    expect($covariance)->toBeFalse();
+    expect(
+        fn () => Stat::covariance(
+            ['a', 1],
+            ['b', 2]
+        )
+    )->toThrow(InvalidDataInputException::class);
 
-    $covariance = Stat::covariance(
-        [3, 1],
-        ['b', 2]
-    );
-    expect($covariance)->toBeFalse();
+    expect(
+        fn () => Stat::covariance(
+            [3, 1],
+            ['b', 2]
+        )
+    )->toThrow(InvalidDataInputException::class);
+
 });
 
 it('calculates correlation (static)', function () {
@@ -285,27 +291,33 @@ it('calculates correlation (static)', function () {
 });
 
 it('calculates correlation, wrong usage (static)', function () {
-    $correlation = Stat::correlation(
-        [9, 8, 7, 6, 5, 4, 3, 2, 1],
-        [1, 2, 3, 4, 5, 6, 7, 8]
-    );
-    expect($correlation)->toBeFalse();
 
-    $correlation = Stat::correlation(
-        [],
-        []
-    );
-    expect($correlation)->toBeFalse();
+    expect(
+        fn () => Stat::correlation(
+            [9, 8, 7, 6, 5, 4, 3, 2, 1],
+            [1, 2, 3, 4, 5, 6, 7, 8]
+        )
+    )->toThrow(InvalidDataInputException::class);
 
-    $correlation = Stat::correlation(
-        [3],
-        [3]
-    );
-    expect($correlation)->toBeFalse();
+    expect(
+        fn () => Stat::correlation(
+            [],
+            []
+        )
+    )->toThrow(InvalidDataInputException::class);
 
-    $correlation = Stat::correlation(
-        [3, 1, 2],
-        [2, 2, 2]
-    );
-    expect($correlation)->toBeFalse();
+    expect(
+        fn () => Stat::correlation(
+            [3],
+            [3]
+        )
+    )->toThrow(InvalidDataInputException::class);
+
+    expect(
+        fn () => Stat::correlation(
+            [3, 1, 2],
+            [2, 2, 2]
+        )
+    )->toThrow(InvalidDataInputException::class);
+    
 });

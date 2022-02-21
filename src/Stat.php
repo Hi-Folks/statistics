@@ -353,10 +353,14 @@ class Stat
         $countX = count($x);
         $countY = count($y);
         if ($countX != $countY) {
-            return false;
+            throw new InvalidDataInputException(
+                'Covariance requires that both inputs have same number of data points.'
+            );
         }
         if ($countX < 2) {
-            return false;
+            throw new InvalidDataInputException(
+                'Covariance requires at least two data points.'
+            );
         }
         $meanX = self::mean($x);
         $meanY = self::mean($y);
@@ -365,11 +369,15 @@ class Stat
         for ($pos = 0; $pos < $countX; $pos++) {
             $valueX = $x[ $pos ];
             if (! is_numeric($valueX)) {
-                return false;
+                throw new InvalidDataInputException(
+                    'Covariance requires numeric data points.'
+                );
             }
             $valueY = $y[ $pos ];
             if (! is_numeric($valueY)) {
-                return false;
+                throw new InvalidDataInputException(
+                    'Covariance requires numeric data points.'
+                );
             }
             $diffX = $valueX - $meanX;
             $diffY = $valueY - $meanY;
@@ -395,16 +403,17 @@ class Stat
         $countX = count($x);
         $countY = count($y);
         if ($countX != $countY) {
-            return false;
+            throw new InvalidDataInputException(
+                'Correlation requires that both inputs have same number of data points.'
+            );
         }
         if ($countX < 2) {
-            return false;
+            throw new InvalidDataInputException(
+                'Correlation requires at least two data points.'
+            );
         }
         $meanX = self::mean($x);
         $meanY = self::mean($y);
-        if (is_null($meanX) || is_null($meanY)) {
-            return false;
-        }
         $a = 0;
         $bx = 0;
         $by = 0;
@@ -417,7 +426,9 @@ class Stat
         }
         $b = sqrt($bx * $by);
         if ($b == 0) {
-            return false;
+            throw new InvalidDataInputException(
+                'Correlation, at least one of the inputs is constant.'
+            );
         }
 
         return $a / $b;

@@ -257,7 +257,6 @@ it('calculates covariance, wrong usage (static)', function () {
             ['b', 2]
         )
     )->toThrow(InvalidDataInputException::class);
-
 });
 
 it('calculates correlation (static)', function () {
@@ -291,7 +290,6 @@ it('calculates correlation (static)', function () {
 });
 
 it('calculates correlation, wrong usage (static)', function () {
-
     expect(
         fn () => Stat::correlation(
             [9, 8, 7, 6, 5, 4, 3, 2, 1],
@@ -319,5 +317,4 @@ it('calculates correlation, wrong usage (static)', function () {
             [2, 2, 2]
         )
     )->toThrow(InvalidDataInputException::class);
-
 });

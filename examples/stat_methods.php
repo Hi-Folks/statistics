@@ -37,3 +37,12 @@ $variance = Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25]);
 // 1.25
 $variance = Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]);
 // 1.3720238095238095
+
+
+try {
+    $mean = Stat::mean([]);
+} catch (\HiFolks\Statistics\Exception\InvalidDataInputException $e) {
+    echo $e->getMessage();
+}
+
+// Exception

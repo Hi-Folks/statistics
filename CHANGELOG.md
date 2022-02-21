@@ -1,6 +1,7 @@
 # Changelog
 
-## 0.1.8 - WIP
+## 0.2.0 - 2022-02-21
+- Raise Exception instead of returning null if there is no valid input. By Artem Trokhymchuk @trokhymchuk [thanks for the PR #15](https://github.com/Hi-Folks/statistics/pull/15);
 - PHPStan, level 9
 
 ## 0.1.7 - 2022-02-19

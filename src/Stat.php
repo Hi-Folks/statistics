@@ -2,6 +2,8 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Exception\InvalidDataInputException;
+
 class Stat
 {
     public const MEDIAN_TYPE_LOW = "LOW";
@@ -26,20 +28,16 @@ class Stat
      * It is a measure of the central location of the data.
      * If data is empty, null is returned
      * @param array<int|float> $data array of data
-     * @return int|float|null arithmetic mean or null if data is empty
+     * @throws InvalidDataInputException if the data is empty
+     * @return int|float arithmetic mean
      */
     public static function mean(array $data): int|float|null
     {
         $sum = 0;
         if (! self::count($data)) {
-            return null;
+            throw new InvalidDataInputException('The data must not be empty.');
         }
-        foreach ($data as $value) {
-            if (! is_numeric($value)) {
-                return null;
-            }
-            $sum = $sum + $value;
-        }
+        $sum = array_sum($data);
 
         return $sum / self::count($data);
     }
@@ -49,13 +47,14 @@ class Stat
      * using the common “mean of middle two” method.
      * @param mixed[] $data
      * @param string $medianType
-     * @return mixed|null median of the data or null if data is empty
+     * @throws InvalidDataInputException if the data is empty
+     * @return mixed median of the data
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
         $count = self::count($data);
         if (! $count) {
-            return null;
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $index = floor($count / 2);  // cache the index
         if ($count & 1) {    // count is odd
@@ -75,7 +74,8 @@ class Stat
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the smaller of the two middle values is returned.
      * @param mixed[] $data
-     * @return mixed|null low median of the data or null if data is empty
+     * @see Stat::median()
+     * @return mixed low median of the data
      */
     public static function medianLow(array $data): mixed
     {
@@ -88,7 +88,8 @@ class Stat
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the larger of the two middle values is returned.
      * @param mixed[] $data
-     * @return mixed|null high median of the data or null if data is empty
+     * @see Stat::median()
+     * @return mixed high median of the data
      */
     public static function medianHigh(array $data): mixed
     {
@@ -101,13 +102,14 @@ class Stat
      * If there are multiple modes with the same frequency, returns the first one encountered in the data.
      * @param mixed[] $data
      * @param bool $multimode whether to return all the modes
-     * @return mixed|mixed[]|null the most common data point, array of them or null if all elements occurs once
+     * @throws InvalidDataInputException if the data is empty
+     * @return mixed|mixed[]|null the most common data point, array of them or null, if there is no mode
      */
     public static function mode(array $data, bool $multimode = false): mixed
     {
         $frequencies = Freq::frequencies($data);
         if (self::count($frequencies) === 0) {
-            return null;
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sameMode = true;
         foreach ($frequencies as $key => $value) {
@@ -132,19 +134,15 @@ class Stat
     /**
      * Return a list of the most frequently occurring values
      * @param mixed[] $data
+     * @see Stat::mode()
      * @return mixed[]|null array of the most common data points or null, if all elements occurs once
      */
     public static function multimode(array $data): array|null
     {
-        $multimode = self::mode($data, true);
-        if (is_null($multimode)) {
-            return null;
-        }
-        if (is_array($multimode)) {
-            return $multimode;
-        }
+        /** @var mixed[]|null */
+        $mode = self::mode($data, true);
 
-        return [$multimode];
+        return $mode;
     }
 
     /**
@@ -152,17 +150,18 @@ class Stat
      * @param mixed[] $data
      * @param int $n number of quantiles
      * @param int|null $round whether to round the result
-     * @return mixed[]|null array of quntiles or null if number of quantiles is less than 1, or array size is less than 2
+     * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2
+     * @return mixed[] array of quntiles
      */
-    public static function quantiles(array $data, int $n = 4, ?int $round = null): ?array
+    public static function quantiles(array $data, int $n = 4, ?int $round = null): array
     {
         $count = Stat::count($data);
-        if ($count < 2) {
-            return null;
+        if ($count < 2 || $n < 1) {
+            throw new InvalidDataInputException(
+                'The size of the data must be greater than 2 and the number of quantiles must be greater than 1.'
+            );
         }
-        if ($n < 1) {
-            return null;
-        }
+
         sort($data);
         $m = $count + 1;
         $result = [];
@@ -184,14 +183,12 @@ class Stat
     /**
      * Return the first or lower quartile a.k.a. 25th percentile.
      * @param mixed[] $data
-     * @return mixed|null the first quartile or null, if it cannot be calculated (@see Stat::quantiles())
+     * @see Stat::quantiles()
+     * @return mixed the first quartile
      */
     public static function firstQuartile(array $data, ?int $round = null): mixed
     {
         $quartiles = self::quantiles($data, 4, $round);
-        if (is_null($quartiles)) {
-            return null;
-        }
 
         return $quartiles[0];
     }
@@ -199,14 +196,12 @@ class Stat
     /**
      * Return the third or upper quartile a.k.a. 75th percentile.
      * @param mixed[] $data
-     * @return mixed|null the third quartile or null, if it cannot be calculated (@see Stat::quantiles())
+     * @see Stat::quantiles()
+     * @return mixed the third quartile
      */
     public static function thirdQuartile(array $data): mixed
     {
         $quartiles = self::quantiles($data, 4);
-        if (is_null($quartiles)) {
-            return null;
-        }
 
         return $quartiles[2];
     }
@@ -220,14 +215,12 @@ class Stat
      * the values are spread out over a wider range.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @return float|null the population standard deviation or null, if data is empty
+     * @see Stat::pvariance()
+     * @return float the population standard deviation
      */
-    public static function pstdev(array $data, ?int $round = null): ?float
+    public static function pstdev(array $data, ?int $round = null): float
     {
         $variance = self::pvariance($data);
-        if (is_null($variance)) {
-            return null;
-        }
 
         return (float)Math::round(sqrt($variance), $round);
     }
@@ -236,13 +229,14 @@ class Stat
      * Return dispersion of the numeric data.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @return float|null the dispersion of data or null if data is empty
+     * @throws InvalidDataInputException if the data is empty
+     * @return float the dispersion of the data
      */
-    public static function pvariance(array $data, ?int $round = null): ?float
+    public static function pvariance(array $data, ?int $round = null): float
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements == 0) {
-            return null;
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sumSquareDifferences = 0.0;
         $average = self::mean($data);
@@ -260,14 +254,12 @@ class Stat
      * Return the standard deviation of the numeric data.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @return float|null the standard deviation of the numeric data or null if data size is less than 2
+     * @see Stat::variance()
+     * @return float the standard deviation of the numeric data
      */
-    public static function stdev(array $data, int $round = null): ?float
+    public static function stdev(array $data, int $round = null): float
     {
         $variance = self::variance($data);
-        if (is_null($variance)) {
-            return null;
-        }
 
         return (float)Math::round(sqrt($variance), $round);
     }
@@ -276,13 +268,14 @@ class Stat
      * Return the variance from the numeric data.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @return float|null the variance or null if data size is less than 2
+     * @throws InvalidDataInputException if data size is less than 2
+     * @return float the variance
      */
-    public static function variance(array $data, ?int $round = null): ?float
+    public static function variance(array $data, ?int $round = null): float
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements <= 1) {
-            return null;
+            throw new InvalidDataInputException('The data size must be greater than 1.');
         }
         $sumSquareDifferences = 0.0;
         $average = self::mean($data);
@@ -302,13 +295,14 @@ class Stat
      * does not change.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @return float|null geometric mean or null if data is empty
+     * @throws InvalidDataInputException if the data is empty
+     * @return float geometric mean
      */
-    public static function geometricMean(array $data, ?int $round = null): ?float
+    public static function geometricMean(array $data, ?int $round = null): float
     {
         $count = self::count($data);
         if (! $count) {
-            return null;
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $product = 1;
         foreach ($data as $value) {
@@ -324,14 +318,15 @@ class Stat
      * @param array<int|float> $data
      * @param mixed[] $weights additional weight to the elements (as if there were several of them)
      * @param int|null $round whether to round the result
-     * @return float|null harmonic mean or null if data is empty
+     * @throws InvalidDataInputException if the data is empty
+     * @return float harmonic mean
      */
-    public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): ?float
+    public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): float
     {
         $sum = 0;
         $count = self::count($data);
         if (! $count) {
-            return null;
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sumWeigth = 0;
         foreach ($data as $key => $value) {
@@ -413,7 +408,7 @@ class Stat
         $a = 0;
         $bx = 0;
         $by = 0;
-        for ($i = 0;$i < count($x);$i++) {
+        for ($i = 0; $i < count($x); $i++) {
             $xr = $x[$i] - $meanX;
             $yr = $y[$i] - $meanY;
             $a += $xr * $yr;

@@ -2,7 +2,7 @@
 
 namespace HiFolks\Statistics;
 
-use HiFolks\Statistics\Exception\InvalidDataException;
+use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Stat
 {
@@ -28,14 +28,14 @@ class Stat
      * It is a measure of the central location of the data.
      * If data is empty, null is returned
      * @param array<int|float> $data array of data
-     * @throws InvalidDataException if the data is empty
+     * @throws InvalidDataInputException if the data is empty
      * @return int|float arithmetic mean
      */
     public static function mean(array $data): int|float|null
     {
         $sum = 0;
         if (! self::count($data)) {
-            throw new InvalidDataException('The data must not be empty.');
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sum = array_sum($data);
 
@@ -47,14 +47,14 @@ class Stat
      * using the common “mean of middle two” method.
      * @param mixed[] $data
      * @param string $medianType
-     * @throws InvalidDataException if the data is empty
+     * @throws InvalidDataInputException if the data is empty
      * @return mixed median of the data
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
         $count = self::count($data);
         if (! $count) {
-            throw new InvalidDataException('The data must not be empty.');
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $index = floor($count / 2);  // cache the index
         if ($count & 1) {    // count is odd
@@ -102,14 +102,14 @@ class Stat
      * If there are multiple modes with the same frequency, returns the first one encountered in the data.
      * @param mixed[] $data
      * @param bool $multimode whether to return all the modes
-     * @throws InvalidDataException if the data is empty
+     * @throws InvalidDataInputException if the data is empty
      * @return mixed|mixed[]|null the most common data point, array of them or null, if there is no mode
      */
     public static function mode(array $data, bool $multimode = false): mixed
     {
         $frequencies = Freq::frequencies($data);
         if (self::count($frequencies) === 0) {
-            throw new InvalidDataException('The data must not be empty.');
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sameMode = true;
         foreach ($frequencies as $key => $value) {
@@ -150,14 +150,14 @@ class Stat
      * @param mixed[] $data
      * @param int $n number of quantiles
      * @param int|null $round whether to round the result
-     * @throws InvalidDataException if number of quantiles is less than 1, or the data size is less than 2
+     * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2
      * @return mixed[] array of quntiles
      */
     public static function quantiles(array $data, int $n = 4, ?int $round = null): array
     {
         $count = Stat::count($data);
         if ($count < 2 || $n < 1) {
-            throw new InvalidDataException(
+            throw new InvalidDataInputException(
                 'The size of the data must be greater than 2 and the number of quantiles must be greater than 1.'
             );
         }
@@ -229,14 +229,14 @@ class Stat
      * Return dispersion of the numeric data.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @throws InvalidDataException if the data is empty
+     * @throws InvalidDataInputException if the data is empty
      * @return float the dispersion of the data
      */
     public static function pvariance(array $data, ?int $round = null): float
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements == 0) {
-            throw new InvalidDataException('The data must not be empty.');
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sumSquareDifferences = 0.0;
         $average = self::mean($data);
@@ -268,14 +268,14 @@ class Stat
      * Return the variance from the numeric data.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @throws InvalidDataException if data size is less than 2
+     * @throws InvalidDataInputException if data size is less than 2
      * @return float the variance
      */
     public static function variance(array $data, ?int $round = null): float
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements <= 1) {
-            throw new InvalidDataException('The data size must be greater than 1.');
+            throw new InvalidDataInputException('The data size must be greater than 1.');
         }
         $sumSquareDifferences = 0.0;
         $average = self::mean($data);
@@ -295,14 +295,14 @@ class Stat
      * does not change.
      * @param array<int|float> $data
      * @param int|null $round whether to round the result
-     * @throws InvalidDataException if the data is empty
+     * @throws InvalidDataInputException if the data is empty
      * @return float geometric mean
      */
     public static function geometricMean(array $data, ?int $round = null): float
     {
         $count = self::count($data);
         if (! $count) {
-            throw new InvalidDataException('The data must not be empty.');
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $product = 1;
         foreach ($data as $value) {
@@ -318,7 +318,7 @@ class Stat
      * @param array<int|float> $data
      * @param mixed[] $weights additional weight to the elements (as if there were several of them)
      * @param int|null $round whether to round the result
-     * @throws InvalidDataException if the data is empty
+     * @throws InvalidDataInputException if the data is empty
      * @return float harmonic mean
      */
     public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): float
@@ -326,7 +326,7 @@ class Stat
         $sum = 0;
         $count = self::count($data);
         if (! $count) {
-            throw new InvalidDataException('The data must not be empty.');
+            throw new InvalidDataInputException('The data must not be empty.');
         }
         $sumWeigth = 0;
         foreach ($data as $key => $value) {

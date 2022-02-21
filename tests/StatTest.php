@@ -1,6 +1,6 @@
 <?php
 
-use HiFolks\Statistics\Exception\InvalidDataException;
+use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Stat;
 
 it('can calculate mean (static)', function () {
@@ -12,7 +12,7 @@ it('can calculate mean (static)', function () {
     )->toEqual(2.625);
     expect(
         fn () => Stat::mean([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 
 it('can calculate median (static)', function () {
@@ -24,7 +24,7 @@ it('can calculate median (static)', function () {
     )->toEqual(4);
     expect(
         fn () => Stat::median([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 it('can calculate median low (static)', function () {
     expect(
@@ -35,7 +35,7 @@ it('can calculate median low (static)', function () {
     )->toEqual(3);
     expect(
         fn () => Stat::medianLow([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 it('can calculate median high (static)', function () {
     expect(
@@ -46,7 +46,7 @@ it('can calculate median high (static)', function () {
     )->toEqual(5);
     expect(
         fn () => Stat::medianHigh([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 
 it('calculates mode (static)', function () {
@@ -55,7 +55,7 @@ it('calculates mode (static)', function () {
     )->toEqual(3);
     expect(
         fn () => Stat::mode([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
     expect(
         Stat::mode([1,2,3])
     )->toBeNull();
@@ -90,7 +90,7 @@ it('calculates multimode (static)', function () {
     )->toEqual('f');
     expect(
         fn () => Stat::multimode([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 it('calculates Population standard deviation (static)', function () {
     expect(
@@ -101,7 +101,7 @@ it('calculates Population standard deviation (static)', function () {
     )->toEqual(2.4495);
     expect(
         fn () => Stat::pstdev([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
     expect(
         Stat::pstdev([1])
     )->toEqual(0);
@@ -121,10 +121,10 @@ it('calculates Sample standard deviation (static)', function () {
     )->toEqual(2.7386);
     expect(
         fn () => Stat::stdev([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
     expect(
         fn () => Stat::stdev([1])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 
 it('calculates variance (static)', function () {
@@ -148,7 +148,7 @@ it('calculates geometric mean (static)', function () {
     )->toEqual(36);
     expect(
         fn () => Stat::geometricMean([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 it('calculates harmonic mean (static)', function () {
     expect(
@@ -165,7 +165,7 @@ it('calculates harmonic mean (static)', function () {
     )->toEqual(52.2);
     expect(
         fn () => Stat::harmonicMean([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 
 it('calculates quantiles (static)', function () {
@@ -187,10 +187,10 @@ it('calculates quantiles (static)', function () {
     expect($q[2])->toEqual(4);
     expect(
         fn () => Stat::quantiles([1])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
     expect(
         fn () => Stat::quantiles([1,2,3], 0)
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 
 
@@ -199,7 +199,7 @@ it('calculates first quartiles (static)', function () {
     expect($q)->toEqual(58.75);
     expect(
         fn () => Stat::firstQuartile([])
-    )->toThrow(InvalidDataException::class);
+    )->toThrow(InvalidDataInputException::class);
 });
 
 it('calculates covariance (static)', function () {

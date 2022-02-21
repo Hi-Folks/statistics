@@ -2,7 +2,7 @@
 
 namespace HiFolks\Statistics;
 
-use HiFolks\Statistics\Exception\InvalidTypeException;
+use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Statistics
 {
@@ -308,7 +308,7 @@ class Statistics
             }
         }
         if ($this->containsNan) {
-            throw new InvalidTypeException('The data must not contain non-number elements.');
+            throw new InvalidDataInputException('The data must not contain non-number elements.');
         }
         /** @var array<int|float> */
         $numericalArray = $this->values;

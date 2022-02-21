@@ -38,12 +38,14 @@ Stat class has methods to calculate an average or typical value from a populatio
 - quantiles(): cut points dividing the range of a probability distribution into continuous intervals with equal probabilities;
 - thirdQuartile(): 3rd quartile, is the value at which 75 percent of the data is below it;
 - firstQuartile(): first quartile, is the value at which 25 percent of the data is below it;
-- pstdev(): Population standard deviation
-- stdev(): Sample standard deviation
-- pvariance(): variance for a population
-- variance(): variance for a sample
-- geometricMean(): geometric mean
-- harmonicMean(): harmonic mean
+- pstdev(): Population standard deviation;
+- stdev(): Sample standard deviation;
+- pvariance(): variance for a population;
+- variance(): variance for a sample;
+- geometricMean(): geometric mean;
+- harmonicMean(): harmonic mean;
+- correlation(): the Pearson’s correlation coefficient for two inputs;
+- covariance(): the sample covariance of two inputs.
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.

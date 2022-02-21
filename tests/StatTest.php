@@ -319,5 +319,5 @@ it('calculates correlation, wrong usage (static)', function () {
             [2, 2, 2]
         )
     )->toThrow(InvalidDataInputException::class);
-    
+
 });

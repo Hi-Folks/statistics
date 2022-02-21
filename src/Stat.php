@@ -346,6 +346,8 @@ class Stat
      * Covariance is a measure of the joint variability of two inputs.
      * @param array<int|float> $x
      * @param array<int|float> $y
+     * @throws InvalidDataInputException if 2 arrays have different size,
+     * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements
      * @return false|float
      */
     public static function covariance(array $x, array $y): false|float
@@ -396,6 +398,9 @@ class Stat
      * and 0 no linear relationship.
      * @param array<int|float> $x
      * @param array<int|float> $y
+     * @throws InvalidDataInputException if 2 arrays have different size,
+     * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
+     * or if the elements of the array are constants
      * @return false|float
      */
     public static function correlation(array $x, array $y): false|float

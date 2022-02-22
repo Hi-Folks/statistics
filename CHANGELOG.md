@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.1 - WIP
+## 0.2.1 - 2022-02-22
 - Linear regression
 
 ## 0.2.0 - 2022-02-21

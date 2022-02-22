@@ -5,6 +5,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=for-the-badge)](https://packagist.org/packages/hi-folks/statistics)
 [![Total Downloads](https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=for-the-badge)](https://packagist.org/packages/hi-folks/statistics)
 [![Static Code analysis](https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge)](https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml)
+![Packagist License](https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge)
 
 [![Tests](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge)](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml)
 

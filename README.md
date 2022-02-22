@@ -49,6 +49,7 @@ Stat class has methods to calculate an average or typical value from a populatio
 - harmonicMean(): harmonic mean;
 - correlation(): the Pearson’s correlation coefficient for two inputs;
 - covariance(): the sample covariance of two inputs.
+- linearRegression():
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.
@@ -241,6 +242,27 @@ $correlation = Stat::correlation(
     [9, 8, 7, 6, 5, 4, 3, 2, 1]
 );
 // -1.0
+```
+
+#### Stat::linearRegression ( array $x , array $y )
+Return the slope and intercept of simple linear regression  parameters estimated using ordinary least squares.
+Simple linear regression describes relationship between an independent variable *$x* and a dependent variable *$y* in terms of linear function.
+
+```php 
+$years = [1971, 1975, 1979, 1982, 1983];
+$films_total = [1, 2, 3, 4, 5] 
+list($slope, $intercept) = Stat::linearRegression(
+    $years,
+    $films_total
+);
+// 0.31
+// -610.18
+```
+What happens in 2022, according to the samples above?
+
+```php
+round($slope * 2022 + $intercept);
+// 17.0
 ```
 
 ### Freq class

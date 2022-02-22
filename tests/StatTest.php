@@ -318,3 +318,50 @@ it('calculates correlation, wrong usage (static)', function () {
         )
     )->toThrow(InvalidDataInputException::class);
 });
+
+it('calculates linear regression (static)', function () {
+    list($slope, $intercept) = Stat::linearRegression(
+        [1971, 1975, 1979, 1982, 1983],
+        [1, 2, 3, 4, 5]
+    );
+    expect($slope)->toBeFloat();
+    expect($slope)->toEqual(0.31);
+
+    expect($intercept)->toBeFloat();
+    expect($intercept)->toEqual(-610.18);
+
+    list($slope, $intercept) = Stat::linearRegression(
+        [1971, 1975, 1979, 1982, 1983],
+        [1, 2, 1, 3, 1]
+    );
+    expect($slope)->toBeFloat();
+    expect($slope)->toEqual(0.05);
+
+    expect($intercept)->toBeFloat();
+    expect($intercept)->toEqual(-97.3);
+
+    expect(round($slope * 2019 + $intercept))->toEqual(4);
+});
+
+it('calculates linear regression with not valid input (static)', function () {
+    expect(
+        fn () => Stat::linearRegression(
+            [3],
+            [2]
+        )
+    )->toThrow(InvalidDataInputException::class);
+
+    expect(
+        fn () => Stat::linearRegression(
+            [3,3,3,3],
+            [2,1,1,1,1]
+        )
+    )->toThrow(InvalidDataInputException::class);
+
+    expect(
+        fn () => Stat::linearRegression(
+            [3,3,3,3,3],
+            [1,1,1,1,1]
+        )
+    )->toThrow(InvalidDataInputException::class);
+});

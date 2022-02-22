@@ -7,6 +7,7 @@
 [![Static Code analysis](https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge)](https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml)
 ![Packagist License](https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge)
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge)
 
 [![Tests](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge)](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml)
 

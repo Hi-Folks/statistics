@@ -438,4 +438,47 @@ class Stat
 
         return $a / $b;
     }
+
+    /**
+     * @param array<int|float> $x
+     * @param array<int|float> $y
+     * @throws InvalidDataInputException if 2 arrays have different size,
+     * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
+     * or if the elements of the array are constants
+     * @return array<int|float>
+     */
+    public static function linearRegression(array $x, array $y): array
+    {
+        $countX = count($x);
+        $countY = count($y);
+        if ($countX != $countY) {
+            throw new InvalidDataInputException(
+                'Linear regression requires that both inputs have same number of data points.'
+            );
+        }
+        if ($countX < 2) {
+            throw new InvalidDataInputException(
+                'Linear regression requires at least two data points.'
+            );
+        }
+        $sumX = array_sum($x);
+        $sumY = array_sum($y);
+        $sumXX = 0;
+        $sumXY = 0;
+
+        foreach ($x as $key => $value) {
+            $sumXY += ($value * $y[$key]);
+            $sumXX += ($value * $value);
+        }
+        $denominator = (($countX * $sumXX) - ($sumX * $sumX));
+        if ($denominator === 0) {
+            throw new InvalidDataInputException(
+                'Linear regression, the inputs is constant.'
+            );
+        }
+        $slope = (($countX * $sumXY) - ($sumX * $sumY)) / $denominator;
+        $intercept = ($sumY - ($slope * $sumX)) / $countX;
+
+        return [$slope, $intercept];
+    }
 }

@@ -48,8 +48,8 @@ Stat class has methods to calculate an average or typical value from a populatio
 - geometricMean(): geometric mean;
 - harmonicMean(): harmonic mean;
 - correlation(): the Pearson’s correlation coefficient for two inputs;
-- covariance(): the sample covariance of two inputs.
-- linearRegression():
+- covariance(): the sample covariance of two inputs;
+- linearRegression(): return the slope and intercept of simple linear regression parameters estimated using ordinary least squares.
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.

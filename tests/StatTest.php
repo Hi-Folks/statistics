@@ -57,11 +57,11 @@ it('calculates mode (static)', function () {
         fn () => Stat::mode([])
     )->toThrow(InvalidDataInputException::class);
     expect(
-        Stat::mode([1,2,3])
+        Stat::mode([1, 2, 3])
     )->toBeNull();
     expect(
-        Stat::mode(["red", "blue", "blue", "red", "green", "red", "red"])
-    )->toEqual("red");
+        Stat::mode(['red', 'blue', 'blue', 'red', 'green', 'red', 'red'])
+    )->toEqual('red');
 });
 
 it('calculates multimode (static)', function () {
@@ -144,7 +144,7 @@ it('calculates pvariance (static)', function () {
 
 it('calculates geometric mean (static)', function () {
     expect(
-        Stat::geometricMean([54, 24, 36])
+        Stat::geometricMean([54, 24, 36], 2)
     )->toEqual(36);
     expect(
         fn () => Stat::geometricMean([])
@@ -152,10 +152,10 @@ it('calculates geometric mean (static)', function () {
 });
 it('calculates harmonic mean (static)', function () {
     expect(
-        Stat::harmonicMean([40, 60])
+        Stat::harmonicMean([40, 60], round:2)
     )->toEqual(48);
     expect(
-        Stat::harmonicMean([10,100,0,1])
+        Stat::harmonicMean([10, 100, 0, 1])
     )->toEqual(0);
     expect(
         Stat::harmonicMean([40, 60], [5, 30])
@@ -169,19 +169,19 @@ it('calculates harmonic mean (static)', function () {
 });
 
 it('calculates quantiles (static)', function () {
-    $q = Stat::quantiles([98, 90, 70,18,92,92,55,83,45,95,88,76]);
+    $q = Stat::quantiles([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76]);
     expect($q[0])->toEqual(58.75);
     expect($q[1])->toEqual(85.5);
     expect($q[2])->toEqual(92);
-    $q = Stat::quantiles([98, 90, 70,18,92,92,55,83,45,95,88]);
+    $q = Stat::quantiles([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88]);
     expect($q[0])->toEqual(55);
     expect($q[1])->toEqual(88);
     expect($q[2])->toEqual(92);
-    $q = Stat::quantiles([1,2]);
+    $q = Stat::quantiles([1, 2]);
     expect($q[0])->toEqual(0.75);
     expect($q[1])->toEqual(1.5);
     expect($q[2])->toEqual(2.25);
-    $q = Stat::quantiles([1,2,4]);
+    $q = Stat::quantiles([1, 2, 4]);
     expect($q[0])->toEqual(1);
     expect($q[1])->toEqual(2);
     expect($q[2])->toEqual(4);
@@ -189,13 +189,12 @@ it('calculates quantiles (static)', function () {
         fn () => Stat::quantiles([1])
     )->toThrow(InvalidDataInputException::class);
     expect(
-        fn () => Stat::quantiles([1,2,3], 0)
+        fn () => Stat::quantiles([1, 2, 3], 0)
     )->toThrow(InvalidDataInputException::class);
 });
 
-
 it('calculates first quartiles (static)', function () {
-    $q = Stat::firstQuartile([98, 90, 70,18,92,92,55,83,45,95,88,76]);
+    $q = Stat::firstQuartile([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76]);
     expect($q)->toEqual(58.75);
     expect(
         fn () => Stat::firstQuartile([])
@@ -320,7 +319,7 @@ it('calculates correlation, wrong usage (static)', function () {
 });
 
 it('calculates linear regression (static)', function () {
-    list($slope, $intercept) = Stat::linearRegression(
+    [$slope, $intercept] = Stat::linearRegression(
         [1971, 1975, 1979, 1982, 1983],
         [1, 2, 3, 4, 5]
     );
@@ -328,9 +327,9 @@ it('calculates linear regression (static)', function () {
     expect($slope)->toEqual(0.31);
 
     expect($intercept)->toBeFloat();
-    expect($intercept)->toEqual(-610.18);
+    expect(round($intercept, 2))->toEqual(-610.18);
 
-    list($slope, $intercept) = Stat::linearRegression(
+    [$slope, $intercept] = Stat::linearRegression(
         [1971, 1975, 1979, 1982, 1983],
         [1, 2, 1, 3, 1]
     );
@@ -353,15 +352,15 @@ it('calculates linear regression with not valid input (static)', function () {
 
     expect(
         fn () => Stat::linearRegression(
-            [3,3,3,3],
-            [2,1,1,1,1]
+            [3, 3, 3, 3],
+            [2, 1, 1, 1, 1]
         )
     )->toThrow(InvalidDataInputException::class);
 
     expect(
         fn () => Stat::linearRegression(
-            [3,3,3,3,3],
-            [1,1,1,1,1]
+            [3, 3, 3, 3, 3],
+            [1, 1, 1, 1, 1]
         )
     )->toThrow(InvalidDataInputException::class);
 });

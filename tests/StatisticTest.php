@@ -5,7 +5,7 @@ use HiFolks\Statistics\Statistics;
 
 it('can calculate statistics', function () {
     $s = Statistics::make(
-        [98, 90, 70,18,92,92,55,83,45,95,88,76]
+        [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76]
     );
     expect($s->count())->toEqual(12);
     expect($s->median())->toEqual(85.5);
@@ -16,7 +16,7 @@ it('can calculate statistics', function () {
     expect($s->originalArray())->toHaveCount(12);
 
     $s = Statistics::make(
-        [98, 90, 70,18,92,92,55,83,45,95,88]
+        [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88]
     );
     expect($s->count())->toEqual(11);
     expect($s->median())->toEqual(88);
@@ -29,7 +29,7 @@ it('can calculate statistics', function () {
 it('can calculate statistics again', function () {
     // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
     $s = Statistics::make(
-        [3,5,4,7,5,2]
+        [3, 5, 4, 7, 5, 2]
     );
     expect($s->count())->toEqual(6);
     expect($s->mean())->toEqual(13 / 3);
@@ -57,7 +57,6 @@ it('can calculate statistics again and again', function () {
     expect($s->firstQuartile())->toEqual(13);
     expect($s->thirdQuartile())->toEqual(17);
 
-
     $s = Statistics::make(
         [1, 2, 4, 7]
     );
@@ -70,17 +69,15 @@ it('can calculate statistics again and again', function () {
     expect($s->range())->toEqual(6);
 });
 
-
-
 it('can strip zeros', function () {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
     $s = Statistics::make(
-        [3,5,0,0.1,4,7,5,2]
+        [3, 5, 0, 0.1, 4, 7, 5, 2]
     )->stripZeroes();
     expect($s->count())->toEqual(7);
 });
 it('can calculate mean', function () {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
     $s = Statistics::make(
-        [3,5,4,7,5,2]
+        [3, 5, 4, 7, 5, 2]
     );
     expect($s->count())->toEqual(6);
     expect($s->mean())->toEqual(13 / 3);
@@ -117,10 +114,9 @@ it('can valuesToString', function () {
     $s = Statistics::make(
         [1, 2, 3, 4, 4]
     );
-    expect($s->valuesToString(false, $s))->toEqual("1,2,3,4,4");
-    expect($s->valuesToString(3, $s))->toEqual("1,2,3");
+    expect($s->valuesToString(false, $s))->toEqual('1,2,3,4,4');
+    expect($s->valuesToString(3, $s))->toEqual('1,2,3');
 });
-
 
 it('calculates Population standard deviation', function () {
     expect(
@@ -176,10 +172,10 @@ it('calculates pvariance', function () {
 
 it('calculates geometric mean', function () {
     expect(
-        Statistics::make([54, 24, 36])->geometricMean()
+        Statistics::make([54, 24, 36])->geometricMean(2)
     )->toEqual(36);
     expect(
-        Statistics::make([4,8, 3,9, 17])->geometricMean(2)
+        Statistics::make([4, 8, 3, 9, 17])->geometricMean(2)
     )->toEqual(6.81);
     expect(
         fn () => Statistics::make([])->geometricMean()

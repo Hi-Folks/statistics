@@ -5,7 +5,7 @@ use HiFolks\Statistics\Statistics;
 
 it('can calculate frequencies', function () {
     $s = Statistics::make(
-        [98, 90, 70,18,92,92,55,83,45,95,88,76]
+        [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76]
     );
     $a = $s->frequencies();
     expect($a[92])->toEqual(2);
@@ -14,7 +14,7 @@ it('can calculate frequencies', function () {
 
 it('can calculate relative frequencies', function () {
     $s = Statistics::make(
-        [3,4,3,1]
+        [3, 4, 3, 1]
     );
     $a = $s->relativeFrequencies();
     expect($a[3])->toEqual(50);
@@ -24,7 +24,7 @@ it('can calculate relative frequencies', function () {
 
 it('can calculate cumulative frequencies', function () {
     $s = Statistics::make(
-        [3,4,3,1]
+        [3, 4, 3, 1]
     );
     $a = $s->cumulativeFrequencies();
 
@@ -35,7 +35,7 @@ it('can calculate cumulative frequencies', function () {
 
 it('can calculate cumulative relative frequencies', function () {
     $s = Statistics::make(
-        [3,4,3,1]
+        [3, 4, 3, 1]
     );
     $a = $s->cumulativeRelativeFrequencies();
 
@@ -46,13 +46,13 @@ it('can calculate cumulative relative frequencies', function () {
 
 it('can calculate firstQuartile', function () {
     $s = Statistics::make(
-        [3,4,3,1]
+        [3, 4, 3, 1]
     );
     $a = $s->firstQuartile();
     expect($a)->toEqual(1.5);
 
     $s = Statistics::make(
-        [3,4,3]
+        [3, 4, 3]
     );
     $a = $s->firstQuartile();
     expect($a)->toEqual(3);
@@ -64,13 +64,13 @@ it('can calculate firstQuartile', function () {
 });
 it('can calculate thirdQuartile', function () {
     $s = Statistics::make(
-        [3,4,3,1]
+        [3, 4, 3, 1]
     );
     $a = $s->thirdQuartile();
     expect($a)->toEqual(3.75);
 
     $s = Statistics::make(
-        [3,4,3]
+        [3, 4, 3]
     );
     $a = $s->thirdQuartile();
     expect($a)->toEqual(4);

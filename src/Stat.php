@@ -6,13 +6,16 @@ use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Stat
 {
-    public const MEDIAN_TYPE_LOW = "LOW";
-    public const MEDIAN_TYPE_HIGH = "HIGH";
-    public const MEDIAN_TYPE_MIDDLE = "MIDDLE";
+    public const MEDIAN_TYPE_LOW = 'LOW';
+
+    public const MEDIAN_TYPE_HIGH = 'HIGH';
+
+    public const MEDIAN_TYPE_MIDDLE = 'MIDDLE';
 
     /**
      * Count the element in the array
-     * @param mixed[] $data
+     *
+     * @param  mixed[]  $data
      * @return int
      */
     public static function count(array $data): int
@@ -27,9 +30,11 @@ class Stat
      * although it is only one of many different mathematical averages.
      * It is a measure of the central location of the data.
      * If data is empty, null is returned
-     * @param array<int|float> $data array of data
-     * @throws InvalidDataInputException if the data is empty
+     *
+     * @param  array<int|float>  $data array of data
      * @return int|float arithmetic mean
+     *
+     * @throws InvalidDataInputException if the data is empty
      */
     public static function mean(array $data): int|float|null
     {
@@ -45,10 +50,12 @@ class Stat
     /**
      * Return the median (middle value) of data,
      * using the common “mean of middle two” method.
-     * @param mixed[] $data
-     * @param string $medianType
-     * @throws InvalidDataInputException if the data is empty
+     *
+     * @param  mixed[]  $data
+     * @param  string  $medianType
      * @return mixed median of the data
+     *
+     * @throws InvalidDataInputException if the data is empty
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
@@ -73,8 +80,11 @@ class Stat
      * The low median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the smaller of the two middle values is returned.
-     * @param mixed[] $data
+     *
+     * @param  mixed[]  $data
+     *
      * @see Stat::median()
+     *
      * @return mixed low median of the data
      */
     public static function medianLow(array $data): mixed
@@ -87,8 +97,11 @@ class Stat
      * The high median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.
      * When it is even, the larger of the two middle values is returned.
-     * @param mixed[] $data
+     *
+     * @param  mixed[]  $data
+     *
      * @see Stat::median()
+     *
      * @return mixed high median of the data
      */
     public static function medianHigh(array $data): mixed
@@ -100,10 +113,12 @@ class Stat
      * Return the most common data point from discrete or nominal data.
      * The mode (when it exists) is the most typical value and serves as a measure of central location.
      * If there are multiple modes with the same frequency, returns the first one encountered in the data.
-     * @param mixed[] $data
-     * @param bool $multimode whether to return all the modes
-     * @throws InvalidDataInputException if the data is empty
+     *
+     * @param  mixed[]  $data
+     * @param  bool  $multimode whether to return all the modes
      * @return mixed|mixed[]|null the most common data point, array of them or null, if there is no mode
+     *
+     * @throws InvalidDataInputException if the data is empty
      */
     public static function mode(array $data, bool $multimode = false): mixed
     {
@@ -133,8 +148,11 @@ class Stat
 
     /**
      * Return a list of the most frequently occurring values
-     * @param mixed[] $data
+     *
+     * @param  mixed[]  $data
+     *
      * @see Stat::mode()
+     *
      * @return mixed[]|null array of the most common data points or null, if all elements occurs once
      */
     public static function multimode(array $data): array|null
@@ -147,11 +165,13 @@ class Stat
 
     /**
      * Return the quantiles of the data.
-     * @param mixed[] $data
-     * @param int $n number of quantiles
-     * @param int|null $round whether to round the result
-     * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2
+     *
+     * @param  mixed[]  $data
+     * @param  int  $n number of quantiles
+     * @param  int|null  $round whether to round the result
      * @return mixed[] array of quntiles
+     *
+     * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2
      */
     public static function quantiles(array $data, int $n = 4, ?int $round = null): array
     {
@@ -182,8 +202,11 @@ class Stat
 
     /**
      * Return the first or lower quartile a.k.a. 25th percentile.
-     * @param mixed[] $data
+     *
+     * @param  mixed[]  $data
+     *
      * @see Stat::quantiles()
+     *
      * @return mixed the first quartile
      */
     public static function firstQuartile(array $data, ?int $round = null): mixed
@@ -195,8 +218,11 @@ class Stat
 
     /**
      * Return the third or upper quartile a.k.a. 75th percentile.
-     * @param mixed[] $data
+     *
+     * @param  mixed[]  $data
+     *
      * @see Stat::quantiles()
+     *
      * @return mixed the third quartile
      */
     public static function thirdQuartile(array $data): mixed
@@ -213,24 +239,29 @@ class Stat
      * the values tend to be close to the mean of the set,
      * while a high standard deviation indicates that
      * the values are spread out over a wider range.
-     * @param array<int|float> $data
-     * @param int|null $round whether to round the result
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::pvariance()
+     *
      * @return float the population standard deviation
      */
     public static function pstdev(array $data, ?int $round = null): float
     {
         $variance = self::pvariance($data);
 
-        return (float)Math::round(sqrt($variance), $round);
+        return (float) Math::round(sqrt($variance), $round);
     }
 
     /**
      * Return dispersion of the numeric data.
-     * @param array<int|float> $data
-     * @param int|null $round whether to round the result
-     * @throws InvalidDataInputException if the data is empty
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
      * @return float the dispersion of the data
+     *
+     * @throws InvalidDataInputException if the data is empty
      */
     public static function pvariance(array $data, ?int $round = null): float
     {
@@ -252,24 +283,29 @@ class Stat
 
     /**
      * Return the standard deviation of the numeric data.
-     * @param array<int|float> $data
-     * @param int|null $round whether to round the result
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::variance()
+     *
      * @return float the standard deviation of the numeric data
      */
     public static function stdev(array $data, int $round = null): float
     {
         $variance = self::variance($data);
 
-        return (float)Math::round(sqrt($variance), $round);
+        return (float) Math::round(sqrt($variance), $round);
     }
 
     /**
      * Return the variance from the numeric data.
-     * @param array<int|float> $data
-     * @param int|null $round whether to round the result
-     * @throws InvalidDataInputException if data size is less than 2
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
      * @return float the variance
+     *
+     * @throws InvalidDataInputException if data size is less than 2
      */
     public static function variance(array $data, ?int $round = null): float
     {
@@ -293,10 +329,12 @@ class Stat
      * Return the geometric mean of the numeric data.
      * That is the number that can replace each of these numbers so that their product
      * does not change.
-     * @param array<int|float> $data
-     * @param int|null $round whether to round the result
-     * @throws InvalidDataInputException if the data is empty
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
      * @return float geometric mean
+     *
+     * @throws InvalidDataInputException if the data is empty
      */
     public static function geometricMean(array $data, ?int $round = null): float
     {
@@ -315,11 +353,13 @@ class Stat
 
     /**
      * Return the harmonic mean (the reciprocal of the arithmetic mean) of the numeric data.
-     * @param array<int|float> $data
-     * @param mixed[] $weights additional weight to the elements (as if there were several of them)
-     * @param int|null $round whether to round the result
-     * @throws InvalidDataInputException if the data is empty
+     *
+     * @param  array<int|float>  $data
+     * @param  mixed[]  $weights additional weight to the elements (as if there were several of them)
+     * @param  int|null  $round whether to round the result
      * @return float harmonic mean
+     *
+     * @throws InvalidDataInputException if the data is empty
      */
     public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): float
     {
@@ -344,11 +384,13 @@ class Stat
     /**
      * Return the sample covariance of two inputs *$x* and *$y*.
      * Covariance is a measure of the joint variability of two inputs.
-     * @param array<int|float> $x
-     * @param array<int|float> $y
+     *
+     * @param  array<int|float>  $x
+     * @param  array<int|float>  $y
+     * @return false|float
+     *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements
-     * @return false|float
      */
     public static function covariance(array $x, array $y): false|float
     {
@@ -369,13 +411,13 @@ class Stat
         $add = 0.0;
 
         for ($pos = 0; $pos < $countX; $pos++) {
-            $valueX = $x[ $pos ];
+            $valueX = $x[$pos];
             if (! is_numeric($valueX)) {
                 throw new InvalidDataInputException(
                     'Covariance requires numeric data points.'
                 );
             }
-            $valueY = $y[ $pos ];
+            $valueY = $y[$pos];
             if (! is_numeric($valueY)) {
                 throw new InvalidDataInputException(
                     'Covariance requires numeric data points.'
@@ -396,12 +438,14 @@ class Stat
      * where +1 means very strong, positive linear relationship,
      * -1 very strong, negative linear relationship,
      * and 0 no linear relationship.
-     * @param array<int|float> $x
-     * @param array<int|float> $y
+     *
+     * @param  array<int|float>  $x
+     * @param  array<int|float>  $y
+     * @return false|float
+     *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
      * or if the elements of the array are constants
-     * @return false|float
      */
     public static function correlation(array $x, array $y): false|float
     {
@@ -440,12 +484,13 @@ class Stat
     }
 
     /**
-     * @param array<int|float> $x
-     * @param array<int|float> $y
+     * @param  array<int|float>  $x
+     * @param  array<int|float>  $y
+     * @return array<int|float>
+     *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
      * or if the elements of the array are constants
-     * @return array<int|float>
      */
     public static function linearRegression(array $x, array $y): array
     {

@@ -7,22 +7,22 @@ class Freq
     /**
      * Return true is the type of the variable is integer, boolean or string
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return bool
      */
     private static function isDiscreteType(mixed $value): bool
     {
         $type = gettype($value);
 
-        return in_array($type, ["string", "boolean", "integer"]);
+        return in_array($type, ['string', 'boolean', 'integer']);
     }
 
     /**
      * Return an array with the number of occurrences of each element.
      * Useful for the frequencies table.
      *
-     * @param mixed[] $data
-     * @param bool $transformToInteger whether data should be transformed to integer
+     * @param  mixed[]  $data
+     * @param  bool  $transformToInteger whether data should be transformed to integer
      * @return array<mixed, int>
      */
     public static function frequencies(array $data, bool $transformToInteger = false): array
@@ -46,7 +46,7 @@ class Freq
      * that come before that element)frequency of elements.
      * For the array like ['A', 'A', 'B', 'C'] it would be ['A' => 2, 'B' => 3, 'C' => 4]
      *
-     * @param mixed[] $data
+     * @param  mixed[]  $data
      * @return array<mixed, int>
      */
     public static function cumulativeFrequencies(array $data): array
@@ -72,8 +72,8 @@ class Freq
      * Calculate relative frequencies. Basically it is the percentage of occurrences of each element in the array.
      * For the array like ['A', 'A', 'B', 'C'] it would be ['A' => 50, 'B' => 25, 'C' => 25]
      *
-     * @param mixed[] $data
-     * @param ?int $round whether to round values or not
+     * @param  mixed[]  $data
+     * @param  ?int  $round whether to round values or not
      * @return array<mixed, float>
      */
     public static function relativeFrequencies(array $data, ?int $round = null): array
@@ -93,7 +93,7 @@ class Freq
      * Calculate cumulative relative frequencies.
      * For the array like ['A', 'A', 'B', 'C'] it would be ['A' => 50, 'B' => 75, 'C' => 100]
      *
-     * @param mixed[] $data
+     * @param  mixed[]  $data
      * @return array<mixed, float>
      */
     public static function cumulativeRelativeFrequencies(array $data): array
@@ -110,8 +110,8 @@ class Freq
     }
 
     /**
-     * @param mixed[] $data
-     * @param int $chunkSize
+     * @param  mixed[]  $data
+     * @param  int  $chunkSize
      * @return int[]
      */
     public static function frequencyTableBySize(array $data, int $chunkSize = 1): array
@@ -149,8 +149,9 @@ class Freq
      * The parameter $category set the number of classes.
      * If $category is null (default value for the optional parameter),
      * each class is not a range.
-     * @param mixed[] $data
-     * @param ?int $category
+     *
+     * @param  mixed[]  $data
+     * @param  ?int  $category
      * @return int[]
      */
     public static function frequencyTable(array $data, int $category = null): array

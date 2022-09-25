@@ -5,32 +5,32 @@ use HiFolks\Statistics\Freq;
 it('can calculate freq table (static)', function () {
     expect(
         Freq::frequencies([1, 2, 3, 4, 4])
-    )->toMatchArray([4 => 2,3 => 1, 1 => 1, 2 => 1]);
+    )->toMatchArray([4 => 2, 3 => 1, 1 => 1, 2 => 1]);
     expect(
         Freq::frequencies([])
     )->toMatchArray([]);
-    $result = Freq::frequencies(["red", "blue", "blue", "red", "green", "red", "red"]);
+    $result = Freq::frequencies(['red', 'blue', 'blue', 'red', 'green', 'red', 'red']);
     expect(
         $result
-    )->toMatchArray(["red" => 4,"blue" => 2, "green" => 1]);
+    )->toMatchArray(['red' => 4, 'blue' => 2, 'green' => 1]);
     expect(
         $result
     )->toHaveCount(3);
 
     expect(
-        $result["red"]
+        $result['red']
     )->toEqual(4);
     expect(
-        $result["blue"]
+        $result['blue']
     )->toEqual(2);
     expect(
-        $result["green"]
+        $result['green']
     )->toEqual(1);
 
     $result = Freq::frequencies([2.1, 2.7, 1.4, 2.45], true);
     expect(
         $result
-    )->toMatchArray([2 => 3,1 => 1]);
+    )->toMatchArray([2 => 3, 1 => 1]);
     expect(
         $result
     )->toHaveCount(2);
@@ -39,40 +39,40 @@ it('can calculate freq table (static)', function () {
 it('can calculate relativefreq table (static)', function () {
     expect(
         Freq::relativeFrequencies([1, 2, 3, 4, 4])
-    )->toMatchArray([4 => 40,3 => 20, 1 => 20, 2 => 20]);
+    )->toMatchArray([4 => 40, 3 => 20, 1 => 20, 2 => 20]);
     expect(
         Freq::relativeFrequencies([])
     )->toMatchArray([]);
-    $result = Freq::relativeFrequencies(["red", "blue", "blue", "red", "green", "red", "red"], 2);
+    $result = Freq::relativeFrequencies(['red', 'blue', 'blue', 'red', 'green', 'red', 'red'], 2);
     expect(
         $result
-    )->toMatchArray(["red" => 57.14,"blue" => 28.57, "green" => 14.29]);
+    )->toMatchArray(['red' => 57.14, 'blue' => 28.57, 'green' => 14.29]);
     expect(
         $result
     )->toHaveCount(3);
 
     expect(
-        $result["red"]
+        $result['red']
     )->toEqual(57.14);
     expect(
-        $result["blue"]
+        $result['blue']
     )->toEqual(28.57);
     expect(
-        $result["green"]
+        $result['green']
     )->toEqual(14.29);
 
     $result = Freq::relativeFrequencies([2.1, 2.7, 1.4, 2.45], true);
     expect(
         $result
-    )->toMatchArray([2 => 75,1 => 25]);
+    )->toMatchArray([2 => 75, 1 => 25]);
     expect(
         $result
     )->toHaveCount(2);
 });
 
 it('can calculate grouped frequency table (static)', function () {
-    $data = [1,1,1,4,4,5,5,5,6,7,8,8,8,9,9,9,9,9,9,10,10,11,12,12,
-        13,14,14,15,15,16,16,16,16,17,17,17,18,18, ];
+    $data = [1, 1, 1, 4, 4, 5, 5, 5, 6, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 10, 11, 12, 12,
+        13, 14, 14, 15, 15, 16, 16, 16, 16, 17, 17, 17, 18, 18, ];
     $table = Freq::frequencyTable($data, 7);
     expect(
         $table
@@ -123,13 +123,13 @@ it('can calculate grouped frequency table (static)', function () {
     )->toHaveCount(18);
     expect(
         $table
-    )->toMatchArray([1 => 3, 2 => 0, 3 => 0, 4 => 2,5 => 3, 6 => 1, 7 => 1, 8 => 3, 9 => 6,
+    )->toMatchArray([1 => 3, 2 => 0, 3 => 0, 4 => 2, 5 => 3, 6 => 1, 7 => 1, 8 => 3, 9 => 6,
         10 => 2, 11 => 1, 12 => 2, 13 => 1, 14 => 2, 15 => 2, 16 => 4, 17 => 3, 18 => 2, ]);
 });
 
 it('can calculate grouped frequency table by size (static)', function () {
-    $data = [1,1,1,4,4,5,5,5,6,7,8,8,8,9,9,9,9,9,9,10,10,11,12,12,
-        13,14,14,15,15,16,16,16,16,17,17,17,18,18, ];
+    $data = [1, 1, 1, 4, 4, 5, 5, 5, 6, 7, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 10, 11, 12, 12,
+        13, 14, 14, 15, 15, 16, 16, 16, 16, 17, 17, 17, 18, 18, ];
     $table = Freq::frequencyTableBySize($data, 4);
     expect(
         $table

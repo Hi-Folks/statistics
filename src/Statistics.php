@@ -8,15 +8,18 @@ class Statistics
 {
     /**
      * Original array (no sorted and with original keys)
+     *
      * @var array<mixed>
      */
     private array $originalArray = [];
 
     /**
      * Sorted values, with 0 index
+     *
      * @var array<mixed>
      */
     private array $values = [];
+
     /**
      * Whether array contains not a numbers
      *
@@ -25,7 +28,7 @@ class Statistics
     private ?bool $containsNan = null;
 
     /**
-     * @param array<mixed> $values
+     * @param  array<mixed>  $values
      */
     public function __construct(
         array $values = []
@@ -36,7 +39,7 @@ class Statistics
     }
 
     /**
-     * @param array<mixed> $values
+     * @param  array<mixed>  $values
      * @return self
      */
     public static function make(array $values): self
@@ -74,7 +77,8 @@ class Statistics
      * For not discrete elements you can try to transform to integer
      *
      * @see Freq::frequencies()
-     * @param bool $transformToInteger
+     *
+     * @param  bool  $transformToInteger
      * @return array<int>
      */
     public function frequencies(bool $transformToInteger = false): array
@@ -86,7 +90,8 @@ class Statistics
      * Return relative frequencies table.
      *
      * @see Freq::relativeFrequencies()
-     * @param int $round whether to round the result
+     *
+     * @param  int  $round whether to round the result
      * @return array<float>
      */
     public function relativeFrequencies(int $round = null): array
@@ -98,6 +103,7 @@ class Statistics
      * Return cumulative relative frequencies table.
      *
      * @see Freq::cumulativeRelativeFrequencies()
+     *
      * @return array<float>
      */
     public function cumulativeRelativeFrequencies(): array
@@ -109,6 +115,7 @@ class Statistics
      * Return cumulative frequencies table.
      *
      * @see Freq::cumulativeFrequencies()
+     *
      * @return array<float>
      */
     public function cumulativeFrequencies(): array
@@ -217,7 +224,8 @@ class Statistics
     /**
      * Return the standard deviation of the numeric data.
      *
-     * @param int|null $round whether to round the result
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::stdev()
      */
     public function stdev(?int $round = null): float
@@ -228,7 +236,8 @@ class Statistics
     /**
      * Return the variance from the numeric data
      *
-     * @param int|null $round whether to round the result
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::variance()
      */
     public function variance(?int $round = null): float
@@ -239,7 +248,8 @@ class Statistics
     /**
      * Return the **population** standard deviation.
      *
-     * @param int|null $round whether to round the result
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::pstdev()
      */
     public function pstdev(?int $round = null): float
@@ -250,7 +260,8 @@ class Statistics
     /**
      * Return dispersion of the numeric data.
      *
-     * @param int|null $round whether to round the result
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::pvariance()
      */
     public function pvariance(?int $round = null): float
@@ -261,7 +272,8 @@ class Statistics
     /**
      * Return the geometric mean of the numeric data.
      *
-     * @param int|null $round whether to round the result
+     * @param  int|null  $round whether to round the result
+     *
      * @see Stat::geometricMean()
      */
     public function geometricMean(?int $round = null): float
@@ -272,8 +284,9 @@ class Statistics
     /**
      * Return the harmonic mean of the numeric data.
      *
-     * @param int|null $round whether to round the result
-     * @param mixed[] $weights additional weight to the elements (as if there were several of them)
+     * @param  int|null  $round whether to round the result
+     * @param  mixed[]  $weights additional weight to the elements (as if there were several of them)
+     *
      * @see Stat::harmonicMean()
      */
     public function harmonicMean(?int $round = null, ?array $weights = null): float
@@ -283,7 +296,8 @@ class Statistics
 
     /**
      * Returns a string with values joined with a separator
-     * @param bool|int $sample
+     *
+     * @param  bool|int  $sample
      * @return string
      */
     public function valuesToString(bool|int $sample = false): string

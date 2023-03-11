@@ -31,7 +31,7 @@ class Stat
      * If data is empty, null is returned
      *
      * @param  array<int|float>  $data array of data
-     * @return int|float arithmetic mean
+     * @return int|float|null arithmetic mean
      *
      * @throws InvalidDataInputException if the data is empty
      */
@@ -352,7 +352,7 @@ class Stat
      * Return the harmonic mean (the reciprocal of the arithmetic mean) of the numeric data.
      *
      * @param  array<int|float>  $data
-     * @param  mixed[]  $weights additional weight to the elements (as if there were several of them)
+     * @param mixed[]|null $weights additional weight to the elements (as if there were several of them)
      * @param  int|null  $round whether to round the result
      * @return float harmonic mean
      *

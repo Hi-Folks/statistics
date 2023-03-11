@@ -28,6 +28,6 @@ class ArrUtil
     {
         $del_val = 0;
 
-        return array_values(array_filter($data, fn ($e) => $e != $del_val));
+        return array_values(array_filter($data, fn ($e): bool => $e != $del_val));
     }
 }

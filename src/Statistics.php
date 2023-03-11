@@ -40,7 +40,6 @@ class Statistics
 
     /**
      * @param  array<mixed>  $values
-     * @return self
      */
     public static function make(array $values): self
     {
@@ -51,8 +50,6 @@ class Statistics
 
     /**
      * Remove '0' values from the array.
-     *
-     * @return self
      */
     public function stripZeroes(): self
     {
@@ -78,7 +75,6 @@ class Statistics
      *
      * @see Freq::frequencies()
      *
-     * @param  bool  $transformToInteger
      * @return array<int>
      */
     public function frequencies(bool $transformToInteger = false): array
@@ -125,8 +121,6 @@ class Statistics
 
     /**
      * Get the highest value.
-     *
-     * @return mixed
      */
     public function max(): mixed
     {
@@ -135,8 +129,6 @@ class Statistics
 
     /**
      * Get the lowest value.
-     *
-     * @return mixed
      */
     public function min(): mixed
     {
@@ -145,8 +137,6 @@ class Statistics
 
     /**
      * Get the range (max value - min value).
-     *
-     * @return int|float
      */
     public function range(): int|float
     {
@@ -155,8 +145,6 @@ class Statistics
 
     /**
      * Count elements.
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -296,9 +284,6 @@ class Statistics
 
     /**
      * Returns a string with values joined with a separator
-     *
-     * @param  bool|int  $sample
-     * @return string
      */
     public function valuesToString(bool|int $sample = false): string
     {

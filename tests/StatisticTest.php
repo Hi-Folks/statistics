@@ -3,7 +3,7 @@
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Statistics;
 
-it('can calculate statistics', function () {
+it('can calculate statistics', function (): void {
     $s = Statistics::make(
         [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76]
     );
@@ -26,7 +26,7 @@ it('can calculate statistics', function () {
     expect($s->originalArray())->toHaveCount(11);
 });
 
-it('can calculate statistics again', function () {
+it('can calculate statistics again', function (): void {
     // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
     $s = Statistics::make(
         [3, 5, 4, 7, 5, 2]
@@ -42,7 +42,7 @@ it('can calculate statistics again', function () {
     expect($s->thirdQuartile())->toEqual(5.5);
 });
 
-it('can calculate statistics again and again', function () {
+it('can calculate statistics again and again', function (): void {
     // https://www.purplemath.com/modules/meanmode.htm
     $s = Statistics::make(
         [13, 18, 13, 14, 13, 16, 14, 21, 13]
@@ -69,13 +69,13 @@ it('can calculate statistics again and again', function () {
     expect($s->range())->toEqual(6);
 });
 
-it('can strip zeros', function () {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
+it('can strip zeros', function (): void {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
     $s = Statistics::make(
         [3, 5, 0, 0.1, 4, 7, 5, 2]
     )->stripZeroes();
     expect($s->count())->toEqual(7);
 });
-it('can calculate mean', function () {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
+it('can calculate mean', function (): void {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
     $s = Statistics::make(
         [3, 5, 4, 7, 5, 2]
     );
@@ -85,10 +85,10 @@ it('can calculate mean', function () {    // https://www.youtube.com/watch?v=6z7
         []
     );
     expect($s->count())->toEqual(0);
-    expect(fn () => $s->mean())->toThrow(InvalidDataInputException::class);
+    expect(fn (): float|int|null => $s->mean())->toThrow(InvalidDataInputException::class);
 });
 
-it('can calculate mean again', function () { // https://docs.python.org/3/library/statistics.html#statistics.mean
+it('can calculate mean again', function (): void { // https://docs.python.org/3/library/statistics.html#statistics.mean
     $s = Statistics::make(
         [1, 2, 3, 4, 4]
     );
@@ -110,15 +110,15 @@ it('can calculate mean again', function () { // https://docs.python.org/3/librar
     expect($s->mean())->toEqual(4.25);
 });
 
-it('can valuesToString', function () {
+it('can valuesToString', function (): void {
     $s = Statistics::make(
         [1, 2, 3, 4, 4]
     );
-    expect($s->valuesToString(false, $s))->toEqual('1,2,3,4,4');
-    expect($s->valuesToString(3, $s))->toEqual('1,2,3');
+    expect($s->valuesToString(false))->toEqual('1,2,3,4,4');
+    expect($s->valuesToString(3))->toEqual('1,2,3');
 });
 
-it('calculates Population standard deviation', function () {
+it('calculates Population standard deviation', function (): void {
     expect(
         Statistics::make(
             [1.5, 2.5, 2.5, 2.75, 3.25, 4.75]
@@ -128,7 +128,7 @@ it('calculates Population standard deviation', function () {
         Statistics::make([1, 2, 4, 5, 8])->pstdev(4)
     )->toEqual(2.4495);
     expect(
-        fn () => Statistics::make([])->pstdev()
+        fn (): float => Statistics::make([])->pstdev()
     )->toThrow(InvalidDataInputException::class);
     expect(
         Statistics::make([1])->pstdev()
@@ -137,9 +137,9 @@ it('calculates Population standard deviation', function () {
         Statistics::make([1, 2, 3, 3])->pstdev(7)
     )->toEqual(0.8291562);
 });
-it('calculates Sample standard deviation', function () {
+it('calculates Sample standard deviation', function (): void {
     expect(
-        Statistics::make([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 7)->stdev()
+        Statistics::make([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])->stdev()
     )->toEqual(1.0810874155219827);
     expect(
         Statistics::make([1, 2, 2, 4, 6])->stdev()
@@ -148,20 +148,20 @@ it('calculates Sample standard deviation', function () {
         Statistics::make([1, 2, 4, 5, 8])->stdev(4)
     )->toEqual(2.7386);
     expect(
-        fn () => Statistics::make([])->stdev()
+        fn (): float => Statistics::make([])->stdev()
     )->toThrow(InvalidDataInputException::class);
     expect(
-        fn () => Statistics::make([1])->stdev()
+        fn (): float => Statistics::make([1])->stdev()
     )->toThrow(InvalidDataInputException::class);
 });
 
-it('calculates variance', function () {
+it('calculates variance', function (): void {
     expect(
         Statistics::make([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5])->variance()
     )->toEqual(1.3720238095238095);
 });
 
-it('calculates pvariance', function () {
+it('calculates pvariance', function (): void {
     expect(
         Statistics::make([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])->pvariance()
     )->toEqual(1.25);
@@ -170,7 +170,7 @@ it('calculates pvariance', function () {
     )->toEqual(0.6875);
 });
 
-it('calculates geometric mean', function () {
+it('calculates geometric mean', function (): void {
     expect(
         Statistics::make([54, 24, 36])->geometricMean(2)
     )->toEqual(36);
@@ -178,22 +178,22 @@ it('calculates geometric mean', function () {
         Statistics::make([4, 8, 3, 9, 17])->geometricMean(2)
     )->toEqual(6.81);
     expect(
-        fn () => Statistics::make([])->geometricMean()
+        fn (): float => Statistics::make([])->geometricMean()
     )->toThrow(InvalidDataInputException::class);
 });
 
-it('calculates harmonic mean', function () {
+it('calculates harmonic mean', function (): void {
     expect(
         Statistics::make([40, 60])->harmonicMean(1)
     )->toEqual(48.0);
     expect(
-        fn () => Statistics::make([])->harmonicMean()
+        fn (): float => Statistics::make([])->harmonicMean()
     )->toThrow(InvalidDataInputException::class);
 });
 
-it('can distinct numeric array', function () {
+it('can distinct numeric array', function (): void {
     expect(Statistics::make([1, 2, 3])->numericalArray())->toEqual([1, 2, 3]);
     expect(Statistics::make([1, '2', 3])->numericalArray())->toEqual([1, '2', 3]);
     expect(Statistics::make([])->numericalArray())->toEqual([]);
-    expect(fn () => Statistics::make([1, 'some string', 3])->numericalArray())->toThrow(InvalidDataInputException::class);
+    expect(fn (): array => Statistics::make([1, 'some string', 3])->numericalArray())->toThrow(InvalidDataInputException::class);
 });

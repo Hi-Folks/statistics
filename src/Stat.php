@@ -16,7 +16,6 @@ class Stat
      * Count the element in the array
      *
      * @param  mixed[]  $data
-     * @return int
      */
     public static function count(array $data): int
     {
@@ -32,7 +31,7 @@ class Stat
      * If data is empty, null is returned
      *
      * @param  array<int|float>  $data array of data
-     * @return int|float arithmetic mean
+     * @return int|float|null arithmetic mean
      *
      * @throws InvalidDataInputException if the data is empty
      */
@@ -52,9 +51,7 @@ class Stat
      * using the common “mean of middle two” method.
      *
      * @param  mixed[]  $data
-     * @param  string  $medianType
      * @return mixed median of the data
-     *
      * @throws InvalidDataInputException if the data is empty
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
@@ -66,13 +63,13 @@ class Stat
         $index = floor($count / 2);  // cache the index
         if ($count & 1) {    // count is odd
             return $data[$index];
-        } else {                   // count is even
-            return match ($medianType) {
-                self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
-                self::MEDIAN_TYPE_HIGH => $data[$index],
-                default => ($data[$index - 1] + $data[$index]) / 2
-            };
         }
+        // count is even
+        return match ($medianType) {
+            self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
+            self::MEDIAN_TYPE_HIGH => $data[$index],
+            default => ($data[$index - 1] + $data[$index]) / 2
+        };
     }
 
     /**
@@ -275,7 +272,7 @@ class Stat
         foreach ($data as $i) {
             // sum of squares of differences between
             // all numbers and means.
-            $sumSquareDifferences += pow(($i - $average), 2);
+            $sumSquareDifferences += ($i - $average) ** 2;
         }
 
         return Math::round($sumSquareDifferences / ($num_of_elements), $round);
@@ -319,7 +316,7 @@ class Stat
         foreach ($data as $i) {
             // sum of squares of differences between
             // all numbers and means.
-            $sumSquareDifferences += pow(($i - $average), 2);
+            $sumSquareDifferences += ($i - $average) ** 2;
         }
 
         return Math::round($sumSquareDifferences / ($num_of_elements - 1), $round);
@@ -346,7 +343,7 @@ class Stat
         foreach ($data as $value) {
             $product *= $value;
         }
-        $geometricMean = pow($product, 1 / $count);
+        $geometricMean = $product ** (1 / $count);
 
         return Math::round($geometricMean, $round);
     }
@@ -355,7 +352,7 @@ class Stat
      * Return the harmonic mean (the reciprocal of the arithmetic mean) of the numeric data.
      *
      * @param  array<int|float>  $data
-     * @param  mixed[]  $weights additional weight to the elements (as if there were several of them)
+     * @param mixed[]|null $weights additional weight to the elements (as if there were several of them)
      * @param  int|null  $round whether to round the result
      * @return float harmonic mean
      *
@@ -387,7 +384,6 @@ class Stat
      *
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
-     * @return false|float
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements
@@ -441,7 +437,6 @@ class Stat
      *
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
-     * @return false|float
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
@@ -470,8 +465,8 @@ class Stat
             $xr = $x[$i] - $meanX;
             $yr = $y[$i] - $meanY;
             $a += $xr * $yr;
-            $bx += pow($xr, 2);
-            $by += pow($yr, 2);
+            $bx += $xr ** 2;
+            $by += $yr ** 2;
         }
         $b = sqrt($bx * $by);
         if ($b == 0) {

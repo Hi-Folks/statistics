@@ -6,9 +6,6 @@ class Freq
 {
     /**
      * Return true is the type of the variable is integer, boolean or string
-     *
-     * @param  mixed  $value
-     * @return bool
      */
     private static function isDiscreteType(mixed $value): bool
     {
@@ -111,7 +108,6 @@ class Freq
 
     /**
      * @param  mixed[]  $data
-     * @param  int  $chunkSize
      * @return int[]
      */
     public static function frequencyTableBySize(array $data, int $chunkSize = 1): array

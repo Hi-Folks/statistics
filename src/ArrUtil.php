@@ -8,8 +8,6 @@ class ArrUtil
      * Returns a string with values joined with a separator
      *
      * @param  mixed[]  $data
-     * @param  bool|int  $sample
-     * @return string
      */
     public static function toString(array $data, bool|int $sample = false): string
     {
@@ -30,8 +28,6 @@ class ArrUtil
     {
         $del_val = 0;
 
-        return array_values(array_filter($data, function ($e) use ($del_val) {
-            return $e != $del_val;
-        }));
+        return array_values(array_filter($data, fn ($e): bool => $e != $del_val));
     }
 }

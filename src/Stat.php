@@ -63,13 +63,13 @@ class Stat
         $index = floor($count / 2);  // cache the index
         if ($count & 1) {    // count is odd
             return $data[$index];
-        } else {                   // count is even
-            return match ($medianType) {
-                self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
-                self::MEDIAN_TYPE_HIGH => $data[$index],
-                default => ($data[$index - 1] + $data[$index]) / 2
-            };
         }
+        // count is even
+        return match ($medianType) {
+            self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
+            self::MEDIAN_TYPE_HIGH => $data[$index],
+            default => ($data[$index - 1] + $data[$index]) / 2
+        };
     }
 
     /**

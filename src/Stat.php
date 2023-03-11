@@ -16,7 +16,6 @@ class Stat
      * Count the element in the array
      *
      * @param  mixed[]  $data
-     * @return int
      */
     public static function count(array $data): int
     {
@@ -52,9 +51,7 @@ class Stat
      * using the common “mean of middle two” method.
      *
      * @param  mixed[]  $data
-     * @param  string  $medianType
      * @return mixed median of the data
-     *
      * @throws InvalidDataInputException if the data is empty
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
@@ -275,7 +272,7 @@ class Stat
         foreach ($data as $i) {
             // sum of squares of differences between
             // all numbers and means.
-            $sumSquareDifferences += pow(($i - $average), 2);
+            $sumSquareDifferences += ($i - $average) ** 2;
         }
 
         return Math::round($sumSquareDifferences / ($num_of_elements), $round);
@@ -319,7 +316,7 @@ class Stat
         foreach ($data as $i) {
             // sum of squares of differences between
             // all numbers and means.
-            $sumSquareDifferences += pow(($i - $average), 2);
+            $sumSquareDifferences += ($i - $average) ** 2;
         }
 
         return Math::round($sumSquareDifferences / ($num_of_elements - 1), $round);
@@ -346,7 +343,7 @@ class Stat
         foreach ($data as $value) {
             $product *= $value;
         }
-        $geometricMean = pow($product, 1 / $count);
+        $geometricMean = $product ** (1 / $count);
 
         return Math::round($geometricMean, $round);
     }
@@ -387,7 +384,6 @@ class Stat
      *
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
-     * @return false|float
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements
@@ -441,7 +437,6 @@ class Stat
      *
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
-     * @return false|float
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
@@ -470,8 +465,8 @@ class Stat
             $xr = $x[$i] - $meanX;
             $yr = $y[$i] - $meanY;
             $a += $xr * $yr;
-            $bx += pow($xr, 2);
-            $by += pow($yr, 2);
+            $bx += $xr ** 2;
+            $by += $yr ** 2;
         }
         $b = sqrt($bx * $by);
         if ($b == 0) {

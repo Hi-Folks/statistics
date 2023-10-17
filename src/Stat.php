@@ -64,6 +64,7 @@ class Stat
         if ($count & 1) {    // count is odd
             return $data[$index];
         }
+
         // count is even
         return match ($medianType) {
             self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
@@ -423,6 +424,7 @@ class Stat
             $diffY = $valueY - $meanY;
             $add += ($diffX * $diffY);
         }
+
         // covariance for sample: N - 1
         return $add / floatval($countX - 1);
     }

@@ -87,7 +87,7 @@ class Statistics
      *
      * @see Freq::relativeFrequencies()
      *
-     * @param  int  $round whether to round the result
+     * @param  int|null  $round whether to round the result
      * @return array<float>
      */
     public function relativeFrequencies(int $round = null): array

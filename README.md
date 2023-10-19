@@ -14,7 +14,7 @@
 PHP package that provides functions for calculating mathematical statistics of numeric data.
 
 In this package I'm collecting some useful statistic functions.
-Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Hearth Rate, Speed, Cadence, Power etc.
+Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Heart Rate, Speed, Cadence, Power etc.
 I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like mean, mode, median, range, quantiles, first quartile ( or 25th percentile), third quartile (or 75th percentile), frequency table (cumulative, relative), standard deviation (population and sample), variance (population and sample) etc...
 
 > This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html) 
@@ -267,7 +267,7 @@ round($slope * 2022 + $intercept);
 
 ### Freq class
 With *Statistics* package you can calculate frequency table.
-A frequency table is list the frequency of various outcomes in a sample.
+A frequency table lists the frequency of various outcomes in a sample.
 Each entry in the table contains the frequency or count of the occurrences of values within a particular group or interval.
 
 
@@ -375,7 +375,7 @@ echo "Mode              : " . $stat->mode() . PHP_EOL;
 
 ### Calculate Frequency Table
 
-Statistics packages has some methods for generating Frequency Table:
+Statistics packages have some methods for generating Frequency Table:
 - frequencies(): a frequency is the number of times a value of the data occurs;
 - relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
 - cumulativeFrequencies(): is the accumulation of the previous relative frequencies;

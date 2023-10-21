@@ -4,6 +4,4 @@ namespace HiFolks\Statistics\Exception;
 
 use InvalidArgumentException;
 
-class InvalidDataInputException extends InvalidArgumentException
-{
-}
+class InvalidDataInputException extends InvalidArgumentException {}

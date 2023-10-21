@@ -5,7 +5,7 @@ use HiFolks\Statistics\Stat;
 it('parse CSV', function () {
     $row = 0;
 
-    if (($handle = fopen(getcwd().'/tests/data/income.data.csv', 'r')) !== false) {
+    if (($handle = fopen(getcwd() . '/tests/data/income.data.csv', 'r')) !== false) {
         $x = [];
         $y = [];
         while (($data = fgetcsv($handle, 1000, ',')) !== false) {

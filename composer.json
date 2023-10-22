@@ -34,11 +34,12 @@
         }
     },
     "scripts": {
-        "pint": "vendor/bin/pint",
+        "format": "vendor/bin/pint",
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
         "static-code": "vendor/bin/phpstan analyse -c phpstan.neon",
         "all-check": [
+            "@format",
             "@test",
             "@static-code"
         ]

@@ -1,70 +1,58 @@
 # Contributing
 
-Contributions are **welcome** and will be fully **credited**.
+Your contributions are highly appreciated, and they will be duly recognized.
 
-Please read and understand the contribution guide before creating an issue or pull request.
+Before you proceed to create an issue or a pull request, please take a moment to familiarize yourself with our contribution guide.
 
 ## Etiquette
 
-This project is open source, and as such, the maintainers give their free time to build and maintain the source code
-held within. They make the code freely available in the hope that it will be of use to other developers. It would be
-extremely unfair for them to suffer abuse or anger for their hard work.
+This project thrives on the spirit of open source collaboration. Our maintainers dedicate their precious time to create and uphold the source code, and they share it with the hope that it will benefit fellow developers. Let's ensure they don't bear the brunt of abuse or anger for their hard work.
 
-Please be considerate towards maintainers when raising issues or presenting pull requests. Let's show the
-world that developers are civilized and selfless people.
+When raising issues or submitting pull requests, let's maintain a considerate and respectful tone. Our goal is to exemplify that developers are a courteous and collaborative community.
 
-It's the duty of the maintainer to ensure that all submissions to the project are of sufficient
-quality to benefit the project. Many developers have different skillsets, strengths, and weaknesses. Respect the maintainer's decision, and do not be upset or abusive if your submission is not used.
+The maintainers have the responsibility to evaluate the quality and compatibility of all contributions with the project. Every developer brings unique skills, strengths, and perspectives to the table. Please respect their decisions, even if your submission isn't integrated.
 
-## Viability
+## Relevance
 
-When requesting or submitting new features, first consider whether it might be useful to others. Open
-source projects are used by many developers, who may have entirely different needs to your own. Think about
-whether or not your feature is likely to be used by other users of the project.
+Before proposing or submitting new features, consider whether they are genuinely beneficial to the broader user base. Open source projects serve a diverse group of developers with varying needs. It's important to assess whether your feature is likely to be widely useful.
 
 ## Procedure
 
-Before filing an issue:
+### Preliminary Steps Before Filing an Issue
 
-- Attempt to replicate the problem, to ensure that it wasn't a coincidental incident.
-- Check to make sure your feature suggestion isn't already present within the project.
-- Check the pull requests tab to ensure that the bug doesn't have a fix in progress.
-- Check the pull requests tab to ensure that the feature isn't already in progress.
+- Try to replicate the problem to ensure it's not an isolated occurrence.
+- Verify if your feature suggestion has already been addressed within the project.
+- Review the pull requests to make sure a solution for the bug isn't already underway.
+- Check the pull requests to confirm that the feature isn't already under development.
 
-Before submitting a pull request:
+### Preparing Your Pull Request
 
-- Check the codebase to ensure that your feature doesn't already exist.
-- Check the pull requests to ensure that another person hasn't already submitted the feature or fix.
+- Examine the codebase to prevent duplication of your proposed feature.
+- Check the pull requests to verify that another contributor hasn't already submitted the same feature or fix.
 
-## Open a Pull Request
+## Opening a Pull Request
 
-In order to maintain consistency of the source code we follow the PSR-12 coding standard and use PHPStan for static code analysis.
-You can use the command:
+To maintain coding consistency, we adhere to the PSR-12 coding standard and use PHPStan for static code analysis. You can utilize the following command:
 
-```sh
+```bash
 composer all-check
 ```
+This command encompasses:
 
-to launch
-- **[PSR-12 Coding Standard](https://www.php-fig.org/psr/psr-12/)**, under the hood is used [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer);
-- **PHPstan** with [level 8](https://phpstan.org/user-guide/rule-levels)
-- **PestPHP** to execute all tests from ./tests/*
+- PSR-12 Coding Standard checks employing PHP_CodeSniffer.
+- PHPStan analysis at level 8.
+- Execution of all tests from the `./tests/*` directory using PestPHP.
 
-I suggest you to launch *composer all-check* before committing and creating a PR.
+We recommend running `composer all-check` before committing and creating a pull request.
 
-If you want to work on a PR, I suggest you to create a new branch starting from **main branch**, and use it (as target branch) when you will submit your new **P**ull **R**equest to the original repository.
+When working on a pull request, it is advisable to create a new branch that originates from the main branch. This branch can serve as the target branch when you submit your pull request to the original repository.
 
-If you want to contribute with an high quality PR, I suggest you to focus not just on the source code but also:
+For a high-quality pull request, please ensure that you:
 
-- **Add tests!** - Your patch won't be accepted if it doesn't have tests.
+- Include tests as part of your patch. We cannot accept submissions lacking tests.
+- Document changes in behavior, keeping the README.md and other pertinent documentation up-to-date.
+- Respect our release cycle. We follow SemVer v2.0.0, and we cannot afford to randomly break public APIs.
+- Stick to one pull request per feature. Multiple changes should be presented through separate pull requests.
+- Provide a cohesive history. Each individual commit within your pull request should serve a meaningful purpose. If you have made several intermediary commits during development, please consolidate them before submission.
 
-- **Document any change in behaviour** - Make sure the `README.md` and any other relevant documentation are kept up-to-date.
-
-- **Consider our release cycle** - We try to follow [SemVer v2.0.0](https://semver.org/). Randomly breaking public APIs is not an option.
-
-- **One pull request per feature** - If you want to do more than one thing, send multiple pull requests.
-
-- **Send coherent history** - Make sure each individual commit in your pull request is meaningful. If you had to make multiple intermediate commits while developing, please [squash them](https://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
-
-
-**Happy coding!**
+Happy coding! 🚀

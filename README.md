@@ -1,21 +1,41 @@
-![PHP package for Statistics](https://repository-images.githubusercontent.com/445609326/e2539776-0f8f-4556-be1d-887ea2368813)
-
-# Statistics PHP package
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=for-the-badge)](https://packagist.org/packages/hi-folks/statistics)
-[![Total Downloads](https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=for-the-badge)](https://packagist.org/packages/hi-folks/statistics)
-[![Static Code analysis](https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge)](https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml)
-![Packagist License](https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge)
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge)
-![GitHub last commit](https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge)
-
-[![Tests](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge)](https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml)
-
-PHP package that provides functions for calculating mathematical statistics of numeric data.
-
+<p align="center">
+    <img src="https://repository-images.githubusercontent.com/445609326/e2539776-0f8f-4556-be1d-887ea2368813" alt="PHP package for Statistics">
+</p>
+    
+<h1 align="center">
+    Statistics PHP package
+</h1>
+     
+<p align=center>
+    <a href="https://packagist.org/packages/hi-folks/statistics">
+        <img src="https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=for-the-badge" alt="Latest Version on Packagist">
+    </a>
+    <a href="https://packagist.org/packages/hi-folks/statistics">
+        <img src="https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=for-the-badge" alt="Total Downloads">
+    </a>
+    <a href="https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml">
+        <img src="https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge" alt="Static Code analysis">
+    </a>
+    <img src="https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge" alt="Packagist License">
+    <img src="https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge" alt="Packagist PHP Version Support">
+    <img src="https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge" alt="GitHub last commit">
+</p>
+    
+<p align=center>
+    <a href="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml">
+        <img src="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge" alt="Tests">
+    </a>
+</p>
+    
+<p align=center>
+    <i>
+        Introducing a PHP package enabling comprehensive mathematical statistics calculations on numeric data.
+    </i>
+</p>
+    
 In this package I'm collecting some useful statistic functions.
 Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Heart Rate, Speed, Cadence, Power etc.
-I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like mean, mode, median, range, quantiles, first quartile ( or 25th percentile), third quartile (or 75th percentile), frequency table (cumulative, relative), standard deviation (population and sample), variance (population and sample) etc...
+I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like mean, mode, median, range, quantiles, first quartile (or 25th percentile), third quartile (or 75th percentile), frequency table (cumulative, relative), standard deviation (population and sample), variance (population and sample) etc...
 
 > This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html) 
 

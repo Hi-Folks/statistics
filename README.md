@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://repository-images.githubusercontent.com/445609326/e2539776-0f8f-4556-be1d-887ea2368813">
+    <img src="https://repository-images.githubusercontent.com/445609326/e2539776-0f8f-4556-be1d-887ea2368813" alt="PHP package for Statistics">
 </p>
     
 <h1 align="center">
@@ -8,22 +8,22 @@
      
 <p align=center>
     <a href="https://packagist.org/packages/hi-folks/statistics">
-        <img src="https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=for-the-badge">
+        <img src="https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=for-the-badge" alt="Latest Version on Packagist">
     </a>
     <a href="https://packagist.org/packages/hi-folks/statistics">
-        <img src="https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=for-the-badge">
+        <img src="https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=for-the-badge" alt="Total Downloads">
     </a>
     <a href="https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml">
-        <img src="https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge">
+        <img src="https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge" alt="Static Code analysis">
     </a>
-    <img src="https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge">
-    <img src="https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge">
-    <img src="https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge">
+    <img src="https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge" alt="Packagist License">
+    <img src="https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge" alt="Packagist PHP Version Support">
+    <img src="https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge" alt="GitHub last commit">
 </p>
     
 <p align=center>
     <a href="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml">
-        <img src="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge">
+        <img src="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge" alt="Tests">
     </a>
 </p>
     

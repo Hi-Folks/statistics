@@ -13,13 +13,12 @@
     <a href="https://packagist.org/packages/hi-folks/statistics">
         <img src="https://img.shields.io/packagist/dt/hi-folks/statistics.svg?style=for-the-badge" alt="Total Downloads">
     </a>
+    <br>
     <a href="https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml">
         <img src="https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge" alt="Static Code analysis">
     </a>
-</p>
-
-<p align=center>
     <img src="https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge" alt="Packagist License">
+    <br>
     <img src="https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge" alt="Packagist PHP Version Support">
     <img src="https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge" alt="GitHub last commit">
 </p>

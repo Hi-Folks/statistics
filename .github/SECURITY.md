@@ -12,7 +12,7 @@ We follow a responsible disclosure policy, and we kindly ask you to:
 
 1. **Provide Sufficient Details**: When reporting a security issue, please include as much information as possible so that we can reproduce and understand the problem. This may include steps to reproduce, the affected component, and any proof-of-concept code if available.
 
-2. **Allow Time for Resolution**: We will acknowledge the receipt of your report promptly and work diligently to assess and resolved the issue. We appreciate your patience and understanding during this process.
+2. **Allow Time for Resolution**: We will acknowledge the receipt of your report promptly and work diligently to assess and resolve the issue. We appreciate your patience and understanding during this process.
 
 3. **Keep Information Confidential**: Please do not disclose or share the details of the security issue with others until we have addressed and resolved it. This helps protect our users and the security of our package.
 

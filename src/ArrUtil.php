@@ -12,7 +12,7 @@ class ArrUtil
     public static function toString(array $data, bool|int $sample = false): string
     {
         if ($sample) {
-            return implode(',', array_slice($data, 0, intval($sample)));
+            return implode(',', array_slice($data, 0, (int) $sample));
         }
 
         return implode(',', $data);

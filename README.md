@@ -16,6 +16,9 @@
     <a href="https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml">
         <img src="https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge" alt="Static Code analysis">
     </a>
+</p>
+
+<p align=center>
     <img src="https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge" alt="Packagist License">
     <img src="https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge" alt="Packagist PHP Version Support">
     <img src="https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge" alt="GitHub last commit">
@@ -33,9 +36,7 @@
     </i>
 </p>
     
-In this package I'm collecting some useful statistic functions.
-Once upon a time, I was playing with FIT files. A FIT file is a file where is collected a lot of information about your sport activities. In that file you have the tracking of your Heart Rate, Speed, Cadence, Power etc.
-I needed to apply some statistic functions to understand better the numbers and the sport activity performance. I collected some functions like mean, mode, median, range, quantiles, first quartile (or 25th percentile), third quartile (or 75th percentile), frequency table (cumulative, relative), standard deviation (population and sample), variance (population and sample) etc...
+I've put together a package of useful statistical functions. These functions originally stemmed from my exploration of FIT files, which contain a wealth of data about sports activities. Within these files, you can find detailed information on metrics such as Heart Rate, Speed, Cadence, Power, and more. I developed these statistical functions to help gain deeper insights into the numerical data and performance of these sports activities. The functions cover a range of measures, including mean, mode, median, range, quantiles, first quartile (25th percentile), third quartile (75th percentile), frequency tables (cumulative and relative), standard deviation (both for populations and samples), and variance (again for populations and samples).
 
 > This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html) 
 

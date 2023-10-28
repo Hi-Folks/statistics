@@ -1,45 +1,47 @@
 # Changelog
 
-## 0.2.1 - 2022-02-22
+### 0.2.1 - 2022-02-22
 - Linear regression
 
-## 0.2.0 - 2022-02-21
+### 0.2.0 - 2022-02-21
 - Raise Exception instead of returning null if there is no valid input. By Artem Trokhymchuk @trokhymchuk [thanks for the PR #15](https://github.com/Hi-Folks/statistics/pull/15);
 - PHPStan, level 9
 
-## 0.1.7 - 2022-02-19
+### 0.1.7 - 2022-02-19
 - Code refactoring by @trokhymchuk
 - Clean phpdoc blocks by @trokhymchuk
 - Stat::correlation()
 - PHPStan, level 8
 
-## 0.1.6 -2022-02-17
+### 0.1.6 -2022-02-17
 - Stat::covariance()
 
-## 0.1.5 - 2022-02-05
+### 0.1.5 - 2022-02-05
+
 - frequencyTable()
 - frequencyTableBySize()
 - code refactoring and documenting some functions by Artem Trokhymchuk @trokhymchuk [thanks for the PR #2](https://github.com/Hi-Folks/statistics/pull/2)
 - add tests for Math class
 
-## 0.1.4 - 2022-01-30
+### 0.1.4 - 2022-01-30
+
 - quantiles()
 - firstQuartile()
 - thirdQuartile()
-- 
-## 0.1.3 - 2022-01-29
+  
+### 0.1.3 - 2022-01-29
+
 - geometricMean(): geometric mean
 - harmonicMean(): harmonic mean and weighted harmonic mean 
 
-
-## 0.1.2 - 2022-01-28
+### 0.1.2 - 2022-01-28
 
 - pstdev(): Population standard deviation
 - stdev(): Sample standard deviation
 - pvariance(): variance for a population
 - variance(): variance for a sample
 
-## 0.1.1 - 2022-01-27
+### 0.1.1 - 2022-01-27
 
 - Create Freq class with static method for managing frequencies table
 - Create Stat class with static methods for basci statistic functions like: mean, mode, median, multimode...
@@ -47,10 +49,9 @@
 - Create ArrUtil with some helpers/functions to manage arrays
 - Add CICD test for PHP 8.1
 
-## Initial release - 2022-01-08
+### Initial release - 2022-01-08
 
 Initial release with:
-
 - getMean()
 - count()
 - median()
@@ -62,10 +63,9 @@ Initial release with:
 - cumulativeFrequencies(): is the accumulation of the previous relative frequencies.;
 - cumulativeRelativeFrequencies(): is the accumulation of the previous relative ratio.
 
-## 0.1.0 - 2022-01-08
+### 0.1.0 - 2022-01-08
 
 Initial release with:
-
 - getMean()
 - count()
 - median()

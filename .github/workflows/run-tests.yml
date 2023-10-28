@@ -1,6 +1,12 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -37,3 +43,6 @@ jobs:
 
       - name: Execute tests
         run: composer test
+      
+      - name: Generate code coverage report
+        run: composer coverage

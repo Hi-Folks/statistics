@@ -1,11 +1,11 @@
 <p align="center">
     <img src="https://repository-images.githubusercontent.com/445609326/e2539776-0f8f-4556-be1d-887ea2368813" alt="PHP package for Statistics">
 </p>
-    
+
 <h1 align="center">
     Statistics PHP package
 </h1>
-     
+
 <p align=center>
     <a href="https://packagist.org/packages/hi-folks/statistics">
         <img src="https://img.shields.io/packagist/v/hi-folks/statistics.svg?style=for-the-badge" alt="Latest Version on Packagist">
@@ -23,22 +23,26 @@
     <img src="https://img.shields.io/packagist/php-v/hi-folks/statistics?style=for-the-badge" alt="Packagist PHP Version Support">
     <img src="https://img.shields.io/github/last-commit/hi-folks/statistics?style=for-the-badge" alt="GitHub last commit">
 </p>
-    
+
 <p align=center>
     <a href="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml">
         <img src="https://github.com/hi-folks/statistics/actions/workflows/run-tests.yml/badge.svg?branch=main&style=for-the-badge" alt="Tests">
     </a>
 </p>
-    
+
 <p align=center>
     <i>
         Introducing a PHP package enabling comprehensive mathematical statistics calculations on numeric data.
     </i>
 </p>
-    
-I've put together a package of useful statistical functions. These functions originally stemmed from my exploration of FIT files, which contain a wealth of data about sports activities. Within these files, you can find detailed information on metrics such as Heart Rate, Speed, Cadence, Power, and more. I developed these statistical functions to help gain deeper insights into the numerical data and performance of these sports activities. The functions cover a range of measures, including mean, mode, median, range, quantiles, first quartile (25th percentile), third quartile (75th percentile), frequency tables (cumulative and relative), standard deviation (both for populations and samples), and variance (again for populations and samples).
 
-> This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html) 
+I've put together a package of useful statistical functions.
+
+These functions originally stemmed from my exploration of FIT files, which contain a wealth of data about sports activities. Within these files, you can find detailed information on metrics such as Heart Rate, Speed, Cadence, Power, and more. I developed these statistical functions to help gain deeper insights into the numerical data and performance of these sports activities.
+
+The functions provided my this package, cover a range of measures, including mean, mode, median, range, quantiles, first quartile (25th percentile), third quartile (75th percentile), frequency tables (cumulative and relative), standard deviation (both for populations and samples), and variance (again for populations and samples).
+
+> This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html)
 
 ## Installation
 
@@ -53,24 +57,24 @@ composer require hi-folks/statistics
 ### Stat class
 This class provides methods for calculating mathematical statistics of numeric data.
 Stat class has methods to calculate an average or typical value from a population or sample like:
-- mean(): arithmetic mean or "average" of data;
-- median(): median or "middle value" of data;
-- medianLow(): low median of data;
-- medianHigh(): high median of data;
-- mode(): single mode (most common value) of discrete or nominal data;
-- multimode(): list of modes (most common values) of discrete or nominal data;
-- quantiles(): cut points dividing the range of a probability distribution into continuous intervals with equal probabilities;
-- thirdQuartile(): 3rd quartile, is the value at which 75 percent of the data is below it;
-- firstQuartile(): first quartile, is the value at which 25 percent of the data is below it;
-- pstdev(): Population standard deviation;
-- stdev(): Sample standard deviation;
-- pvariance(): variance for a population;
-- variance(): variance for a sample;
-- geometricMean(): geometric mean;
-- harmonicMean(): harmonic mean;
-- correlation(): the Pearson’s correlation coefficient for two inputs;
-- covariance(): the sample covariance of two inputs;
-- linearRegression(): return the slope and intercept of simple linear regression parameters estimated using ordinary least squares.
+- `mean()`: arithmetic mean or "average" of data;
+- `median()`: median or "middle value" of data;
+- `medianLow()`: low median of data;
+- `medianHigh()`: high median of data;
+- `mode()`: single mode (most common value) of discrete or nominal data;
+- `multimode()`: list of modes (most common values) of discrete or nominal data;
+- `quantiles()`: cut points dividing the range of a probability distribution into continuous intervals with equal probabilities;
+- `thirdQuartile()`: 3rd quartile, is the value at which 75 percent of the data is below it;
+- `firstQuartile()`: first quartile, is the value at which 25 percent of the data is below it;
+- `pstdev()`: Population standard deviation;
+- `stdev()`: Sample standard deviation;
+- `pvariance()`: variance for a population;
+- `variance()`: variance for a sample;
+- `geometricMean()`: geometric mean;
+- `harmonicMean()`: harmonic mean;
+- `correlation()`: the Pearson’s correlation coefficient for two inputs;
+- `covariance()`: the sample covariance of two inputs;
+- `linearRegression()`: return the slope and intercept of simple linear regression parameters estimated using ordinary least squares.
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.
@@ -269,9 +273,9 @@ $correlation = Stat::correlation(
 Return the slope and intercept of simple linear regression  parameters estimated using ordinary least squares.
 Simple linear regression describes relationship between an independent variable *$x* and a dependent variable *$y* in terms of linear function.
 
-```php 
+```php
 $years = [1971, 1975, 1979, 1982, 1983];
-$films_total = [1, 2, 3, 4, 5] 
+$films_total = [1, 2, 3, 4, 5]
 list($slope, $intercept) = Stat::linearRegression(
     $years,
     $films_total
@@ -374,6 +378,12 @@ Array
 
 ### Statistics class
 
+The methods provided by the `Freq` and the `Stat` classes are mainly **static** methods.
+If you prefer to use an objects instance for calculating statistics you can choose to use an instance of the `Statistics` class.
+So for calling the statistics methods you can use your own object instance of the `Statistics` class.
+
+For example for calculating the mean, you can obtain the `Statistics` object via the `make()` static method, and then use the new object `$stat` like in the following example:
+
 ```php
 $stat = HiFolks\Statistics\Statistics::make(
     [3,5,4,7,5,2]
@@ -394,13 +404,13 @@ echo "Mode              : " . $stat->mode() . PHP_EOL;
 // Mode              : 5
 ```
 
-### Calculate Frequency Table
+#### Calculate Frequency Table
 
-Statistics packages have some methods for generating Frequency Table:
-- frequencies(): a frequency is the number of times a value of the data occurs;
-- relativeFrequencies(): a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
-- cumulativeFrequencies(): is the accumulation of the previous relative frequencies;
-- cumulativeRelativeFrequencies(): is the accumulation of the previous relative ratio.
+The `Statistics` packages have some methods for generating Frequency Table:
+- `frequencies()`: a frequency is the number of times a value of the data occurs;
+- `relativeFrequencies()`: a relative frequency is the ratio (fraction or proportion) of the number of times a value of the data occurs in the set of all outcomes to the total number of outcomes;
+- `cumulativeFrequencies()`: is the accumulation of the previous relative frequencies;
+- `cumulativeRelativeFrequencies()`: is the accumulation of the previous relative ratio.
 
 ```php
 use HiFolks\Statistics\Statistics;

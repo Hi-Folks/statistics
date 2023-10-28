@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0 - WIP
+
+- Rector refactor
+- PHPstan level 8
+- Support for PHP 8.1 and above
+- Add support for PHP 8.2 by @AmooAti
+- Update to PestPHP v2 by @AmooAti
+- Improving documentation (readme, contributing, code of conduct, security policies) by @AbhineshJha, @Arcturus22, @tvermaashutosh, @Abhishekgupta204, @Aryan4884
+- Rector v0.18.5 by @sukuasoft
+- Introducing Pint by @sukuasoft
+- GitHub Actions: Updating actions/checkout v4
+
+
 ## 0.2.1 - 2022-02-22
 - Linear regression
 

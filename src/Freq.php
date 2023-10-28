@@ -24,12 +24,12 @@ class Freq
      */
     public static function frequencies(array $data, bool $transformToInteger = false): array
     {
-        if (! Stat::count($data)) {
+        if (Stat::count($data) === 0) {
             return [];
         }
         if ($transformToInteger || ! self::isDiscreteType($data[0])) {
             foreach ($data as $key => $value) {
-                $data[$key] = intval($value);
+                $data[$key] = (int) $value;
             }
         }
         $frequencies = array_count_values($data);
@@ -48,13 +48,7 @@ class Freq
      */
     public static function cumulativeFrequencies(array $data): array
     {
-        /**
-         * @var array<mixed, int> array of cumulative frequencies
-         */
         $freqCumul = [];
-        /**
-         * @var int cumulative frequency
-         */
         $cumul = 0;
         $freqs = self::frequencies($data);
         foreach ($freqs as $key => $value) {
@@ -99,7 +93,7 @@ class Freq
         $cumul = 0;
         $relFreqs = self::relativeFrequencies($data);
         foreach ($relFreqs as $key => $value) {
-            $cumul = $cumul + $value;
+            $cumul += $value;
             $freqCumul[$key] = $cumul;
         }
 
@@ -113,8 +107,8 @@ class Freq
     public static function frequencyTableBySize(array $data, int $chunkSize = 1): array
     {
         $result = [];
-        $min = floor(floatval(min($data)));
-        $max = ceil(floatval(max($data)));
+        $min = floor((float) min($data));
+        $max = ceil((float) max($data));
         //$limit = ceil(($max - $min) / $category);
 
         sort($data);
@@ -123,7 +117,7 @@ class Freq
         while ($rangeHigh < $max) {
             $count = 0;
             $rangeHigh = ($rangeLow + $chunkSize);
-            foreach ($data as $key => $number) {
+            foreach ($data as $number) {
                 if (
                     ($number >= $rangeLow)
                     &&
@@ -133,7 +127,7 @@ class Freq
                     //unset($data[$key]);
                 }
             }
-            $result[strval($rangeLow)] = $count;
+            $result[(string) $rangeLow] = $count;
             $rangeLow = $rangeHigh;
         }
 
@@ -153,8 +147,8 @@ class Freq
     public static function frequencyTable(array $data, int $category = null): array
     {
         $result = [];
-        $min = floor(floatval(min($data)));
-        $max = ceil(floatval(max($data)));
+        $min = floor((float) min($data));
+        $max = ceil((float) max($data));
         if (is_null($category)) {
             $category = ($max - $min) + 1;
         }
@@ -165,7 +159,7 @@ class Freq
         for ($i = 0; $i < $category; $i++) {
             $count = 0;
             $rangeHigh = $rangeLow + $limit;
-            foreach ($data as $key => $number) {
+            foreach ($data as $number) {
                 if (
                     ($number >= $rangeLow)
                     &&
@@ -175,12 +169,12 @@ class Freq
                     //unset($data[$key]);
                 }
             }
-            $result[strval($rangeLow)] = $count;
+            $result[(string) $rangeLow] = $count;
             $rangeLow = $rangeHigh;
         }
 
         // eliminate
-        foreach ($result as $key => $item) {
+        foreach (array_keys($result) as $key) {
             if ($key > max($data)) {
                 unset($result[$key]);
             }

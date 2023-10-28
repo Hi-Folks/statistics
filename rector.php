@@ -24,6 +24,6 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::CODE_QUALITY,
         SetList::EARLY_RETURN,
         SetList::TYPE_DECLARATION,
-        SetList::PRIVATIZATION
+        // SetList::PRIVATIZATION
     ]);
 };

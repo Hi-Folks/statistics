@@ -22,8 +22,6 @@ class Statistics
 
     /**
      * Whether array contains not a numbers
-     *
-     * @var bool
      */
     private ?bool $containsNan = null;
 
@@ -43,9 +41,7 @@ class Statistics
      */
     public static function make(array $values): self
     {
-        $freqTable = new self($values);
-
-        return $freqTable;
+        return new self($values);
     }
 
     /**
@@ -309,9 +305,7 @@ class Statistics
         if ($this->containsNan) {
             throw new InvalidDataInputException('The data must not contain non-number elements.');
         }
-        /** @var array<int|float> */
-        $numericalArray = $this->values;
 
-        return $numericalArray;
+        return $this->values;
     }
 }

@@ -38,6 +38,8 @@
         "test": "vendor/bin/pest",
         "test-coverage": "vendor/bin/pest --coverage",
         "static-code": "vendor/bin/phpstan analyse -c phpstan.neon",
+        "rector-dry-run": "rector process --dry-run",
+        "rector": "rector process",
         "all-check": [
             "@format",
             "@test",

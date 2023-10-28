@@ -6,11 +6,11 @@ use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Stat
 {
-    public const MEDIAN_TYPE_LOW = 'LOW';
+    final public const MEDIAN_TYPE_LOW = 'LOW';
 
-    public const MEDIAN_TYPE_HIGH = 'HIGH';
+    final public const MEDIAN_TYPE_HIGH = 'HIGH';
 
-    public const MEDIAN_TYPE_MIDDLE = 'MIDDLE';
+    final public const MEDIAN_TYPE_MIDDLE = 'MIDDLE';
 
     /**
      * Count the element in the array
@@ -38,7 +38,7 @@ class Stat
     public static function mean(array $data): int|float|null
     {
         $sum = 0;
-        if (! self::count($data)) {
+        if (self::count($data) === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
         $sum = array_sum($data);
@@ -57,11 +57,11 @@ class Stat
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
         $count = self::count($data);
-        if (! $count) {
+        if ($count === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
         $index = floor($count / 2);  // cache the index
-        if ($count & 1) {    // count is odd
+        if (($count & 1) !== 0) {    // count is odd
             return $data[$index];
         }
 
@@ -125,7 +125,7 @@ class Stat
             throw new InvalidDataInputException('The data must not be empty.');
         }
         $sameMode = true;
-        foreach ($frequencies as $key => $value) {
+        foreach ($frequencies as $value) {
             if ($value > 1) {
                 $sameMode = false;
 
@@ -155,10 +155,7 @@ class Stat
      */
     public static function multimode(array $data): array|null
     {
-        /** @var mixed[]|null */
-        $mode = self::mode($data, true);
-
-        return $mode;
+        return self::mode($data, true);
     }
 
     /**
@@ -249,7 +246,7 @@ class Stat
     {
         $variance = self::pvariance($data);
 
-        return (float) Math::round(sqrt($variance), $round);
+        return Math::round(sqrt($variance), $round);
     }
 
     /**
@@ -293,7 +290,7 @@ class Stat
     {
         $variance = self::variance($data);
 
-        return (float) Math::round(sqrt($variance), $round);
+        return Math::round(sqrt($variance), $round);
     }
 
     /**
@@ -337,7 +334,7 @@ class Stat
     public static function geometricMean(array $data, ?int $round = null): float
     {
         $count = self::count($data);
-        if (! $count) {
+        if ($count === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
         $product = 1;
@@ -363,7 +360,7 @@ class Stat
     {
         $sum = 0;
         $count = self::count($data);
-        if (! $count) {
+        if ($count === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
         $sumWeigth = 0;
@@ -393,7 +390,7 @@ class Stat
     {
         $countX = count($x);
         $countY = count($y);
-        if ($countX != $countY) {
+        if ($countX !== $countY) {
             throw new InvalidDataInputException(
                 'Covariance requires that both inputs have same number of data points.'
             );
@@ -426,7 +423,7 @@ class Stat
         }
 
         // covariance for sample: N - 1
-        return $add / floatval($countX - 1);
+        return $add / (float) ($countX - 1);
     }
 
     /**
@@ -448,7 +445,7 @@ class Stat
     {
         $countX = count($x);
         $countY = count($y);
-        if ($countX != $countY) {
+        if ($countX !== $countY) {
             throw new InvalidDataInputException(
                 'Correlation requires that both inputs have same number of data points.'
             );
@@ -463,7 +460,8 @@ class Stat
         $a = 0;
         $bx = 0;
         $by = 0;
-        for ($i = 0; $i < count($x); $i++) {
+        $counter = count($x);
+        for ($i = 0; $i < $counter; $i++) {
             $xr = $x[$i] - $meanX;
             $yr = $y[$i] - $meanY;
             $a += $xr * $yr;
@@ -493,7 +491,7 @@ class Stat
     {
         $countX = count($x);
         $countY = count($y);
-        if ($countX != $countY) {
+        if ($countX !== $countY) {
             throw new InvalidDataInputException(
                 'Linear regression requires that both inputs have same number of data points.'
             );

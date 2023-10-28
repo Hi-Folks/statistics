@@ -54,26 +54,32 @@ composer require hi-folks/statistics
 ## Usage
 
 ### Stat class
+
+Stat class has methods to calculate an average or typical value from a population or sample.
 This class provides methods for calculating mathematical statistics of numeric data.
-Stat class has methods to calculate an average or typical value from a population or sample like:
-- `mean()`: arithmetic mean or "average" of data;
-- `median()`: median or "middle value" of data;
-- `medianLow()`: low median of data;
-- `medianHigh()`: high median of data;
-- `mode()`: single mode (most common value) of discrete or nominal data;
-- `multimode()`: list of modes (most common values) of discrete or nominal data;
-- `quantiles()`: cut points dividing the range of a probability distribution into continuous intervals with equal probabilities;
-- `thirdQuartile()`: 3rd quartile, is the value at which 75 percent of the data is below it;
-- `firstQuartile()`: first quartile, is the value at which 25 percent of the data is below it;
-- `pstdev()`: Population standard deviation;
-- `stdev()`: Sample standard deviation;
-- `pvariance()`: variance for a population;
-- `variance()`: variance for a sample;
-- `geometricMean()`: geometric mean;
-- `harmonicMean()`: harmonic mean;
-- `correlation()`: the Pearson’s correlation coefficient for two inputs;
-- `covariance()`: the sample covariance of two inputs;
-- `linearRegression()`: return the slope and intercept of simple linear regression parameters estimated using ordinary least squares.
+The various mathematical statistics are listed below:
+
+
+| Mathematical Statistic | Description |
+| ---------------------- | ----------- |
+| `mean()` | arithmetic mean or "average" of data |
+| `median()` | median or "middle value" of data |
+| `medianLow()` | low median of data |
+| `medianHigh()` | high median of data |
+| `mode()` | single mode (most common value) of discrete or nominal data |
+| `multimode()` | list of modes (most common values) of discrete or nominal data |
+| `quantiles()` | cut points dividing the range of a probability distribution into continuous intervals with equal probabilities |
+| `thirdQuartile()` | 3rd quartile, is the value at which 75 percent of the data is below it |
+| `firstQuartile()` | first quartile, is the value at which 25 percent of the data is below it |
+| `pstdev()` | Population standard deviation |
+| `stdev()` | Sample standard deviation |
+| `pvariance()` | variance for a population |
+| `variance()` | variance for a sample |
+| `geometricMean()` | geometric mean |
+| `harmonicMean()` | harmonic mean |
+| `correlation()` | the Pearson’s correlation coefficient for two inputs |
+| `covariance()` | the sample covariance of two inputs |
+| `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares |
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.

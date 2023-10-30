@@ -37,9 +37,9 @@
 
 I've put together a package of useful statistical functions.
 
-These functions originally stemmed from my exploration of FIT files, which contain a wealth of data about sports activities. Within these files, you can find detailed information on metrics such as Heart Rate, Speed, Cadence, Power, and more. I developed these statistical functions to help gain deeper insights into the numerical data and performance of these sports activities.
+These functions were initially conceived during my exploration of FIT files, which are rich sources of data pertaining to sports activities. Enclosed within these files, you'll discover in-depth information on metrics like Heart Rate, Speed, Cadence, Power, and more. I designed these statistical functions to facilitate a more profound understanding of the numerical data and the performance of these sports activities.
 
-The functions provided by this package, cover a range of measures, including mean, mode, median, range, quantiles, first quartile (25th percentile), third quartile (75th percentile), frequency tables (cumulative and relative), standard deviation (both for populations and samples), and variance (again for populations and samples).
+This package encompasses a diverse set of statistical measures, including mean, mode, median, range, quantiles, first quartile (25th percentile), third quartile (75th percentile), as well as frequency tables (both cumulative and relative), standard deviation (applicable to both populations and samples), and variance (once again, for populations and samples).
 
 > This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html)
 

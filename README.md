@@ -102,7 +102,7 @@ $mean = Stat::geometricMean([54, 24, 36], 1);
 // 36.0
 ```
 #### Stat::harmonicMean( array $data )
-The harmonic mean is the reciprocal of the arithmetic mean() of the reciprocals of the data. For example, the harmonic mean of three values a, b and c will be equivalent to 3/(1/a + 1/b + 1/c). If one of the values is zero, the result will be zero.
+The harmonic mean is the reciprocal of the arithmetic mean() of the reciprocals of the data. For example, the harmonic mean of three values a, b, and c will be equivalent to 3/(1/a + 1/b + 1/c). If one of the values is zero, the result will be zero.
 
 ```php
 use HiFolks\Statistics\Stat;
@@ -110,8 +110,8 @@ $mean = Stat::harmonicMean([40, 60], null, 1);
 // 48.0
 ```
 
-You can also calculate harmonic weighted mean.
-Suppose a car travels 40 km/hr for 5 km, and when traffic clears, speeds-up to 60 km/hr for the remaining 30 km of the journey. What is the average speed?
+You can also calculate the harmonic weighted mean.
+Suppose a car travels 40 km/hr for 5 km, and when traffic clears, speeds up to 60 km/hr for the remaining 30 km of the journey. What is the average speed?
 
 ```php
 use HiFolks\Statistics\Stat;
@@ -119,8 +119,8 @@ Stat::harmonicMean([40, 60], [5, 30], 1);
 // 56.0
 ```
 where:
-- 40, 60 :  are the elements
-- 5, 30: are the weights for each element (first weight is the weight of the first element, the second one is the weight of the second element)
+- 40, 60:  are the elements
+- 5, 30: are the weights for each element (the first weight is the weight of the first element, the second one is the weight of the second element)
 - 1: is the decimal numbers you want to round
 
 
@@ -163,7 +163,7 @@ $median = Stat::medianHigh([1, 3, 5, 7]);
 
 #### Stat::quantiles( array $data, $n=4, $round=null  )
 Divide data into n continuous intervals with equal probability. Returns a list of n - 1 cut points separating the intervals.
-Set n to 4 for quartiles (the default). Set n to 10 for deciles. Set n to 100 for percentiles which gives the 99 cuts points that separate data into 100 equal sized groups.
+Set n to 4 for quartiles (the default). Set n to 10 for deciles. Set n to 100 for percentiles which gives the 99 cut points that separate data into 100 equal-sized groups.
 
 
 ```php
@@ -220,7 +220,7 @@ Variance is a measure of dispersion of data points from the mean.
 Low variance indicates that data points are generally similar and do not vary widely from the mean.
 High variance indicates that data values have greater variability and are more widely dispersed from the mean.
 
-For calculate variance from a *sample*:
+To calculate the variance from a *sample*:
 ```php
 use HiFolks\Statistics\Stat;
 $variance = Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]);
@@ -276,7 +276,7 @@ $correlation = Stat::correlation(
 
 #### Stat::linearRegression ( array $x , array $y )
 Return the slope and intercept of simple linear regression  parameters estimated using ordinary least squares.
-Simple linear regression describes relationship between an independent variable *$x* and a dependent variable *$y* in terms of linear function.
+Simple linear regression describes the relationship between an independent variable *$x* and a dependent variable *$y* in terms of a linear function.
 
 ```php
 $years = [1971, 1975, 1979, 1982, 1983];
@@ -384,8 +384,8 @@ Array
 ### Statistics class
 
 The methods provided by the `Freq` and the `Stat` classes are mainly **static** methods.
-If you prefer to use an objects instance for calculating statistics you can choose to use an instance of the `Statistics` class.
-So for calling the statistics methods you can use your own object instance of the `Statistics` class.
+If you prefer to use an object instance for calculating statistics you can choose to use an instance of the `Statistics` class.
+So for calling the statistics methods, you can use your object instance of the `Statistics` class.
 
 For example for calculating the mean, you can obtain the `Statistics` object via the `make()` static method, and then use the new object `$stat` like in the following example:
 

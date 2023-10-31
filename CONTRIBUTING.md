@@ -6,7 +6,7 @@ Before you proceed to create an issue or a pull request, please take a moment to
 
 ## Etiquette
 
-This project thrives on the spirit of open source collaboration. Our maintainers dedicate their precious time to create and uphold the source code, and they share it with the hope that it will benefit fellow developers. Let's ensure they don't bear the brunt of abuse or anger for their hard work.
+This project thrives on the spirit of open-source collaboration. Our maintainers dedicate their precious time to creating and upholding the source code, and they share it with the hope that it will benefit fellow developers. Let's ensure they don't bear the brunt of abuse or anger for their hard work.
 
 When raising issues or submitting pull requests, let's maintain a considerate and respectful tone. Our goal is to exemplify that developers are a courteous and collaborative community.
 
@@ -14,7 +14,7 @@ The maintainers have the responsibility to evaluate the quality and compatibilit
 
 ## Relevance
 
-Before proposing or submitting new features, consider whether they are genuinely beneficial to the broader user base. Open source projects serve a diverse group of developers with varying needs. It's important to assess whether your feature is likely to be widely useful.
+Before proposing or submitting new features, consider whether they are genuinely beneficial to the broader user base. Open-source projects serve a diverse group of developers with varying needs. It's important to assess whether your feature is likely to be widely useful.
 
 ## Procedure
 

@@ -56,6 +56,7 @@ class Stat
      */
     public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
     {
+        sort($data);
         $count = self::count($data);
         if ($count === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
@@ -170,7 +171,7 @@ class Stat
      */
     public static function quantiles(array $data, int $n = 4, ?int $round = null): array
     {
-        $count = Stat::count($data);
+        $count = self::count($data);
         if ($count < 2 || $n < 1) {
             throw new InvalidDataInputException(
                 'The size of the data must be greater than 2 and the number of quantiles must be greater than 1.'

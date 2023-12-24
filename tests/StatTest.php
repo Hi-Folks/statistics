@@ -3,7 +3,7 @@
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Stat;
 
-it('can calculate mean (static)', function () {
+it('calculates mean (static)', function () {
     expect(
         Stat::mean([1, 2, 3, 4, 4])
     )->toEqual(2.8);
@@ -15,7 +15,7 @@ it('can calculate mean (static)', function () {
     )->toThrow(InvalidDataInputException::class);
 });
 
-it('can calculate median (static)', function () {
+it('calculates median (static)', function () {
     expect(
         Stat::median([1, 3, 5])
     )->toEqual(3);
@@ -23,10 +23,16 @@ it('can calculate median (static)', function () {
         Stat::median([1, 3, 5, 7])
     )->toEqual(4);
     expect(
+        Stat::median([1001, 999, 998, 1001, 1002])
+    )->toEqual(1001);
+    expect(
+        Stat::median([1001, 999, 998, 1003, 1002, 1003])
+    )->toEqual(1001.5);
+    expect(
         fn() => Stat::median([])
     )->toThrow(InvalidDataInputException::class);
 });
-it('can calculate median low (static)', function () {
+it('calculates median low (static)', function () {
     expect(
         Stat::medianLow([1, 3, 5])
     )->toEqual(3);
@@ -34,16 +40,22 @@ it('can calculate median low (static)', function () {
         Stat::medianLow([1, 3, 5, 7])
     )->toEqual(3);
     expect(
+        Stat::medianLow([1001, 999, 998, 1003, 1002, 1003])
+    )->toEqual(1001);
+    expect(
         fn() => Stat::medianLow([])
     )->toThrow(InvalidDataInputException::class);
 });
-it('can calculate median high (static)', function () {
+it('calculates median high (static)', function () {
     expect(
         Stat::medianHigh([1, 3, 5])
     )->toEqual(3);
     expect(
         Stat::medianHigh([1, 3, 5, 7])
     )->toEqual(5);
+    expect(
+        Stat::medianHigh([1001, 999, 998, 1003, 1002, 1003])
+    )->toEqual(1002);
     expect(
         fn() => Stat::medianHigh([])
     )->toThrow(InvalidDataInputException::class);

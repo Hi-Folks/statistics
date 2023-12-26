@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.0.0 - WIP
+## 1.0.0 - 2023-12-26
 
+- Fixed `median()` function to handle unsorted data by @keatis
 - Rector refactor
 - PHPstan level 8
 - Support for PHP 8.1 and above
@@ -42,7 +43,7 @@
 
 ## 0.1.3 - 2022-01-29
 - geometricMean(): geometric mean
-- harmonicMean(): harmonic mean and weighted harmonic mean 
+- harmonicMean(): harmonic mean and weighted harmonic mean
 
 
 ## 0.1.2 - 2022-01-28

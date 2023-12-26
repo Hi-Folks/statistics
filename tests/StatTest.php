@@ -29,6 +29,18 @@ it('calculates median (static)', function () {
         Stat::median([1001, 999, 998, 1003, 1002, 1003])
     )->toEqual(1001.5);
     expect(
+        Stat::median([1, 3, 5, 7, 9, 11, 13])
+    )->toEqual(7);
+    expect(
+        Stat::median([1, 3, 5, 7, 9, 11])
+    )->toEqual(6);
+    expect(
+        Stat::median([-11, 5.5, -3.4, 7.1, -9, 22])
+    )->toEqual(1.05);
+    expect(
+        Stat::median([-1, -2, -3, -4, 4, 3, 2, 1])
+    )->toEqual(0);
+    expect(
         fn() => Stat::median([])
     )->toThrow(InvalidDataInputException::class);
 });

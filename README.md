@@ -15,7 +15,7 @@
     </a>
     <br>
     <a href="https://github.com/Hi-Folks/statistics/blob/main/.github/workflows/static-code-analysis.yml">
-        <img src="https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=for-the-badge" alt="Static Code analysis">
+        <img src="https://img.shields.io/badge/PHPStan-level%208-brightgreen.svg?style=for-the-badge" alt="Static Code analysis">
     </a>
     <img src="https://img.shields.io/packagist/l/hi-folks/statistics?style=for-the-badge" alt="Packagist License">
     <br>

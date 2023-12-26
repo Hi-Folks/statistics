@@ -27,7 +27,7 @@ class Freq
         if (Stat::count($data) === 0) {
             return [];
         }
-        if ($transformToInteger || ! self::isDiscreteType($data[0])) {
+        if ($transformToInteger || !self::isDiscreteType($data[0])) {
             foreach ($data as $key => $value) {
                 $data[$key] = (int) $value;
             }

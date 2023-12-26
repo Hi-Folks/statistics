@@ -366,7 +366,7 @@ class Stat
         }
         $sumWeigth = 0;
         foreach ($data as $key => $value) {
-            if (! $value) {
+            if (!$value) {
                 return 0;
             }
             $weight = is_null($weights) ? 1 : $weights[$key];
@@ -407,13 +407,13 @@ class Stat
 
         for ($pos = 0; $pos < $countX; $pos++) {
             $valueX = $x[$pos];
-            if (! is_numeric($valueX)) {
+            if (!is_numeric($valueX)) {
                 throw new InvalidDataInputException(
                     'Covariance requires numeric data points.'
                 );
             }
             $valueY = $y[$pos];
-            if (! is_numeric($valueY)) {
+            if (!is_numeric($valueY)) {
                 throw new InvalidDataInputException(
                     'Covariance requires numeric data points.'
                 );

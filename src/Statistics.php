@@ -295,7 +295,7 @@ class Statistics
     {
         if ($this->containsNan === null) {
             foreach ($this->values as $value) {
-                if (! is_numeric($value)) {
+                if (!is_numeric($value)) {
                     $this->containsNan = true;
 
                     break;

@@ -42,7 +42,7 @@ class Stat
             throw new InvalidDataInputException('The data must not be empty.');
         }
         // @phpstan-ignore-next-line
-        if (!empty(array_filter($data, 'is_string'))) {
+        if (array_filter($data, 'is_string') !== []) {
             throw new InvalidDataInputException('The data array contains a string.');
         }
         $sum = array_sum($data);

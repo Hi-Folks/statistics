@@ -3,6 +3,7 @@
 ## 1.0.1 - 2024-11-21
 
 - Welcome PHP 8.4
+- Upgrading to Rector 1
 
 ## 1.0.0 - 2023-12-26
 

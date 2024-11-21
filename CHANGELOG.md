@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 - 2024-11-21
+
+- Welcome PHP 8.4
+
 ## 1.0.0 - 2023-12-26
 
 - Fixed `median()` function to handle unsorted data by @keatis

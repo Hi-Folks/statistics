@@ -29,7 +29,7 @@ class Statistics
      * @param  array<mixed>  $values
      */
     public function __construct(
-        array $values = []
+        array $values = [],
     ) {
         $this->values = array_values($values);
         $this->originalArray = $values;

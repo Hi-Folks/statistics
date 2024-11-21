@@ -41,6 +41,10 @@ class Stat
         if (self::count($data) === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
+        // @phpstan-ignore-next-line
+        if (!empty(array_filter($data, 'is_string'))) {
+            throw new InvalidDataInputException('The data array contains a string.');
+        }
         $sum = array_sum($data);
 
         return $sum / self::count($data);
@@ -70,7 +74,7 @@ class Stat
         return match ($medianType) {
             self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
             self::MEDIAN_TYPE_HIGH => $data[$index],
-            default => ($data[$index - 1] + $data[$index]) / 2
+            default => ($data[$index - 1] + $data[$index]) / 2,
         };
     }
 
@@ -174,7 +178,7 @@ class Stat
         $count = self::count($data);
         if ($count < 2 || $n < 1) {
             throw new InvalidDataInputException(
-                'The size of the data must be greater than 2 and the number of quantiles must be greater than 1.'
+                'The size of the data must be greater than 2 and the number of quantiles must be greater than 1.',
             );
         }
 
@@ -393,12 +397,12 @@ class Stat
         $countY = count($y);
         if ($countX !== $countY) {
             throw new InvalidDataInputException(
-                'Covariance requires that both inputs have same number of data points.'
+                'Covariance requires that both inputs have same number of data points.',
             );
         }
         if ($countX < 2) {
             throw new InvalidDataInputException(
-                'Covariance requires at least two data points.'
+                'Covariance requires at least two data points.',
             );
         }
         $meanX = self::mean($x);
@@ -409,13 +413,13 @@ class Stat
             $valueX = $x[$pos];
             if (!is_numeric($valueX)) {
                 throw new InvalidDataInputException(
-                    'Covariance requires numeric data points.'
+                    'Covariance requires numeric data points.',
                 );
             }
             $valueY = $y[$pos];
             if (!is_numeric($valueY)) {
                 throw new InvalidDataInputException(
-                    'Covariance requires numeric data points.'
+                    'Covariance requires numeric data points.',
                 );
             }
             $diffX = $valueX - $meanX;
@@ -448,12 +452,12 @@ class Stat
         $countY = count($y);
         if ($countX !== $countY) {
             throw new InvalidDataInputException(
-                'Correlation requires that both inputs have same number of data points.'
+                'Correlation requires that both inputs have same number of data points.',
             );
         }
         if ($countX < 2) {
             throw new InvalidDataInputException(
-                'Correlation requires at least two data points.'
+                'Correlation requires at least two data points.',
             );
         }
         $meanX = self::mean($x);
@@ -472,7 +476,7 @@ class Stat
         $b = sqrt($bx * $by);
         if ($b == 0) {
             throw new InvalidDataInputException(
-                'Correlation, at least one of the inputs is constant.'
+                'Correlation, at least one of the inputs is constant.',
             );
         }
 
@@ -494,12 +498,12 @@ class Stat
         $countY = count($y);
         if ($countX !== $countY) {
             throw new InvalidDataInputException(
-                'Linear regression requires that both inputs have same number of data points.'
+                'Linear regression requires that both inputs have same number of data points.',
             );
         }
         if ($countX < 2) {
             throw new InvalidDataInputException(
-                'Linear regression requires at least two data points.'
+                'Linear regression requires at least two data points.',
             );
         }
         $sumX = array_sum($x);
@@ -514,7 +518,7 @@ class Stat
         $denominator = (($countX * $sumXX) - ($sumX * $sumX));
         if ($denominator === 0) {
             throw new InvalidDataInputException(
-                'Linear regression, the inputs is constant.'
+                'Linear regression, the inputs is constant.',
             );
         }
         $slope = (($countX * $sumXY) - ($sumX * $sumY)) / $denominator;

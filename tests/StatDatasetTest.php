@@ -35,11 +35,11 @@ describe('Calculating Stat operation', function () {
 
     it('Dynamic operation with external dataset', function (string $methodName, array $input, float $result) {
         expect(
-            call_user_func("HiFolks\Statistics\Stat::" . $methodName, $input)
+            call_user_func("HiFolks\Statistics\Stat::" . $methodName, $input),
         )->toEqual($result);
 
         expect(
-            call_user_func([Stat::class, $methodName], $input)
+            call_user_func([Stat::class, $methodName], $input),
         )->toEqual($result);
     })->with('input1');
 });

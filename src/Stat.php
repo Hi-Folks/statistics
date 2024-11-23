@@ -291,7 +291,7 @@ class Stat
      *
      * @return float the standard deviation of the numeric data
      */
-    public static function stdev(array $data, int $round = null): float
+    public static function stdev(array $data, ?int $round = null): float
     {
         $variance = self::variance($data);
 

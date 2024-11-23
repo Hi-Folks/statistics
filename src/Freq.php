@@ -141,10 +141,9 @@ class Freq
      * each class is not a range.
      *
      * @param  mixed[]  $data
-     * @param  ?int  $category
      * @return int[]
      */
-    public static function frequencyTable(array $data, int $category = null): array
+    public static function frequencyTable(array $data, ?int $category = null): array
     {
         $result = [];
         $min = floor((float) min($data));

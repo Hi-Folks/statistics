@@ -8,7 +8,13 @@ it('parse CSV', function () {
     if (($handle = fopen(getcwd() . '/tests/data/income.data.csv', 'r')) !== false) {
         $x = [];
         $y = [];
-        while (($data = fgetcsv($handle, 1000, ',')) !== false) {
+        while (($data = fgetcsv(
+            $handle,
+            1000,
+            separator: ',',
+            enclosure: '"',
+            escape: "",
+        )) !== false) {
             $num = count($data);
             expect($num)->toEqual(3);
             $row++;

@@ -86,7 +86,7 @@ class Statistics
      * @param  int|null  $round whether to round the result
      * @return array<float>
      */
-    public function relativeFrequencies(int $round = null): array
+    public function relativeFrequencies(?int $round = null): array
     {
         return Freq::relativeFrequencies($this->values, $round);
     }

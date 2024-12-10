@@ -462,6 +462,92 @@ Array
  */
 
 ```
+## `NormalDist` class
+
+The `NormalDist` class provides an easy way to work with normal distributions in PHP. It allows you to calculate probabilities and densities for a given mean (μ\muμ) and standard deviation (σ\sigmaσ).
+
+### Key features
+
+- Define a normal distribution with mean (μ\muμ) and standard deviation (σ\sigmaσ).
+- Calculate the **Probability Density Function (PDF)** to evaluate the relative likelihood of a value.
+- Calculate the **Cumulative Distribution Function (CDF)** to determine the probability of a value or lower.
+
+------
+
+### Class constructor
+
+```php
+$normalDist = new NormalDist(float $mu = 0.0, float $sigma = 1.0);
+```
+
+- `$mu`: The mean (default = `0.0`).
+- `$sigma`: The standard deviation (default = `1.0`).
+- Throws an exception if `$sigma` is non-positive.
+
+------
+
+### Methods
+
+#### 1. `pdf($x)`
+
+Calculates the **Probability Density Function** at a given value xxx:
+
+```php
+$normalDist->pdf(float $x): float
+```
+
+**Input**: The value `$x` at which to evaluate the PDF.
+**Output**: The relative likelihood of `$x` in the distribution.
+
+Example:
+
+```php
+$normalDist = new NormalDist(10.0, 2.0);
+echo $normalDist->pdf(12.0); // Output: 0.12098536225957168
+```
+
+------
+
+#### 2. `cdf($x)`
+
+Calculates the **Cumulative Distribution Function** at a given value `$x`:
+
+```php
+$normalDist->cdf(float $x): float
+```
+**Input**: The value `$x` at which to evaluate the CDF.
+**Output**: The probability that a random variable `$x` is less than or equal to `$x`.
+Example:
+
+```php
+$normalDist = new NormalDist(10.0, 2.0);
+echo $normalDist->cdf(12.0); // Output: 0.8413447460685429
+```
+
+------
+
+### Use case example
+
+```php
+$normalDist = new NormalDist(10.0, 2.0);
+
+// Calculate PDF at x = 12
+$pdf = $normalDist->pdf(12.0);
+echo "PDF at x = 12: $pdf\n"; // Output: 0.12098536225957168
+
+// Calculate CDF at x = 12
+$cdf = $normalDist->cdf(12.0);
+echo "CDF at x = 12: $cdf\n"; // Output: 0.8413447460685429
+```
+
+------
+
+### References for NormalDist
+
+This class is inspired by Python’s `statistics.NormalDist` and provides similar functionality for PHP users.
+
+
+
 ## Testing
 
 ```bash

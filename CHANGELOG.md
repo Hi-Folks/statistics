@@ -1,7 +1,7 @@
 # Changelog
 
-## 1.0.2 - WIP
-
+## 1.0.2 - 2024-12-10
+- NormalDist class, with `cdf()` and `pdf()`
 - Fix deprecations for PHP 8.4
 
 ## 1.0.1 - 2024-11-21

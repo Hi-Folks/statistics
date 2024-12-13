@@ -107,6 +107,9 @@ class Freq
     public static function frequencyTableBySize(array $data, int $chunkSize = 1): array
     {
         $result = [];
+        if ($data === []) {
+            return $result;
+        }
         $min = floor((float) min($data));
         $max = ceil((float) max($data));
         //$limit = ceil(($max - $min) / $category);
@@ -146,6 +149,9 @@ class Freq
     public static function frequencyTable(array $data, ?int $category = null): array
     {
         $result = [];
+        if ($data === []) {
+            return $result;
+        }
         $min = floor((float) min($data));
         $max = ceil((float) max($data));
         if (is_null($category)) {

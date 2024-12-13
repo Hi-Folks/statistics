@@ -488,7 +488,19 @@ $normalDist = new NormalDist(float $mu = 0.0, float $sigma = 1.0);
 
 ### Methods
 
-#### 1. `pdf($x)`
+#### Creating a normal distribution instance from sample data
+The `fromSamples()` static method creates a normal distribution instance with mu and sigma parameters estimated from the sample data.
+
+Example:
+
+```php
+$samples = [2.5, 3.1, 2.1, 2.4, 2.7, 3.5];
+$normalDist = NormalDist::fromSamples($samples);
+$normalDist->getMeanRounded(5); // 2.71667
+$normalDist->getSigmaRounded(5); // 0.50761
+```
+
+#### Probability Density Function `pdf($x)`
 
 Calculates the **Probability Density Function** at a given value xxx:
 
@@ -508,7 +520,7 @@ echo $normalDist->pdf(12.0); // Output: 0.12098536225957168
 
 ------
 
-#### 2. `cdf($x)`
+#### Cumulative Distribution Function `cdf($x)`
 
 Calculates the **Cumulative Distribution Function** at a given value `$x`:
 

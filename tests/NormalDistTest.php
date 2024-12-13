@@ -28,3 +28,17 @@ it('can calculate normal dist pdf', function (): void {
         $nd->pdfRounded(12, 2),
     )->toEqual(0.12);
 });
+
+it(' load normal dist from samples', function (): void {
+    // NormalDist.from_samples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5])
+    // NormalDist(mu=2.716666666666667, sigma=0.5076087732365021)
+    $samples = [2.5, 3.1, 2.1, 2.4, 2.7, 3.5];
+    $normalDist = NormalDist::fromSamples($samples);
+
+    expect(
+        $normalDist->getMeanRounded(5),
+    )->toEqual(2.71667);
+    expect(
+        $normalDist->getSigmaRounded(5),
+    )->toEqual(0.50761);
+});

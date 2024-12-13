@@ -24,11 +24,44 @@ class NormalDist
     {
         return $this->mu;
     }
+    public function getMeanRounded(int $precision = 3): float
+    {
+        return round($this->getMean(), $precision);
+    }
 
     // Getter for standard deviation (read-only)
     public function getSigma(): float
     {
         return $this->sigma;
+    }
+    public function getSigmaRounded(int $precision = 3): float
+    {
+        return round($this->getSigma(), $precision);
+    }
+
+    /**
+     * Creates a NormalDist instance from a set of data samples.
+     *
+     * This static method calculates the mean (μ) and standard deviation (σ)
+     * from the provided array of numeric samples and initializes a new
+     * NormalDist object with these values.
+     *
+     * @param float[] $samples An array of numeric samples to calculate the distribution.
+     *                         The array must contain at least one element.
+     *
+     * @return NormalDist Returns a new NormalDist object with the calculated mean and standard deviation.
+     *
+     * @throws InvalidDataInputException If the samples array is empty or contains non-numeric values.
+     *
+     */
+    public static function fromSamples(array $samples): self
+    {
+        if ($samples === []) {
+            throw new InvalidDataInputException("Samples array must not be empty.");
+        }
+        $mean = Stat::mean($samples);
+        $std_dev = Stat::stdev($samples);
+        return new self((float) $mean, $std_dev);
     }
 
     // A utility function to calculate the probability density function (PDF)

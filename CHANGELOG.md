@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1 - 2024-12-13
+- Implementing fromSample method for NormalDist
+
 ## 1.1.0 - 2024-12-13
 - Upgrading RectorPHP v 2
 - Upgrading PHPStan v 2

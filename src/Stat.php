@@ -41,7 +41,6 @@ class Stat
         if (self::count($data) === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
-        // @phpstan-ignore-next-line
         if (array_filter($data, 'is_string') !== []) {
             throw new InvalidDataInputException('The data array contains a string.');
         }
@@ -65,7 +64,7 @@ class Stat
         if ($count === 0) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
-        $index = floor($count / 2);  // cache the index
+        $index = (int) floor($count / 2);  // cache the index
         if (($count & 1) !== 0) {    // count is odd
             return $data[$index];
         }
@@ -126,7 +125,7 @@ class Stat
     public static function mode(array $data, bool $multimode = false): mixed
     {
         $frequencies = Freq::frequencies($data);
-        if (self::count($frequencies) === 0) {
+        if ($frequencies === []) {
             throw new InvalidDataInputException('The data must not be empty.');
         }
         $sameMode = true;
@@ -140,6 +139,7 @@ class Stat
         if ($sameMode) {
             return null;
         }
+
         $highestFreq = max($frequencies);
         $modes = array_keys($frequencies, $highestFreq, true);
         if ($multimode) {

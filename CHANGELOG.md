@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0 - 2024-12-13
+- Upgrading RectorPHP v 2
+- Upgrading PHPStan v 2
+
 ## 1.0.2 - 2024-12-10
 - NormalDist class, with `cdf()` and `pdf()`
 - Fix deprecations for PHP 8.4

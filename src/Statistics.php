@@ -120,6 +120,9 @@ class Statistics
      */
     public function max(): mixed
     {
+        if ($this->values === []) {
+            return 0;
+        }
         return max($this->values);
     }
 
@@ -128,6 +131,9 @@ class Statistics
      */
     public function min(): mixed
     {
+        if ($this->values === []) {
+            return 0;
+        }
         return min($this->values);
     }
 

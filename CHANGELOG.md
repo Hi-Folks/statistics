@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.2 - 2024-12-14
+- Implementing `add()` method for NormalDist
+
 ## 1.1.1 - 2024-12-13
 - Implementing fromSample method for NormalDist
 

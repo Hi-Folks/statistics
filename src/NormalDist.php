@@ -111,5 +111,30 @@ class NormalDist
     }
 
 
+    /**
+     * Adds a constant or another NormalDist instance to this distribution.
+     *
+     * If the argument is:
+     * - A constant (float): Adjusts the mean (mu), leaving sigma unchanged.
+     * - A NormalDist instance: Combines the means and variances.
+     *
+     * @param float|NormalDist $x2 The value or NormalDist to add.
+     * @return NormalDist A new NormalDist instance with the updated parameters.
+     * @throws InvalidDataInputException If the argument is not a float or NormalDist.
+     */
+    public function add(float|NormalDist $x2): NormalDist
+    {
+        if ($x2 instanceof NormalDist) {
+            // Add the means and combine the variances (using the Pythagorean theorem)
+            $newMu = $this->mu + $x2->mu;
+            $newSigma = hypot($this->sigma, $x2->sigma);
+            // sqrt(sigma1^2 + sigma2^2)
+            return new NormalDist($newMu, $newSigma);
+        }
+        // Add a constant to the mean, sigma remains unchanged
+        return new NormalDist($this->mu + $x2, $this->sigma);
+    }
+
+
 
 }

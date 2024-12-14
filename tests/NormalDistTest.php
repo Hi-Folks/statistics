@@ -42,3 +42,25 @@ it(' load normal dist from samples', function (): void {
         $normalDist->getSigmaRounded(5),
     )->toEqual(0.50761);
 });
+
+
+it(' add to Normal Dist', function (): void {
+    $birth_weights = NormalDist::fromSamples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5]);
+    $drug_effects = new NormalDist(0.4, 0.15);
+    $combined = $birth_weights->add($drug_effects);
+    expect(
+        $combined->getMeanRounded(1),
+    )->toEqual(3.1);
+    expect(
+        $combined->getSigmaRounded(1),
+    )->toEqual(0.5);
+
+    expect(
+        $birth_weights->getMeanRounded(5),
+    )->toEqual(2.71667);
+    expect(
+        $birth_weights->getSigmaRounded(5),
+    )->toEqual(0.50761);
+
+
+});

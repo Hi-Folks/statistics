@@ -489,6 +489,7 @@ $normalDist = new NormalDist(float $mu = 0.0, float $sigma = 1.0);
 ### Methods
 
 #### Creating a normal distribution instance from sample data
+
 The `fromSamples()` static method creates a normal distribution instance with mu and sigma parameters estimated from the sample data.
 
 Example:
@@ -508,8 +509,8 @@ Calculates the **Probability Density Function** at a given value xxx:
 $normalDist->pdf(float $x): float
 ```
 
-**Input**: The value `$x` at which to evaluate the PDF.
-**Output**: The relative likelihood of `$x` in the distribution.
+- Input: the value `$x` at which to evaluate the PDF.
+- Output: the relative likelihood of `$x` in the distribution.
 
 Example:
 
@@ -527,8 +528,9 @@ Calculates the **Cumulative Distribution Function** at a given value `$x`:
 ```php
 $normalDist->cdf(float $x): float
 ```
-**Input**: The value `$x` at which to evaluate the CDF.
-**Output**: The probability that a random variable `$x` is less than or equal to `$x`.
+- Input: the value `$x` at which to evaluate the CDF.
+- Output: the probability that a random variable `$x` is less than or equal to `$x`.
+
 Example:
 
 ```php
@@ -536,9 +538,7 @@ $normalDist = new NormalDist(10.0, 2.0);
 echo $normalDist->cdf(12.0); // Output: 0.8413447460685429
 ```
 
-------
-
-### Use case example
+Calculating both, CDF and PDF:
 
 ```php
 $normalDist = new NormalDist(10.0, 2.0);
@@ -550,6 +550,29 @@ echo "PDF at x = 12: $pdf\n"; // Output: 0.12098536225957168
 // Calculate CDF at x = 12
 $cdf = $normalDist->cdf(12.0);
 echo "CDF at x = 12: $cdf\n"; // Output: 0.8413447460685429
+```
+
+------
+
+#### Combining a normal distribution via `add()` method
+
+The `add()` method allows you to combine a NormalDist instance with either a constant or another NormalDist object.
+This operation supports mathematical transformations and the combination of distributions.
+
+The use cases are:
+- Shifting a distribution: add a constant to shift the mean, useful in translating data.
+- Combining distributions: combine independent or jointly normally distributed variables, commonly used in statistics and probability.
+
+```php
+$birth_weights = NormalDist::fromSamples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5]);
+$drug_effects = new NormalDist(0.4, 0.15);
+$combined = $birth_weights->add($drug_effects);
+
+$combined->getMeanRounded(1); // 3.1
+$combined->getSigmaRounded(1); // 0.5
+
+$birth_weights->getMeanRounded(5); // 2.71667
+$birth_weights->getSigmaRounded(5); // 0.50761
 ```
 
 ------

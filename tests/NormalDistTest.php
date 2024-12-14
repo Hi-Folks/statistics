@@ -64,3 +64,24 @@ it(' add to Normal Dist', function (): void {
 
 
 });
+
+
+it(' multiply Normal Dist', function (): void {
+    $tempFebruaryCelsius = new NormalDist(5, 2.5); # Celsius
+    $tempFebFahrenheit = $tempFebruaryCelsius->multiply(9 / 5)->add(32); # Fahrenheit
+    expect(
+        $tempFebFahrenheit->getMeanRounded(1),
+    )->toEqual(41.0);
+    expect(
+        $tempFebFahrenheit->getSigmaRounded(1),
+    )->toEqual(4.5);
+
+    expect(
+        $tempFebruaryCelsius->getMeanRounded(1),
+    )->toEqual(5.0);
+    expect(
+        $tempFebruaryCelsius->getSigmaRounded(1),
+    )->toEqual(2.5);
+
+
+});

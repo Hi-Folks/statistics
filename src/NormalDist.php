@@ -136,5 +136,24 @@ class NormalDist
     }
 
 
+    /**
+     * Multiplies both the mean (mu) and standard deviation (sigma) by a constant.
+     *
+     * This method is useful for rescaling distributions, such as when changing
+     * measurement units. The standard deviation is scaled by the absolute value
+     * of the constant to ensure it remains non-negative.
+     *
+     * @param float $constant The constant by which to scale mu and sigma.
+     * @return NormalDist A new NormalDist instance with scaled mu and sigma.
+     */
+    public function multiply(float $constant): NormalDist
+    {
+        return new self(
+            $this->mu * $constant,                  // Scale the mean
+            $this->sigma * abs($constant),          // Scale the standard deviation by the absolute value of the constant
+        );
+    }
+
+
 
 }

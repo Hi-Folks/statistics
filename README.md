@@ -575,11 +575,31 @@ $birth_weights->getMeanRounded(5); // 2.71667
 $birth_weights->getSigmaRounded(5); // 0.50761
 ```
 
+#### Scaling a normal distribution by a costant via `multiply()` method
+
+The `multiply()` method for NormalDist multiplies both the mean (mu) and standard deviation (sigma) by a constant.
+This method is useful for rescaling distributions, such as when changing measurement units.
+The standard deviation is scaled by the absolute value of the constant to ensure it remains non-negative.
+
+The method does not modify the existing object but instead returns a new NormalDist instance with the updated values.
+
+Use Cases:
+- Rescaling distributions: useful when changing units (e.g., from meters to kilometers, or Celsius to Farenhait).
+- Transforming data: apply proportional scaling to statistical data.
+
+```php
+$tempFebruaryCelsius = new NormalDist(5, 2.5); # Celsius
+$tempFebFahrenheit = $tempFebruaryCelsius->multiply(9 / 5)->add(32); # Fahrenheit
+$tempFebFahrenheit->getMeanRounded(1); // 41.0
+$tempFebFahrenheit->getSigmaRounded(1); // 4.5
+```
+
+
 ------
 
 ### References for NormalDist
 
-This class is inspired by Python’s `statistics.NormalDist` and provides similar functionality for PHP users.
+This class is inspired by Python’s `statistics.NormalDist` and aims to provide similar functionality for PHP users. (Work in Progress)
 
 
 

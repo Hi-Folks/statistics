@@ -50,6 +50,60 @@ class Stat
     }
 
     /**
+    * Calculate the float number arithmetic mean of a float numbers dataset with optional weights and precision.
+    *
+    * Supports both unweighted and weighted means. Automatically casts values to float.
+    * Returns `null` if the input data is empty.
+     *
+     * @param  array<float>  $data Array of floating numbers
+     * @param  null|array<float>  $weights Optional array of weights (same length as $data).
+     * @param null|int $precision Optional number of decimal places to round the result (default is null, no round() is applied).
+     * @return float|null arithmetic mean
+     *
+     * @throws InvalidDataInputException if the data is empty
+     */
+    public static function fmean(array $data, array|null $weights = null, int|null $precision = null): float|null
+    {
+        $sum = 0;
+        $count = self::count($data);
+        if ($count === 0) {
+            throw new InvalidDataInputException('The data must not be empty.');
+        }
+
+        // Unweighted mean
+        if ($weights === null) {
+            $sum = array_sum(array_map('floatval', $data));
+            $count = count($data);
+            if ($precision) {
+                return round($sum / $count, $precision);
+            }
+            return $sum / $count;
+        }
+
+        // Check lengths
+        if ($count !== count($weights)) {
+            throw new InvalidDataInputException('The data and weights must be the same length');
+        }
+
+        $weightedSum = 0.0;
+        $weightTotal = 0.0;
+        foreach ($data as $i => $value) {
+            $w = floatval($weights[$i]);
+            $weightedSum += floatval($value) * $w;
+            $weightTotal += $w;
+        }
+
+        if ($weightTotal == 0) {
+            throw new InvalidDataInputException('The sum of weights must be non-zero');
+        }
+
+        if ($precision) {
+            return round($weightedSum / $weightTotal, $precision);
+        }
+        return $weightedSum / $weightTotal;
+    }
+
+    /**
      * Return the median (middle value) of data,
      * using the common “mean of middle two” method.
      *

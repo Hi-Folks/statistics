@@ -63,6 +63,7 @@ The various mathematical statistics are listed below:
 | Mathematical Statistic | Description |
 | ---------------------- | ----------- |
 | `mean()` | arithmetic mean or "average" of data |
+| `fmean()` | floating-point arithmetic mean, with optional weighting and precision |
 | `median()` | median or "middle value" of data |
 | `medianLow()` | low median of data |
 | `medianHigh()` | high median of data |

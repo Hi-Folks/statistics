@@ -93,6 +93,36 @@ $mean = Stat::mean([-1.0, 2.5, 3.25, 5.75]);
 // 2.625
 ```
 
+#### Stat::fmean( array $data, array|null $weights = null, int|null $precision = null )
+Return the arithmetic mean of the array `$data`, as a float, with optional weights and precision control.
+This function behaves like `mean()` but ensures a floating-point result and supports weighted datasets.
+If `$weights` is provided, it computes the weighted average. The result is rounded to a given decimal $precision.
+The result is rounded to `$precision` decimal places. 
+If `$precision` is null, no rounding is applied — this may lead to results with long or unexpected decimal expansions due to the nature of floating-point arithmetic in PHP. Using rounding helps ensure cleaner, more predictable output.
+
+```php 
+use HiFolks\Statistics\Stat;
+
+// Unweighted mean (same as mean but always float)
+$fmean = Stat::fmean([3.5, 4.0, 5.25]);
+// 4.25
+
+// Weighted mean
+$fmean = Stat::fmean([3.5, 4.0, 5.25], [1, 2, 1]);
+// 4.1875
+
+// Custom precision
+$fmean = Stat::fmean([3.5, 4.0, 5.25], null, 2);
+// 4.25
+
+$fmean = Stat::fmean([3.5, 4.0, 5.25], [1, 2, 1], 3);
+// 4.188
+
+```
+
+If the input is empty, or weights are invalid (e.g., length mismatch or sum is zero), an exception is thrown.
+Use this function when you need floating-point accuracy or to apply custom weighting and rounding to your average.
+
 #### Stat::geometricMean( array $data )
 The geometric mean indicates the central tendency or typical value of the data using the product of the values (as opposed to the arithmetic mean which uses their sum).
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.4 - 2025-04-25
+- Adding `fmean()` method for computing the arithmetic mean with float numbers.
+
 ## 1.1.3 - 2024-12-14
 - Adding `multiply()` method to scale NormalDist by a constant
 

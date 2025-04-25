@@ -15,6 +15,34 @@ it('calculates mean (static)', function () {
     )->toThrow(InvalidDataInputException::class);
 });
 
+it('calculates fmean (static)', function () {
+    expect(
+        Stat::mean([1, 2, 3, 4, 4]),
+    )->toEqual(2.8);
+    expect(
+        Stat::mean([-1.0, 2.5, 3.25, 5.75]),
+    )->toEqual(2.625);
+    expect(
+        fn() => Stat::mean([]),
+    )->toThrow(InvalidDataInputException::class);
+    expect(
+        Stat::fmean([3.5, 4.0, 5.25]),
+    )->toBeFloat()->toEqual(4.25);
+    expect(
+        Stat::fmean([85, 92, 83, 91], [0.20, 0.20, 0.30, 0.30], 2),
+    )->toBeFloat()->toEqual(87.6);
+    expect(
+        Stat::fmean([3.5, 4.0, 5.25], [1, 2, 1]),
+    )->toBeFloat()->toEqual(4.1875);
+    expect(
+        Stat::fmean([3.5, 4.0, 5.25], precision: 2),
+    )->toBeFloat()->toEqual(4.25);
+    expect(
+        Stat::fmean([3.5, 4.0, 5.25], [1, 2, 1], precision: 3),
+    )->toBeFloat()->toEqual(4.188);
+
+});
+
 it('calculates median (static)', function () {
     expect(
         Stat::median([1, 3, 5]),

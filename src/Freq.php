@@ -123,8 +123,7 @@ class Freq
             foreach ($data as $number) {
                 if (
                     ($number >= $rangeLow)
-                    &&
-                    ($number < $rangeHigh)
+                    && ($number < $rangeHigh)
                 ) {
                     $count++;
                     //unset($data[$key]);
@@ -167,8 +166,7 @@ class Freq
             foreach ($data as $number) {
                 if (
                     ($number >= $rangeLow)
-                    &&
-                    ($number < $rangeHigh)
+                    && ($number < $rangeHigh)
                 ) {
                     $count++;
                     //unset($data[$key]);

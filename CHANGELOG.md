@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 - 2025-11-23
+- Welcome to PHP 8.5
+- Upgrading to PHPstan new rules (offsetAccess)
+
 ## 1.1.4 - 2025-04-25
 - Adding `fmean()` method for computing the arithmetic mean with float numbers.
 

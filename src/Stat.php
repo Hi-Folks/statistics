@@ -6,11 +6,11 @@ use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Stat
 {
-    final public const MEDIAN_TYPE_LOW = 'LOW';
+    final public const MEDIAN_TYPE_LOW = "LOW";
 
-    final public const MEDIAN_TYPE_HIGH = 'HIGH';
+    final public const MEDIAN_TYPE_HIGH = "HIGH";
 
-    final public const MEDIAN_TYPE_MIDDLE = 'MIDDLE';
+    final public const MEDIAN_TYPE_MIDDLE = "MIDDLE";
 
     /**
      * Count the element in the array
@@ -39,10 +39,12 @@ class Stat
     {
         $sum = 0;
         if (self::count($data) === 0) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
-        if (array_filter($data, 'is_string') !== []) {
-            throw new InvalidDataInputException('The data array contains a string.');
+        if (array_filter($data, "is_string") !== []) {
+            throw new InvalidDataInputException(
+                "The data array contains a string.",
+            );
         }
         $sum = array_sum($data);
 
@@ -50,10 +52,10 @@ class Stat
     }
 
     /**
-    * Calculate the float number arithmetic mean of a float numbers dataset with optional weights and precision.
-    *
-    * Supports both unweighted and weighted means. Automatically casts values to float.
-    * Returns `null` if the input data is empty.
+     * Calculate the float number arithmetic mean of a float numbers dataset with optional weights and precision.
+     *
+     * Supports both unweighted and weighted means. Automatically casts values to float.
+     * Returns `null` if the input data is empty.
      *
      * @param  array<float>  $data Array of floating numbers
      * @param  null|array<float>  $weights Optional array of weights (same length as $data).
@@ -62,17 +64,20 @@ class Stat
      *
      * @throws InvalidDataInputException if the data is empty
      */
-    public static function fmean(array $data, array|null $weights = null, int|null $precision = null): float|null
-    {
+    public static function fmean(
+        array $data,
+        ?array $weights = null,
+        ?int $precision = null,
+    ): ?float {
         $sum = 0;
         $count = self::count($data);
         if ($count === 0) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
 
         // Unweighted mean
         if ($weights === null) {
-            $sum = array_sum(array_map('floatval', $data));
+            $sum = array_sum(array_map("floatval", $data));
             $count = count($data);
             if ($precision) {
                 return round($sum / $count, $precision);
@@ -82,7 +87,9 @@ class Stat
 
         // Check lengths
         if ($count !== count($weights)) {
-            throw new InvalidDataInputException('The data and weights must be the same length');
+            throw new InvalidDataInputException(
+                "The data and weights must be the same length",
+            );
         }
 
         $weightedSum = 0.0;
@@ -94,7 +101,9 @@ class Stat
         }
 
         if ($weightTotal == 0) {
-            throw new InvalidDataInputException('The sum of weights must be non-zero');
+            throw new InvalidDataInputException(
+                "The sum of weights must be non-zero",
+            );
         }
 
         if ($precision) {
@@ -111,21 +120,24 @@ class Stat
      * @return mixed median of the data
      * @throws InvalidDataInputException if the data is empty
      */
-    public static function median(array $data, string $medianType = self::MEDIAN_TYPE_MIDDLE): mixed
-    {
+    public static function median(
+        array $data,
+        string $medianType = self::MEDIAN_TYPE_MIDDLE,
+    ): mixed {
         sort($data);
         $count = self::count($data);
         if ($count === 0) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
-        $index = (int) floor($count / 2);  // cache the index
-        if (($count & 1) !== 0) {    // count is odd
+        $index = (int) floor($count / 2); // cache the index
+        if (($count & 1) !== 0) {
+            // count is odd
             return $data[$index];
         }
 
         // count is even
         return match ($medianType) {
-            self::MEDIAN_TYPE_LOW => ($data[$index - 1]),
+            self::MEDIAN_TYPE_LOW => $data[$index - 1],
             self::MEDIAN_TYPE_HIGH => $data[$index],
             default => ($data[$index - 1] + $data[$index]) / 2,
         };
@@ -180,7 +192,7 @@ class Stat
     {
         $frequencies = Freq::frequencies($data);
         if ($frequencies === []) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
         $sameMode = true;
         foreach ($frequencies as $value) {
@@ -212,7 +224,7 @@ class Stat
      *
      * @return mixed[]|null array of the most common data points or null, if all elements occurs once
      */
-    public static function multimode(array $data): array|null
+    public static function multimode(array $data): ?array
     {
         return self::mode($data, true);
     }
@@ -227,12 +239,15 @@ class Stat
      *
      * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2
      */
-    public static function quantiles(array $data, int $n = 4, ?int $round = null): array
-    {
+    public static function quantiles(
+        array $data,
+        int $n = 4,
+        ?int $round = null,
+    ): array {
         $count = self::count($data);
         if ($count < 2 || $n < 1) {
             throw new InvalidDataInputException(
-                'The size of the data must be greater than 2 and the number of quantiles must be greater than 1.',
+                "The size of the data must be greater than 2 and the number of quantiles must be greater than 1.",
             );
         }
 
@@ -240,14 +255,15 @@ class Stat
         $m = $count + 1;
         $result = [];
         foreach (range(1, $n - 1) as $i) {
-            $j = floor($i * $m / $n);
+            $j = (int) floor(($i * $m) / $n);
             if ($j < 1) {
                 $j = 1;
             } elseif ($j > $count - 1) {
                 $j = $count - 1;
             }
             $delta = $i * $m - $j * $n;
-            $interpolated = ($data[$j - 1] * ($n - $delta) + $data[$j] * $delta) / $n;
+            $interpolated
+                = ($data[$j - 1] * ($n - $delta) + $data[$j] * $delta) / $n;
             $result[] = Math::round($interpolated, $round);
         }
 
@@ -321,7 +337,7 @@ class Stat
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements == 0) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
         $sumSquareDifferences = 0.0;
         $average = self::mean($data);
@@ -332,7 +348,7 @@ class Stat
             $sumSquareDifferences += ($i - $average) ** 2;
         }
 
-        return Math::round($sumSquareDifferences / ($num_of_elements), $round);
+        return Math::round($sumSquareDifferences / $num_of_elements, $round);
     }
 
     /**
@@ -365,7 +381,9 @@ class Stat
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements <= 1) {
-            throw new InvalidDataInputException('The data size must be greater than 1.');
+            throw new InvalidDataInputException(
+                "The data size must be greater than 1.",
+            );
         }
         $sumSquareDifferences = 0.0;
         $average = self::mean($data);
@@ -376,7 +394,10 @@ class Stat
             $sumSquareDifferences += ($i - $average) ** 2;
         }
 
-        return Math::round($sumSquareDifferences / ($num_of_elements - 1), $round);
+        return Math::round(
+            $sumSquareDifferences / ($num_of_elements - 1),
+            $round,
+        );
     }
 
     /**
@@ -394,7 +415,7 @@ class Stat
     {
         $count = self::count($data);
         if ($count === 0) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
         $product = 1;
         foreach ($data as $value) {
@@ -415,12 +436,15 @@ class Stat
      *
      * @throws InvalidDataInputException if the data is empty
      */
-    public static function harmonicMean(array $data, ?array $weights = null, ?int $round = null): float
-    {
+    public static function harmonicMean(
+        array $data,
+        ?array $weights = null,
+        ?int $round = null,
+    ): float {
         $sum = 0;
         $count = self::count($data);
         if ($count === 0) {
-            throw new InvalidDataInputException('The data must not be empty.');
+            throw new InvalidDataInputException("The data must not be empty.");
         }
         $sumWeigth = 0;
         foreach ($data as $key => $value) {
@@ -451,12 +475,12 @@ class Stat
         $countY = count($y);
         if ($countX !== $countY) {
             throw new InvalidDataInputException(
-                'Covariance requires that both inputs have same number of data points.',
+                "Covariance requires that both inputs have same number of data points.",
             );
         }
         if ($countX < 2) {
             throw new InvalidDataInputException(
-                'Covariance requires at least two data points.',
+                "Covariance requires at least two data points.",
             );
         }
         $meanX = self::mean($x);
@@ -467,18 +491,18 @@ class Stat
             $valueX = $x[$pos];
             if (!is_numeric($valueX)) {
                 throw new InvalidDataInputException(
-                    'Covariance requires numeric data points.',
+                    "Covariance requires numeric data points.",
                 );
             }
             $valueY = $y[$pos];
             if (!is_numeric($valueY)) {
                 throw new InvalidDataInputException(
-                    'Covariance requires numeric data points.',
+                    "Covariance requires numeric data points.",
                 );
             }
             $diffX = $valueX - $meanX;
             $diffY = $valueY - $meanY;
-            $add += ($diffX * $diffY);
+            $add += $diffX * $diffY;
         }
 
         // covariance for sample: N - 1
@@ -506,12 +530,12 @@ class Stat
         $countY = count($y);
         if ($countX !== $countY) {
             throw new InvalidDataInputException(
-                'Correlation requires that both inputs have same number of data points.',
+                "Correlation requires that both inputs have same number of data points.",
             );
         }
         if ($countX < 2) {
             throw new InvalidDataInputException(
-                'Correlation requires at least two data points.',
+                "Correlation requires at least two data points.",
             );
         }
         $meanX = self::mean($x);
@@ -530,7 +554,7 @@ class Stat
         $b = sqrt($bx * $by);
         if ($b == 0) {
             throw new InvalidDataInputException(
-                'Correlation, at least one of the inputs is constant.',
+                "Correlation, at least one of the inputs is constant.",
             );
         }
 
@@ -552,12 +576,12 @@ class Stat
         $countY = count($y);
         if ($countX !== $countY) {
             throw new InvalidDataInputException(
-                'Linear regression requires that both inputs have same number of data points.',
+                "Linear regression requires that both inputs have same number of data points.",
             );
         }
         if ($countX < 2) {
             throw new InvalidDataInputException(
-                'Linear regression requires at least two data points.',
+                "Linear regression requires at least two data points.",
             );
         }
         $sumX = array_sum($x);
@@ -566,17 +590,17 @@ class Stat
         $sumXY = 0;
 
         foreach ($x as $key => $value) {
-            $sumXY += ($value * $y[$key]);
-            $sumXX += ($value * $value);
+            $sumXY += $value * $y[$key];
+            $sumXX += $value * $value;
         }
-        $denominator = (($countX * $sumXX) - ($sumX * $sumX));
+        $denominator = $countX * $sumXX - $sumX * $sumX;
         if ($denominator === 0) {
             throw new InvalidDataInputException(
-                'Linear regression, the inputs is constant.',
+                "Linear regression, the inputs is constant.",
             );
         }
-        $slope = (($countX * $sumXY) - ($sumX * $sumY)) / $denominator;
-        $intercept = ($sumY - ($slope * $sumX)) / $countX;
+        $slope = ($countX * $sumXY - $sumX * $sumY) / $denominator;
+        $intercept = ($sumY - $slope * $sumX) / $countX;
 
         return [$slope, $intercept];
     }

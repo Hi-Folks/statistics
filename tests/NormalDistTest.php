@@ -1,87 +1,58 @@
 <?php
 
+namespace HiFolks\Statistics\Tests;
+
 use HiFolks\Statistics\NormalDist;
+use PHPUnit\Framework\TestCase;
 
-it(' init normal dist', function (): void {
-    $nd = new NormalDist(1060, 195);
-    expect(
-        $nd->getMean(),
-    )->toEqual(1060);
-    expect(
-        $nd->getSigma(),
-    )->toEqual(195);
+class NormalDistTest extends TestCase
+{
+    public function test_init_normal_dist(): void
+    {
+        $nd = new NormalDist(1060, 195);
+        $this->assertEquals(1060, $nd->getMean());
+        $this->assertEquals(195, $nd->getSigma());
+    }
 
-});
-it('can calculate normal dist cdf', function (): void {
-    $nd = new NormalDist(1060, 195);
-    expect(
-        round($nd->cdf(1200 + 0.5) - $nd->cdf(1100 - 0.5), 3),
-    )->toEqual(0.184);
-});
+    public function test_can_calculate_normal_dist_cdf(): void
+    {
+        $nd = new NormalDist(1060, 195);
+        $this->assertEquals(0.184, round($nd->cdf(1200 + 0.5) - $nd->cdf(1100 - 0.5), 3));
+    }
 
-it('can calculate normal dist pdf', function (): void {
-    $nd = new NormalDist(10, 2);
-    expect(
-        $nd->pdfRounded(12, 3),
-    )->toEqual(0.121);
-    expect(
-        $nd->pdfRounded(12, 2),
-    )->toEqual(0.12);
-});
+    public function test_can_calculate_normal_dist_pdf(): void
+    {
+        $nd = new NormalDist(10, 2);
+        $this->assertEquals(0.121, $nd->pdfRounded(12, 3));
+        $this->assertEquals(0.12, $nd->pdfRounded(12, 2));
+    }
 
-it(' load normal dist from samples', function (): void {
-    // NormalDist.from_samples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5])
-    // NormalDist(mu=2.716666666666667, sigma=0.5076087732365021)
-    $samples = [2.5, 3.1, 2.1, 2.4, 2.7, 3.5];
-    $normalDist = NormalDist::fromSamples($samples);
+    public function test_load_normal_dist_from_samples(): void
+    {
+        $samples = [2.5, 3.1, 2.1, 2.4, 2.7, 3.5];
+        $normalDist = NormalDist::fromSamples($samples);
+        $this->assertEquals(2.71667, $normalDist->getMeanRounded(5));
+        $this->assertEquals(0.50761, $normalDist->getSigmaRounded(5));
+    }
 
-    expect(
-        $normalDist->getMeanRounded(5),
-    )->toEqual(2.71667);
-    expect(
-        $normalDist->getSigmaRounded(5),
-    )->toEqual(0.50761);
-});
+    public function test_add_to_normal_dist(): void
+    {
+        $birth_weights = NormalDist::fromSamples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5]);
+        $drug_effects = new NormalDist(0.4, 0.15);
+        $combined = $birth_weights->add($drug_effects);
+        $this->assertEquals(3.1, $combined->getMeanRounded(1));
+        $this->assertEquals(0.5, $combined->getSigmaRounded(1));
+        $this->assertEquals(2.71667, $birth_weights->getMeanRounded(5));
+        $this->assertEquals(0.50761, $birth_weights->getSigmaRounded(5));
+    }
 
-
-it(' add to Normal Dist', function (): void {
-    $birth_weights = NormalDist::fromSamples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5]);
-    $drug_effects = new NormalDist(0.4, 0.15);
-    $combined = $birth_weights->add($drug_effects);
-    expect(
-        $combined->getMeanRounded(1),
-    )->toEqual(3.1);
-    expect(
-        $combined->getSigmaRounded(1),
-    )->toEqual(0.5);
-
-    expect(
-        $birth_weights->getMeanRounded(5),
-    )->toEqual(2.71667);
-    expect(
-        $birth_weights->getSigmaRounded(5),
-    )->toEqual(0.50761);
-
-
-});
-
-
-it(' multiply Normal Dist', function (): void {
-    $tempFebruaryCelsius = new NormalDist(5, 2.5); # Celsius
-    $tempFebFahrenheit = $tempFebruaryCelsius->multiply(9 / 5)->add(32); # Fahrenheit
-    expect(
-        $tempFebFahrenheit->getMeanRounded(1),
-    )->toEqual(41.0);
-    expect(
-        $tempFebFahrenheit->getSigmaRounded(1),
-    )->toEqual(4.5);
-
-    expect(
-        $tempFebruaryCelsius->getMeanRounded(1),
-    )->toEqual(5.0);
-    expect(
-        $tempFebruaryCelsius->getSigmaRounded(1),
-    )->toEqual(2.5);
-
-
-});
+    public function test_multiply_normal_dist(): void
+    {
+        $tempFebruaryCelsius = new NormalDist(5, 2.5);
+        $tempFebFahrenheit = $tempFebruaryCelsius->multiply(9 / 5)->add(32);
+        $this->assertEquals(41.0, $tempFebFahrenheit->getMeanRounded(1));
+        $this->assertEquals(4.5, $tempFebFahrenheit->getSigmaRounded(1));
+        $this->assertEquals(5.0, $tempFebruaryCelsius->getMeanRounded(1));
+        $this->assertEquals(2.5, $tempFebruaryCelsius->getSigmaRounded(1));
+    }
+}

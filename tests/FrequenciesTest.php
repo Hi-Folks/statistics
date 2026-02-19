@@ -1,82 +1,85 @@
 <?php
 
+namespace HiFolks\Statistics\Tests;
+
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Statistics;
+use PHPUnit\Framework\TestCase;
 
-it('can calculate frequencies', function () {
-    $s = Statistics::make(
-        [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76],
-    );
-    $a = $s->frequencies();
-    expect($a[92])->toEqual(2);
-    expect($a)->toHaveCount(11);
-});
+class FrequenciesTest extends TestCase
+{
+    public function test_can_calculate_frequencies(): void
+    {
+        $s = Statistics::make(
+            [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76],
+        );
+        $a = $s->frequencies();
+        $this->assertEquals(2, $a[92]);
+        $this->assertCount(11, $a);
+    }
 
-it('can calculate relative frequencies', function () {
-    $s = Statistics::make(
-        [3, 4, 3, 1],
-    );
-    $a = $s->relativeFrequencies();
-    expect($a[3])->toEqual(50);
-    expect($a)->toHaveCount(3);
-    expect($s->originalArray())->toHaveCount(4);
-});
+    public function test_can_calculate_relative_frequencies(): void
+    {
+        $s = Statistics::make(
+            [3, 4, 3, 1],
+        );
+        $a = $s->relativeFrequencies();
+        $this->assertEquals(50, $a[3]);
+        $this->assertCount(3, $a);
+        $this->assertCount(4, $s->originalArray());
+    }
 
-it('can calculate cumulative frequencies', function () {
-    $s = Statistics::make(
-        [3, 4, 3, 1],
-    );
-    $a = $s->cumulativeFrequencies();
+    public function test_can_calculate_cumulative_frequencies(): void
+    {
+        $s = Statistics::make(
+            [3, 4, 3, 1],
+        );
+        $a = $s->cumulativeFrequencies();
+        $this->assertEquals(3, $a[3]);
+        $this->assertCount(3, $a);
+        $this->assertCount(4, $s->originalArray());
+    }
 
-    expect($a[3])->toEqual(3);
-    expect($a)->toHaveCount(3);
-    expect($s->originalArray())->toHaveCount(4);
-});
+    public function test_can_calculate_cumulative_relative_frequencies(): void
+    {
+        $s = Statistics::make(
+            [3, 4, 3, 1],
+        );
+        $a = $s->cumulativeRelativeFrequencies();
+        $this->assertEquals(75, $a[3]);
+        $this->assertCount(3, $a);
+        $this->assertCount(4, $s->originalArray());
+    }
 
-it('can calculate cumulative relative frequencies', function () {
-    $s = Statistics::make(
-        [3, 4, 3, 1],
-    );
-    $a = $s->cumulativeRelativeFrequencies();
+    public function test_can_calculate_first_quartile(): void
+    {
+        $s = Statistics::make([3, 4, 3, 1]);
+        $this->assertEquals(1.5, $s->firstQuartile());
 
-    expect($a[3])->toEqual(75);
-    expect($a)->toHaveCount(3);
-    expect($s->originalArray())->toHaveCount(4);
-});
+        $s = Statistics::make([3, 4, 3]);
+        $this->assertEquals(3, $s->firstQuartile());
+    }
 
-it('can calculate firstQuartile', function () {
-    $s = Statistics::make(
-        [3, 4, 3, 1],
-    );
-    $a = $s->firstQuartile();
-    expect($a)->toEqual(1.5);
+    public function test_can_calculate_first_quartile_with_empty_array(): void
+    {
+        $s = Statistics::make([]);
+        $this->expectException(InvalidDataInputException::class);
+        $s->firstQuartile();
+    }
 
-    $s = Statistics::make(
-        [3, 4, 3],
-    );
-    $a = $s->firstQuartile();
-    expect($a)->toEqual(3);
+    public function test_can_calculate_third_quartile(): void
+    {
+        $s = Statistics::make([3, 4, 3, 1]);
+        $this->assertEquals(3.75, $s->thirdQuartile());
 
-    $s = Statistics::make(
-        [],
-    );
-    expect(fn() => $s->firstQuartile())->toThrow(InvalidDataInputException::class);
-});
-it('can calculate thirdQuartile', function () {
-    $s = Statistics::make(
-        [3, 4, 3, 1],
-    );
-    $a = $s->thirdQuartile();
-    expect($a)->toEqual(3.75);
+        $s = Statistics::make([3, 4, 3]);
+        $this->assertEquals(4, $s->thirdQuartile());
+    }
 
-    $s = Statistics::make(
-        [3, 4, 3],
-    );
-    $a = $s->thirdQuartile();
-    expect($a)->toEqual(4);
-
-    $s = Statistics::make(
-        [],
-    );
-    expect(fn() => $s->thirdQuartile())->toThrow(InvalidDataInputException::class);
-});
+    public function test_can_calculate_third_quartile_with_empty_array(): void
+    {
+        $s = Statistics::make([]);
+        $this->expectException(InvalidDataInputException::class);
+        $s->thirdQuartile();
+    }
+}

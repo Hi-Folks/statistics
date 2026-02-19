@@ -1,10 +1,17 @@
 <?php
 
-use HiFolks\Statistics\Math;
+namespace HiFolks\Statistics\Tests;
 
-it('is odd (static)', function () {
-    expect(Math::isOdd(1))->toBeTrue();
-    expect(Math::isOdd(0))->toBeFalse();
-    expect(Math::isOdd(-5))->toBeTrue();
-    expect(Math::isOdd(-2))->toBeFalse();
-});
+use HiFolks\Statistics\Math;
+use PHPUnit\Framework\TestCase;
+
+class MathTest extends TestCase
+{
+    public function test_is_odd(): void
+    {
+        $this->assertTrue(Math::isOdd(1));
+        $this->assertFalse(Math::isOdd(0));
+        $this->assertTrue(Math::isOdd(-5));
+        $this->assertFalse(Math::isOdd(-2));
+    }
+}

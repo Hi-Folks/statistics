@@ -41,7 +41,7 @@ class Stat
         if (self::count($data) === 0) {
             throw new InvalidDataInputException("The data must not be empty.");
         }
-        if (array_filter($data, "is_string") !== []) {
+        if (array_filter($data, is_string(...)) !== []) {
             throw new InvalidDataInputException(
                 "The data array contains a string.",
             );
@@ -77,7 +77,7 @@ class Stat
 
         // Unweighted mean
         if ($weights === null) {
-            $sum = array_sum(array_map("floatval", $data));
+            $sum = array_sum(array_map(floatval(...), $data));
             $count = count($data);
             if ($precision) {
                 return round($sum / $count, $precision);
@@ -336,7 +336,7 @@ class Stat
     public static function pvariance(array $data, ?int $round = null): float
     {
         $num_of_elements = self::count($data);
-        if ($num_of_elements == 0) {
+        if ($num_of_elements === 0) {
             throw new InvalidDataInputException("The data must not be empty.");
         }
         $sumSquareDifferences = 0.0;

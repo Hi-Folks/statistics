@@ -15,12 +15,13 @@
         }
     ],
     "require": {
-        "php": "^8.1|^8.2|^8.3|^8.4"
+        "php": "^8.2|^8.3|^8.4"
     },
     "require-dev": {
-        "laravel/pint": "^1.18",
-        "pestphp/pest": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.65",
         "phpstan/phpstan": "^2",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^11.0",
         "rector/rector": "^2"
     },
     "autoload": {
@@ -34,9 +35,9 @@
         }
     },
     "scripts": {
-        "format": "vendor/bin/pint",
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/php-cs-fixer fix",
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-text",
         "static-code": "vendor/bin/phpstan analyse -c phpstan.neon",
         "rector-dry-run": "rector process --dry-run",
         "rector": "rector process",
@@ -48,9 +49,7 @@
     },
     "config": {
         "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+        "allow-plugins": {}
     },
     "minimum-stability": "dev",
     "prefer-stable": true

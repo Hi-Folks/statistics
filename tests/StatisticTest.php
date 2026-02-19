@@ -1,199 +1,211 @@
 <?php
 
+namespace HiFolks\Statistics\Tests;
+
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Statistics;
+use PHPUnit\Framework\TestCase;
 
-it('can calculate statistics', function (): void {
-    $s = Statistics::make(
-        [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76],
-    );
-    expect($s->count())->toEqual(12);
-    expect($s->median())->toEqual(85.5);
-    expect($s->firstQuartile())->toEqual(58.75);
-    expect($s->thirdQuartile())->toEqual(92);
-    expect($s->interquartileRange())->toEqual(33.25);
+class StatisticTest extends TestCase
+{
+    public function test_can_calculate_statistics(): void
+    {
+        $s = Statistics::make(
+            [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76],
+        );
+        $this->assertEquals(12, $s->count());
+        $this->assertEquals(85.5, $s->median());
+        $this->assertEquals(58.75, $s->firstQuartile());
+        $this->assertEquals(92, $s->thirdQuartile());
+        $this->assertEquals(33.25, $s->interquartileRange());
+        $this->assertCount(12, $s->originalArray());
 
-    expect($s->originalArray())->toHaveCount(12);
+        $s = Statistics::make(
+            [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88],
+        );
+        $this->assertEquals(11, $s->count());
+        $this->assertEquals(88, $s->median());
+        $this->assertEquals(55, $s->firstQuartile());
+        $this->assertEquals(92, $s->thirdQuartile());
+        $this->assertEquals(37, $s->interquartileRange());
+        $this->assertCount(11, $s->originalArray());
+    }
 
-    $s = Statistics::make(
-        [98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88],
-    );
-    expect($s->count())->toEqual(11);
-    expect($s->median())->toEqual(88);
-    expect($s->firstQuartile())->toEqual(55);
-    expect($s->thirdQuartile())->toEqual(92);
-    expect($s->interquartileRange())->toEqual(37);
-    expect($s->originalArray())->toHaveCount(11);
-});
+    public function test_can_calculate_statistics_again(): void
+    {
+        $s = Statistics::make(
+            [3, 5, 4, 7, 5, 2],
+        );
+        $this->assertEquals(6, $s->count());
+        $this->assertEquals(13 / 3, $s->mean());
+        $this->assertEquals(4.5, $s->median());
+        $this->assertEquals(5, $s->mode());
+        $this->assertEquals(2, $s->min());
+        $this->assertEquals(7, $s->max());
+        $this->assertEquals(5, $s->range());
+        $this->assertEquals(2.75, $s->firstQuartile());
+        $this->assertEquals(5.5, $s->thirdQuartile());
+    }
 
-it('can calculate statistics again', function (): void {
-    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
-    $s = Statistics::make(
-        [3, 5, 4, 7, 5, 2],
-    );
-    expect($s->count())->toEqual(6);
-    expect($s->mean())->toEqual(13 / 3);
-    expect($s->median())->toEqual(4.5);
-    expect($s->mode())->toEqual(5);
-    expect($s->min())->toEqual(2);
-    expect($s->max())->toEqual(7);
-    expect($s->range())->toEqual(5);
-    expect($s->firstQuartile())->toEqual(2.75);
-    expect($s->thirdQuartile())->toEqual(5.5);
-});
+    public function test_can_calculate_statistics_again_and_again(): void
+    {
+        $s = Statistics::make(
+            [13, 18, 13, 14, 13, 16, 14, 21, 13],
+        );
+        $this->assertEquals(9, $s->count());
+        $this->assertEquals(15, $s->mean());
+        $this->assertEquals(14, $s->median());
+        $this->assertEquals(13, $s->mode());
+        $this->assertEquals(13, $s->min());
+        $this->assertEquals(21, $s->max());
+        $this->assertEquals(8, $s->range());
+        $this->assertEquals(13, $s->firstQuartile());
+        $this->assertEquals(17, $s->thirdQuartile());
 
-it('can calculate statistics again and again', function (): void {
-    // https://www.purplemath.com/modules/meanmode.htm
-    $s = Statistics::make(
-        [13, 18, 13, 14, 13, 16, 14, 21, 13],
-    );
-    expect($s->count())->toEqual(9);
-    expect($s->mean())->toEqual(15);
-    expect($s->median())->toEqual(14);
-    expect($s->mode())->toEqual(13);
-    expect($s->min())->toEqual(13);
-    expect($s->max())->toEqual(21);
-    expect($s->range())->toEqual(8);
-    expect($s->firstQuartile())->toEqual(13);
-    expect($s->thirdQuartile())->toEqual(17);
+        $s = Statistics::make(
+            [1, 2, 4, 7],
+        );
+        $this->assertEquals(4, $s->count());
+        $this->assertEquals(3.5, $s->mean());
+        $this->assertEquals(3, $s->median());
+        $this->assertNull($s->mode());
+        $this->assertEquals(1, $s->min());
+        $this->assertEquals(7, $s->max());
+        $this->assertEquals(6, $s->range());
+    }
 
-    $s = Statistics::make(
-        [1, 2, 4, 7],
-    );
-    expect($s->count())->toEqual(4);
-    expect($s->mean())->toEqual(3.5);
-    expect($s->median())->toEqual(3);
-    expect($s->mode())->toBeNull();
-    expect($s->min())->toEqual(1);
-    expect($s->max())->toEqual(7);
-    expect($s->range())->toEqual(6);
-});
+    public function test_can_strip_zeros(): void
+    {
+        $s = Statistics::make(
+            [3, 5, 0, 0.1, 4, 7, 5, 2],
+        )->stripZeroes();
+        $this->assertEquals(7, $s->count());
+    }
 
-it('can strip zeros', function (): void {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
-    $s = Statistics::make(
-        [3, 5, 0, 0.1, 4, 7, 5, 2],
-    )->stripZeroes();
-    expect($s->count())->toEqual(7);
-});
-it('can calculate mean', function (): void {    // https://www.youtube.com/watch?v=6z7B7ADL6Lw&ab_channel=TheMathsProf
-    $s = Statistics::make(
-        [3, 5, 4, 7, 5, 2],
-    );
-    expect($s->count())->toEqual(6);
-    expect($s->mean())->toEqual(13 / 3);
-    $s = Statistics::make(
-        [],
-    );
-    expect($s->count())->toEqual(0);
-    expect(fn(): float|int|null => $s->mean())->toThrow(InvalidDataInputException::class);
-});
+    public function test_can_calculate_mean(): void
+    {
+        $s = Statistics::make(
+            [3, 5, 4, 7, 5, 2],
+        );
+        $this->assertEquals(6, $s->count());
+        $this->assertEquals(13 / 3, $s->mean());
 
-it('can calculate mean again', function (): void { // https://docs.python.org/3/library/statistics.html#statistics.mean
-    $s = Statistics::make(
-        [1, 2, 3, 4, 4],
-    );
-    expect($s->mean())->toEqual(2.8);
+        $s = Statistics::make([]);
+        $this->assertEquals(0, $s->count());
+        $this->expectException(InvalidDataInputException::class);
+        $s->mean();
+    }
 
-    $s = Statistics::make(
-        [-1.0, 2.5, 3.25, 5.75],
-    );
-    expect($s->mean())->toEqual(2.625);
+    public function test_can_calculate_mean_again(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 4]);
+        $this->assertEquals(2.8, $s->mean());
 
-    $s = Statistics::make(
-        [0.5, 0.75, 0.625, 0.375],
-    );
-    expect($s->mean())->toEqual(0.5625);
+        $s = Statistics::make([-1.0, 2.5, 3.25, 5.75]);
+        $this->assertEquals(2.625, $s->mean());
 
-    $s = Statistics::make(
-        [3.5, 4.0, 5.25],
-    );
-    expect($s->mean())->toEqual(4.25);
-});
+        $s = Statistics::make([0.5, 0.75, 0.625, 0.375]);
+        $this->assertEquals(0.5625, $s->mean());
 
-it('can valuesToString', function (): void {
-    $s = Statistics::make(
-        [1, 2, 3, 4, 4],
-    );
-    expect($s->valuesToString(false))->toEqual('1,2,3,4,4');
-    expect($s->valuesToString(3))->toEqual('1,2,3');
-});
+        $s = Statistics::make([3.5, 4.0, 5.25]);
+        $this->assertEquals(4.25, $s->mean());
+    }
 
-it('calculates Population standard deviation', function (): void {
-    expect(
-        Statistics::make(
-            [1.5, 2.5, 2.5, 2.75, 3.25, 4.75],
-        )->pstdev(),
-    )->toEqual(0.986893273527251);
-    expect(
-        Statistics::make([1, 2, 4, 5, 8])->pstdev(4),
-    )->toEqual(2.4495);
-    expect(
-        fn(): float => Statistics::make([])->pstdev(),
-    )->toThrow(InvalidDataInputException::class);
-    expect(
-        Statistics::make([1])->pstdev(),
-    )->toEqual(0);
-    expect(
-        Statistics::make([1, 2, 3, 3])->pstdev(7),
-    )->toEqual(0.8291562);
-});
-it('calculates Sample standard deviation', function (): void {
-    expect(
-        Statistics::make([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])->stdev(),
-    )->toEqual(1.0810874155219827);
-    expect(
-        Statistics::make([1, 2, 2, 4, 6])->stdev(),
-    )->toEqual(2);
-    expect(
-        Statistics::make([1, 2, 4, 5, 8])->stdev(4),
-    )->toEqual(2.7386);
-    expect(
-        fn(): float => Statistics::make([])->stdev(),
-    )->toThrow(InvalidDataInputException::class);
-    expect(
-        fn(): float => Statistics::make([1])->stdev(),
-    )->toThrow(InvalidDataInputException::class);
-});
+    public function test_can_values_to_string(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 4]);
+        $this->assertEquals('1,2,3,4,4', $s->valuesToString(false));
+        $this->assertEquals('1,2,3', $s->valuesToString(3));
+    }
 
-it('calculates variance', function (): void {
-    expect(
-        Statistics::make([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5])->variance(),
-    )->toEqual(1.3720238095238095);
-});
+    public function test_calculates_population_standard_deviation(): void
+    {
+        $this->assertEquals(
+            0.986893273527251,
+            Statistics::make([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])->pstdev(),
+        );
+        $this->assertEquals(
+            2.4495,
+            Statistics::make([1, 2, 4, 5, 8])->pstdev(4),
+        );
+        $this->assertEquals(0, Statistics::make([1])->pstdev());
+        $this->assertEquals(0.8291562, Statistics::make([1, 2, 3, 3])->pstdev(7));
+    }
 
-it('calculates pvariance', function (): void {
-    expect(
-        Statistics::make([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])->pvariance(),
-    )->toEqual(1.25);
-    expect(
-        Statistics::make([1, 2, 3, 3])->pvariance(),
-    )->toEqual(0.6875);
-});
+    public function test_calculates_population_standard_deviation_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Statistics::make([])->pstdev();
+    }
 
-it('calculates geometric mean', function (): void {
-    expect(
-        Statistics::make([54, 24, 36])->geometricMean(2),
-    )->toEqual(36);
-    expect(
-        Statistics::make([4, 8, 3, 9, 17])->geometricMean(2),
-    )->toEqual(6.81);
-    expect(
-        fn(): float => Statistics::make([])->geometricMean(),
-    )->toThrow(InvalidDataInputException::class);
-});
+    public function test_calculates_sample_standard_deviation(): void
+    {
+        $this->assertEquals(
+            1.0810874155219827,
+            Statistics::make([1.5, 2.5, 2.5, 2.75, 3.25, 4.75])->stdev(),
+        );
+        $this->assertEquals(2, Statistics::make([1, 2, 2, 4, 6])->stdev());
+        $this->assertEquals(2.7386, Statistics::make([1, 2, 4, 5, 8])->stdev(4));
+    }
 
-it('calculates harmonic mean', function (): void {
-    expect(
-        Statistics::make([40, 60])->harmonicMean(1),
-    )->toEqual(48.0);
-    expect(
-        fn(): float => Statistics::make([])->harmonicMean(),
-    )->toThrow(InvalidDataInputException::class);
-});
+    public function test_calculates_sample_standard_deviation_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Statistics::make([])->stdev();
+    }
 
-it('can distinct numeric array', function (): void {
-    expect(Statistics::make([1, 2, 3])->numericalArray())->toEqual([1, 2, 3]);
-    expect(Statistics::make([1, '2', 3])->numericalArray())->toEqual([1, '2', 3]);
-    expect(Statistics::make([])->numericalArray())->toEqual([]);
-    expect(fn(): array => Statistics::make([1, 'some string', 3])->numericalArray())->toThrow(InvalidDataInputException::class);
-});
+    public function test_calculates_sample_standard_deviation_with_single_element(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Statistics::make([1])->stdev();
+    }
+
+    public function test_calculates_variance(): void
+    {
+        $this->assertEquals(
+            1.3720238095238095,
+            Statistics::make([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5])->variance(),
+        );
+    }
+
+    public function test_calculates_pvariance(): void
+    {
+        $this->assertEquals(
+            1.25,
+            Statistics::make([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25])->pvariance(),
+        );
+        $this->assertEquals(0.6875, Statistics::make([1, 2, 3, 3])->pvariance());
+    }
+
+    public function test_calculates_geometric_mean(): void
+    {
+        $this->assertEquals(36, Statistics::make([54, 24, 36])->geometricMean(2));
+        $this->assertEquals(6.81, Statistics::make([4, 8, 3, 9, 17])->geometricMean(2));
+    }
+
+    public function test_calculates_geometric_mean_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Statistics::make([])->geometricMean();
+    }
+
+    public function test_calculates_harmonic_mean(): void
+    {
+        $this->assertEquals(48.0, Statistics::make([40, 60])->harmonicMean(1));
+    }
+
+    public function test_calculates_harmonic_mean_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Statistics::make([])->harmonicMean();
+    }
+
+    public function test_can_distinct_numeric_array(): void
+    {
+        $this->assertEquals([1, 2, 3], Statistics::make([1, 2, 3])->numericalArray());
+        $this->assertEquals([1, '2', 3], Statistics::make([1, '2', 3])->numericalArray());
+        $this->assertEquals([], Statistics::make([])->numericalArray());
+        $this->expectException(InvalidDataInputException::class);
+        Statistics::make([1, 'some string', 3])->numericalArray();
+    }
+}

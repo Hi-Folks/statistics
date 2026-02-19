@@ -1,45 +1,86 @@
 <?php
 
+namespace HiFolks\Statistics\Tests;
+
 use HiFolks\Statistics\Stat;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
-describe('Calculating Stat operation', function () {
-    it('Mean', function () {
-        expect(Stat::mean([1, 2, 3, 4, 4]))->toEqual(2.8);
-        expect(Stat::mean([-1.0, 2.5, 3.25, 5.75]))->toEqual(2.625);
-    });
+class StatDatasetTest extends TestCase
+{
+    public function test_mean(): void
+    {
+        $this->assertEquals(2.8, Stat::mean([1, 2, 3, 4, 4]));
+        $this->assertEquals(2.625, Stat::mean([-1.0, 2.5, 3.25, 5.75]));
+    }
 
-    it('Mean chain expect', function () {
-        expect(Stat::mean([1, 2, 3, 4, 4]))
-            ->toEqual(2.8)
-            ->and(Stat::mean([-1.0, 2.5, 3.25, 5.75]))
-            ->toEqual(2.625);
-    });
+    public function test_mean_chain(): void
+    {
+        $this->assertEquals(2.8, Stat::mean([1, 2, 3, 4, 4]));
+        $this->assertEquals(2.625, Stat::mean([-1.0, 2.5, 3.25, 5.75]));
+    }
 
-    it('Mean dataset', function (array $input, float $result) {
-        expect(Stat::mean($input))->toEqual($result);
-    })->with([
-        [[1, 2, 3, 4, 4], 2.8],
-        [[-1.0, 2.5, 3.25, 5.75], 2.625],
-    ]);
+    /** @param array<int|float> $input */
+    #[DataProvider('meanDatasetProvider')]
+    public function test_mean_dataset(array $input, float $result): void
+    {
+        $this->assertEquals($result, Stat::mean($input));
+    }
 
-    it('Dynamic operation', function (string $methodName, array $input, float $result) {
-        expect(call_user_func([Stat::class, $methodName], $input))->toEqual($result);
-    })->with([
-        ["mean", [1, 2, 3, 4, 4], 2.8],
-        ["mean", [-1.0, 2.5, 3.25, 5.75], 2.625],
-        ["median", [1, 3, 5], 3],
-        ["median", [1, 3, 5, 7], 4],
-        ["medianLow", [1, 3, 5], 3],
-        ["medianLow", [1, 3, 5, 7], 3],
-    ]);
+    /** @return array<array{array<int|float>, float}> */
+    public static function meanDatasetProvider(): array
+    {
+        return [
+            [[1, 2, 3, 4, 4], 2.8],
+            [[-1.0, 2.5, 3.25, 5.75], 2.625],
+        ];
+    }
 
-    it('Dynamic operation with external dataset', function (string $methodName, array $input, float $result) {
-        expect(
-            call_user_func("HiFolks\Statistics\Stat::" . $methodName, $input),
-        )->toEqual($result);
+    /** @param array<int|float> $input */
+    #[DataProvider('dynamicOperationProvider')]
+    public function test_dynamic_operation(string $methodName, array $input, float $result): void
+    {
+        $this->assertEquals($result, Stat::$methodName($input));
+    }
 
-        expect(
-            call_user_func([Stat::class, $methodName], $input),
-        )->toEqual($result);
-    })->with('input1');
-});
+    /** @return array<array{string, array<int|float>, float}> */
+    public static function dynamicOperationProvider(): array
+    {
+        return [
+            ['mean', [1, 2, 3, 4, 4], 2.8],
+            ['mean', [-1.0, 2.5, 3.25, 5.75], 2.625],
+            ['median', [1, 3, 5], 3],
+            ['median', [1, 3, 5, 7], 4],
+            ['medianLow', [1, 3, 5], 3],
+            ['medianLow', [1, 3, 5, 7], 3],
+        ];
+    }
+
+    /** @param array<int|float> $input */
+    #[DataProvider('externalDatasetProvider')]
+    public function test_dynamic_operation_with_external_dataset(string $methodName, array $input, float $result): void
+    {
+        $this->assertEquals(
+            $result,
+            Stat::$methodName($input),
+        );
+
+        $this->assertEquals(
+            $result,
+            Stat::$methodName($input),
+        );
+    }
+
+    /** @return array<array{string, array<int|float>, float}> */
+    public static function externalDatasetProvider(): array
+    {
+        return [
+            ['mean', [1, 2, 3, 4, 4], 2.8],
+            ['mean', [-1.0, 2.5, 3.25, 5.75], 2.625],
+            ['median', [1, 3, 5], 3],
+            ['median', [1, 3, 5, 7], 4],
+            ['medianLow', [1, 3, 5], 3],
+            ['medianLow', [1, 3, 5, 7], 3],
+        ];
+    }
+}

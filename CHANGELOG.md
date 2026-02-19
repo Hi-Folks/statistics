@@ -1,8 +1,10 @@
 # Changelog
 
-## 1.2.0 - 2025-11-23
+## 1.2.0 - 2026-02-19
 - Welcome to PHP 8.5
 - Upgrading to PHPstan new rules (offsetAccess)
+- Tests migrated from PestPHP 2 to PHPUnit 11
+- Code Syntax checker from Pint to PHP CS Fixer
 
 ## 1.1.4 - 2025-04-25
 - Adding `fmean()` method for computing the arithmetic mean with float numbers.

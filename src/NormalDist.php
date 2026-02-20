@@ -24,6 +24,7 @@ class NormalDist
     {
         return $this->mu;
     }
+
     public function getMeanRounded(int $precision = 3): float
     {
         return round($this->getMean(), $precision);
@@ -34,6 +35,7 @@ class NormalDist
     {
         return $this->sigma;
     }
+
     public function getSigmaRounded(int $precision = 3): float
     {
         return round($this->getSigma(), $precision);
@@ -44,6 +46,7 @@ class NormalDist
     {
         return $this->mu;
     }
+
     public function getMedianRounded(int $precision = 3): float
     {
         return round($this->getMedian(), $precision);
@@ -54,6 +57,7 @@ class NormalDist
     {
         return $this->mu;
     }
+
     public function getModeRounded(int $precision = 3): float
     {
         return round($this->getMode(), $precision);
@@ -64,6 +68,7 @@ class NormalDist
     {
         return $this->sigma ** 2;
     }
+
     public function getVarianceRounded(int $precision = 3): float
     {
         return round($this->getVariance(), $precision);
@@ -187,7 +192,6 @@ class NormalDist
         return $z >= 0 ? 1 - $tau : $tau - 1;
     }
 
-
     // A utility function to calculate the cumulative density function (CDF)
     public function cdf(float $x): float
     {
@@ -283,7 +287,6 @@ class NormalDist
     {
         return round($this->invCdf($p), $precision);
     }
-
 
     /**
      * Divides the normal distribution into n continuous intervals
@@ -385,7 +388,6 @@ class NormalDist
         return new NormalDist($this->mu + $x2, $this->sigma);
     }
 
-
     /**
      * Subtracts a constant or another NormalDist instance from this distribution.
      *
@@ -408,7 +410,6 @@ class NormalDist
         return new NormalDist($this->mu - $x2, $this->sigma);
     }
 
-
     /**
      * Multiplies both the mean (mu) and standard deviation (sigma) by a constant.
      *
@@ -426,8 +427,6 @@ class NormalDist
             $this->sigma * abs($constant),          // Scale the standard deviation by the absolute value of the constant
         );
     }
-
-
 
     /**
      * Divides both the mean (mu) and standard deviation (sigma) by a constant.

@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/vendor/autoload.php";
+require __DIR__ . "/../vendor/autoload.php";
 
 use HiFolks\Statistics\Freq;
 use HiFolks\Statistics\NormalDist;
@@ -110,10 +110,10 @@ echo "Actual median: " . round($median, 2) . " seconds" . PHP_EOL;
 // --- Thresholds from the model ---
 echo PHP_EOL . "=== Performance Thresholds ===" . PHP_EOL . PHP_EOL;
 
-$eliteThreshold = $normal->invCdfRounded(0.1, 2);
-$slowThreshold = $normal->invCdfRounded(0.9, 2);
-echo "Top 10% fastest (below): " . $eliteThreshold . " seconds" . PHP_EOL;
-echo "Slowest 10% (above): " . $slowThreshold . " seconds" . PHP_EOL;
+$eliteThreshold = $normal->invCdfRounded(0.2, 2);
+$slowThreshold = $normal->invCdfRounded(0.8, 2);
+echo "Top 20% fastest (below): " . $eliteThreshold . " seconds" . PHP_EOL;
+echo "Slowest 20% (above): " . $slowThreshold . " seconds" . PHP_EOL;
 
 // --- Probability questions ---
 echo PHP_EOL . "=== Probability Questions ===" . PHP_EOL . PHP_EOL;
@@ -167,12 +167,15 @@ foreach ($results as $r) {
     $z = $normal->zscoreRounded($time, 2);
     $zFormatted = ($z >= 0 ? "+" : "") . number_format($z, 2);
 
-    echo str_pad($r["name"], 30)
-        . str_pad(number_format($time, 2) . "s", 10)
-        . str_pad($tier, 12)
-        . "z: " . str_pad($zFormatted, 7)
-        . "(percentile: " . min(round($percentile * 100, 1), 99.9) . "%)"
-        . PHP_EOL;
+    echo str_pad($r["name"], 30) .
+        str_pad(number_format($time, 2) . "s", 10) .
+        str_pad($tier, 12) .
+        "z: " .
+        str_pad($zFormatted, 7) .
+        "(percentile: " .
+        min(round($percentile * 100, 1), 99.9) .
+        "%)" .
+        PHP_EOL;
 }
 
 // --- Frequency Table ---

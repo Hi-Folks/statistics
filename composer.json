@@ -43,8 +43,9 @@
         "rector": "rector process",
         "all-check": [
             "@format",
-            "@test",
-            "@static-code"
+            "@rector-dry-run",
+            "@static-code",
+            "@test"
         ]
     },
     "config": {

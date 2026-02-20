@@ -502,6 +502,7 @@ The `NormalDist` class provides an easy way to work with normal distributions in
 - Define a normal distribution with mean (μ\muμ) and standard deviation (σ\sigmaσ).
 - Calculate the **Probability Density Function (PDF)** to evaluate the relative likelihood of a value.
 - Calculate the **Cumulative Distribution Function (CDF)** to determine the probability of a value or lower.
+- Calculate the **Inverse Cumulative Distribution Function (inv_cdf)** to find the value for a given probability.
 
 ------
 
@@ -519,6 +520,29 @@ $normalDist = new NormalDist(float $mu = 0.0, float $sigma = 1.0);
 
 ### Methods
 
+#### Properties: mean, sigma, and variance
+
+You can access the distribution parameters via getter methods:
+
+```php
+$normalDist = new NormalDist(100, 15);
+$normalDist->getMean();             // 100.0
+$normalDist->getSigma();            // 15.0
+$normalDist->getMedian();           // 100.0 (equals mean for normal dist)
+$normalDist->getMode();             // 100.0 (equals mean for normal dist)
+$normalDist->getVariance();         // 225.0 (sigma squared)
+$normalDist->getVarianceRounded(2); // 225.0
+```
+
+From samples:
+
+```php
+$normalDist = NormalDist::fromSamples([2.5, 3.1, 2.1, 2.4, 2.7, 3.5]);
+$normalDist->getVarianceRounded(5); // 0.25767
+```
+
+------
+
 #### Creating a normal distribution instance from sample data
 
 The `fromSamples()` static method creates a normal distribution instance with mu and sigma parameters estimated from the sample data.
@@ -531,6 +555,36 @@ $normalDist = NormalDist::fromSamples($samples);
 $normalDist->getMeanRounded(5); // 2.71667
 $normalDist->getSigmaRounded(5); // 0.50761
 ```
+
+#### Generate random samples `samples($n, $seed)`
+
+Generates `$n` random samples from the normal distribution using the Box-Muller transform. An optional `$seed` parameter allows reproducible results.
+
+```php
+$normalDist = new NormalDist(100, 15);
+
+// Generate 5 random samples
+$samples = $normalDist->samples(5);
+// e.g. [98.3, 112.7, 89.1, 105.4, 101.2]
+
+// Reproducible results with a seed
+$samples = $normalDist->samples(1000, seed: 42);
+```
+
+------
+
+#### Z-score `zscore($x)`
+
+Computes the standard score describing `$x` in terms of the number of standard deviations above or below the mean: `(x - mu) / sigma`.
+
+```php
+$normalDist = new NormalDist(100, 15);
+echo $normalDist->zscore(130);          // 2.0 (two std devs above mean)
+echo $normalDist->zscore(85);           // -1.0 (one std dev below mean)
+echo $normalDist->zscoreRounded(114, 3); // 0.933
+```
+
+------
 
 #### Probability Density Function `pdf($x)`
 
@@ -585,6 +639,85 @@ echo "CDF at x = 12: $cdf\n"; // Output: 0.8413447460685429
 
 ------
 
+#### Inverse Cumulative Distribution Function `invCdf($p)`
+
+Computes the **Inverse Cumulative Distribution Function** (also known as the quantile function or percent-point function). Given a probability `$p`, it finds the value `$x` such that `cdf($x) = $p`.
+
+```php
+$normalDist->invCdf(float $p): float
+```
+
+- Input: a probability `$p` in the range (0, 1) exclusive.
+- Output: the value `$x` where `cdf($x) = $p`.
+- Throws an exception if `$p` is not in (0, 1).
+
+Example:
+
+```php
+$normalDist = new NormalDist(0.0, 1.0);
+
+// Find the value at the 95th percentile of a standard normal distribution
+echo $normalDist->invCdfRounded(0.95, 5); // Output: 1.64485
+
+// The median of a standard normal distribution
+echo $normalDist->invCdf(0.5); // Output: 0.0
+```
+
+The `invCdf()` method is useful for:
+- **Confidence intervals**: find critical values for a given confidence level.
+- **Hypothesis testing**: determine thresholds for statistical significance.
+- **Percentile calculations**: find the value corresponding to a specific percentile.
+
+Round-trip example with `cdf()`:
+
+```php
+$normalDist = new NormalDist(100, 15);
+
+// inv_cdf(0.5) equals the mean
+echo $normalDist->invCdf(0.5); // Output: 100.0
+
+// Round-trip: cdf(invCdf(p)) ≈ p
+echo $normalDist->cdfRounded($normalDist->invCdf(0.25), 2); // Output: 0.25
+```
+
+------
+
+#### Quantiles `quantiles($n)`
+
+Divides the normal distribution into `$n` continuous intervals with equal probability. Returns a list of `$n - 1` cut points separating the intervals.
+Set `$n` to 4 for quartiles (the default), `$n` to 10 for deciles, or `$n` to 100 for percentiles.
+
+```php
+$normalDist = new NormalDist(0.0, 1.0);
+
+// Quartiles (default)
+$normalDist->quantiles();    // [-0.6745, 0.0, 0.6745]
+
+// Deciles
+$normalDist->quantiles(10);  // 9 cut points
+
+// Percentiles
+$normalDist->quantiles(100); // 99 cut points
+```
+
+------
+
+#### Overlapping coefficient `overlap($other)`
+
+Computes the overlapping coefficient (OVL) between two normal distributions. Measures the agreement between two normal probability distributions. Returns a value between 0.0 and 1.0 giving the overlapping area in the two underlying probability density functions.
+
+```php
+$n1 = new NormalDist(2.4, 1.6);
+$n2 = new NormalDist(3.2, 2.0);
+echo $n1->overlapRounded($n2, 4); // 0.8035
+
+// Identical distributions overlap completely
+$n3 = new NormalDist(0, 1);
+echo $n3->overlap($n3); // 1.0
+```
+
+------
+
 #### Combining a normal distribution via `add()` method
 
 The `add()` method allows you to combine a NormalDist instance with either a constant or another NormalDist object.
@@ -625,6 +758,32 @@ $tempFebFahrenheit->getMeanRounded(1); // 41.0
 $tempFebFahrenheit->getSigmaRounded(1); // 4.5
 ```
 
+
+#### Subtracting from a normal distribution via `subtract()` method
+
+The `subtract()` method is the counterpart to `add()`. It subtracts a constant or another NormalDist instance from this distribution.
+
+- A constant (float): shifts the mean down, leaving sigma unchanged.
+- A NormalDist instance: subtracts the means and combines the variances.
+
+```php
+$nd = new NormalDist(100, 15);
+$shifted = $nd->subtract(32);
+$shifted->getMean();  // 68.0
+$shifted->getSigma(); // 15.0 (unchanged)
+```
+
+#### Dividing a normal distribution by a constant via `divide()` method
+
+The `divide()` method is the counterpart to `multiply()`. It divides both the mean (mu) and standard deviation (sigma) by a constant.
+
+```php
+// Convert Fahrenheit back to Celsius: (F - 32) / (9/5)
+$tempFahrenheit = new NormalDist(41, 4.5);
+$tempCelsius = $tempFahrenheit->subtract(32)->divide(9 / 5);
+$tempCelsius->getMeanRounded(1);  // 5.0
+$tempCelsius->getSigmaRounded(1); // 2.5
+```
 
 ------
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.2.1 - WIP
+- Adding `invCdf()` method to normal distribution
+- Adding `getVariance()` method to normal distribution (sigma squared)
+- Adding `getMedian()` method to normal distribution (equals mean)
+- Adding `getMode()` method to normal distribution (equals mean)
+- Adding `quantiles()` method to normal distribution (divide into n equal-probability intervals)
+- Adding `overlap()` method to normal distribution (overlapping coefficient between two distributions)
+- Adding `zscore()` method to normal distribution (standard score)
+- Adding `samples()` method to normal distribution (generate random samples with optional seed)
+- Adding `subtract()` method to normal distribution (counterpart to add)
+- Adding `divide()` method to normal distribution (counterpart to multiply)
+
 ## 1.2.0 - 2026-02-19
 - Welcome to PHP 8.5
 - Upgrading to PHPstan new rules (offsetAccess)

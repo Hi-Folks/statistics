@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.1 - WIP
+## 1.2.1 - 2026-02-20
 - Adding `invCdf()` method to normal distribution
 - Adding `getVariance()` method to normal distribution (sigma squared)
 - Adding `getMedian()` method to normal distribution (equals mean)

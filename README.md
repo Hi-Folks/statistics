@@ -79,7 +79,7 @@ The various mathematical statistics are listed below:
 | `variance()` | variance for a sample |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
-| `correlation()` | the Pearson’s correlation coefficient for two inputs |
+| `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares |
 
@@ -316,8 +316,10 @@ $covariance = Stat::covariance(
 // -7.5
 ```
 
-#### Stat::correlation ( array $x , array $y )
+#### Stat::correlation ( array $x , array $y, string $method = ‘linear’ )
 Return the Pearson’s correlation coefficient for two inputs. Pearson’s correlation coefficient r takes values between -1 and +1. It measures the strength and direction of the linear relationship, where +1 means very strong, positive linear relationship, -1 very strong, negative linear relationship, and 0 no linear relationship.
+
+Use `$method = ‘ranked’` for Spearman’s rank correlation, which measures monotonic relationships (not just linear). Spearman’s correlation is computed by applying Pearson’s formula to the ranks of the data.
 
 ```php
 $correlation = Stat::correlation(
@@ -333,6 +335,16 @@ $correlation = Stat::correlation(
     [9, 8, 7, 6, 5, 4, 3, 2, 1]
 );
 // -1.0
+```
+
+Spearman’s rank correlation (non-linear but monotonic relationship):
+```php
+$correlation = Stat::correlation(
+    [1, 2, 3, 4, 5],
+    [1, 4, 9, 16, 25],
+    ‘ranked’
+);
+// 1.0
 ```
 
 #### Stat::linearRegression ( array $x , array $y )

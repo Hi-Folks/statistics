@@ -1,9 +1,6 @@
   Missing Functions
 
-  Python Function: median_grouped(data, interval)
-  Description: Median of grouped/binned continuous data
-  Status: Missing
-  ────────────────────────────────────────
+
   Python Function: kde(data, h, kernel)
   Description: Kernel Density Estimation
   Status: Missing
@@ -14,10 +11,7 @@
 
   Missing Parameters/Variants
 
-  Feature: correlation() with method='ranked'
-  Python: Supports both Pearson and Spearman rank correlation
-  This Package: Only Pearson
-  ────────────────────────────────────────
+
   Feature: linear_regression() with proportional=True
   Python: Supports proportional regression (intercept forced to 0)
   This Package: No proportional option

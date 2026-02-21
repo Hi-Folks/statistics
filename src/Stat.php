@@ -614,8 +614,14 @@ class Stat
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
      * or if the elements of the array are constants
      */
-    public static function correlation(array $x, array $y): false|float
+    public static function correlation(array $x, array $y, string $method = 'linear'): false|float
     {
+        if ($method !== 'linear' && $method !== 'ranked') {
+            throw new InvalidDataInputException(
+                "Correlation method must be 'linear' or 'ranked'.",
+            );
+        }
+
         $countX = count($x);
         $countY = count($y);
         if ($countX !== $countY) {
@@ -628,6 +634,12 @@ class Stat
                 "Correlation requires at least two data points.",
             );
         }
+
+        if ($method === 'ranked') {
+            $x = self::ranks($x);
+            $y = self::ranks($y);
+        }
+
         $meanX = self::mean($x);
         $meanY = self::mean($y);
         $a = 0;
@@ -649,6 +661,39 @@ class Stat
         }
 
         return $a / $b;
+    }
+
+    /**
+     * Assign average ranks to data values (handles ties by averaging).
+     *
+     * @param  array<int|float>  $data
+     * @return array<float>
+     */
+    private static function ranks(array $data): array
+    {
+        $n = count($data);
+        $indexed = [];
+        for ($i = 0; $i < $n; $i++) {
+            $indexed[] = [$data[$i], $i];
+        }
+
+        usort($indexed, fn ($a, $b) => $a[0] <=> $b[0]);
+
+        $ranks = array_fill(0, $n, 0.0);
+        $i = 0;
+        while ($i < $n) {
+            $j = $i;
+            while ($j < $n && $indexed[$j][0] === $indexed[$i][0]) {
+                $j++;
+            }
+            $averageRank = ($i + 1 + $j) / 2.0;
+            for ($k = $i; $k < $j; $k++) {
+                $ranks[$indexed[$k][1]] = $averageRank;
+            }
+            $i = $j;
+        }
+
+        return $ranks;
     }
 
     /**

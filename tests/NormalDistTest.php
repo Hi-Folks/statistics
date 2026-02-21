@@ -369,4 +369,32 @@ class NormalDistTest extends TestCase
         // Very high probability (upper tail)
         $this->assertEqualsWithDelta(3.09023, $nd->invCdfRounded(0.999, 5), 1e-3);
     }
+
+    public function test_constructor_negative_sigma_throws(): void
+    {
+        $this->expectException(\HiFolks\Statistics\Exception\InvalidDataInputException::class);
+        new NormalDist(0.0, -1.0);
+    }
+
+    public function test_from_samples_empty_throws(): void
+    {
+        $this->expectException(\HiFolks\Statistics\Exception\InvalidDataInputException::class);
+        NormalDist::fromSamples([]);
+    }
+
+    public function test_cdf_rounded(): void
+    {
+        $nd = new NormalDist(0.0, 1.0);
+        $this->assertEquals(0.5, $nd->cdfRounded(0.0));
+        $this->assertEquals(0.841, $nd->cdfRounded(1.0));
+        $this->assertEquals(0.84134, $nd->cdfRounded(1.0, 5));
+    }
+
+    public function test_overlap_zero_sigma_throws(): void
+    {
+        $a = new NormalDist(0.0, 0.0);
+        $b = new NormalDist(1.0, 1.0);
+        $this->expectException(\HiFolks\Statistics\Exception\InvalidDataInputException::class);
+        $a->overlap($b);
+    }
 }

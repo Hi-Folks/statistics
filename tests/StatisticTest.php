@@ -208,4 +208,21 @@ class StatisticTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Statistics::make([1, 'some string', 3])->numericalArray();
     }
+
+    public function test_median_grouped(): void
+    {
+        $result = Statistics::make([1, 2, 2, 3, 4, 4, 4, 5])->medianGrouped();
+        $this->assertIsFloat($result);
+        $this->assertEquals(3.5, $result);
+    }
+
+    public function test_max_with_empty_array(): void
+    {
+        $this->assertEquals(0, Statistics::make([])->max());
+    }
+
+    public function test_min_with_empty_array(): void
+    {
+        $this->assertEquals(0, Statistics::make([])->min());
+    }
 }

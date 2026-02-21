@@ -49,6 +49,24 @@ class StatTest extends TestCase
         Stat::mean([]);
     }
 
+    public function test_fmean_empty_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::fmean([]);
+    }
+
+    public function test_fmean_mismatched_weights_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::fmean([1, 2, 3], [1, 2]);
+    }
+
+    public function test_fmean_zero_weight_sum_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::fmean([1, 2, 3], [0, 0, 0]);
+    }
+
     public function test_calculates_median(): void
     {
         $this->assertEquals(3, Stat::median([1, 3, 5]));
@@ -789,5 +807,75 @@ class StatTest extends TestCase
     {
         $this->expectException(InvalidDataInputException::class);
         Stat::kdeRandom([1.0, 2.0], 0.0);
+    }
+
+    public function test_covariance_non_numeric_x_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        // true passes mean()'s string filter and array_sum without warnings,
+        // but is_numeric(true) returns false, triggering the loop guard
+        Stat::covariance([true, 1, 2], [3, 4, 5]); // @phpstan-ignore argument.type
+    }
+
+    public function test_covariance_non_numeric_y_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::covariance([1, 2, 3], [true, 4, 5]); // @phpstan-ignore argument.type
+    }
+
+    public function test_kde_cumulative_bounded_kernels(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $boundedKernels = [
+            KdeKernel::Triangular,
+            KdeKernel::Parabolic,
+            KdeKernel::Rectangular,
+            KdeKernel::Quartic,
+            KdeKernel::Triweight,
+            KdeKernel::Cosine,
+        ];
+
+        foreach ($boundedKernels as $kernel) {
+            $F = Stat::kde($data, 1.0, $kernel, cumulative: true);
+            $this->assertIsCallable($F);
+
+            // CDF must be monotonically non-decreasing
+            $prev = $F(-100.0);
+            foreach ([0.0, 1.0, 3.0, 5.0, 100.0] as $x) {
+                $current = $F($x);
+                $this->assertGreaterThanOrEqual(
+                    $prev,
+                    $current,
+                    "CDF ({$kernel->value}) should be non-decreasing at x=$x",
+                );
+                $prev = $current;
+            }
+
+            // Boundary behaviour
+            $this->assertEqualsWithDelta(0.0, $F(-100.0), 0.01);
+            $this->assertEqualsWithDelta(1.0, $F(100.0), 0.01);
+        }
+    }
+
+    public function test_kde_random_quartic_covers_small_p(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        // Generate enough samples so the rare p < 0.0106 branch is hit
+        $sampler = Stat::kdeRandom($data, 1.0, KdeKernel::Quartic, seed: 42);
+        for ($i = 0; $i < 500; $i++) {
+            $value = $sampler();
+            $this->assertIsFloat($value);
+        }
+    }
+
+    public function test_kde_random_triweight_covers_both_signs(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        // Generate enough samples so both p <= 0.5 and p > 0.5 branches are hit
+        $sampler = Stat::kdeRandom($data, 1.0, KdeKernel::Triweight, seed: 42);
+        for ($i = 0; $i < 500; $i++) {
+            $value = $sampler();
+            $this->assertIsFloat($value);
+        }
     }
 }

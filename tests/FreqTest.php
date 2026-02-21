@@ -92,4 +92,14 @@ class FreqTest extends TestCase
         $this->assertEquals([1 => 13, 9 => 20, 17 => 5], $table);
         $this->assertEquals(count($data), array_sum($table));
     }
+
+    public function test_frequency_table_with_empty_array(): void
+    {
+        $this->assertSame([], Freq::frequencyTable([]));
+    }
+
+    public function test_frequency_table_by_size_with_empty_array(): void
+    {
+        $this->assertSame([], Freq::frequencyTableBySize([]));
+    }
 }

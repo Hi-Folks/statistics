@@ -705,7 +705,7 @@ class Stat
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
      * or if the elements of the array are constants
      */
-    public static function linearRegression(array $x, array $y): array
+    public static function linearRegression(array $x, array $y, bool $proportional = false): array
     {
         $countX = count($x);
         $countY = count($y);
@@ -728,6 +728,18 @@ class Stat
             $sumXY += $value * $y[$key];
             $sumXX += $value * $value;
         }
+
+        if ($proportional) {
+            if ($sumXX == 0) {
+                throw new InvalidDataInputException(
+                    "Proportional linear regression requires x values that are not all zeros.",
+                );
+            }
+            $slope = (float) ($sumXY / $sumXX);
+
+            return [$slope, 0.0];
+        }
+
         $denominator = $countX * $sumXX - $sumX * $sumX;
         if ($denominator === 0) {
             throw new InvalidDataInputException(

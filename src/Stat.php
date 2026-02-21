@@ -144,6 +144,96 @@ class Stat
     }
 
     /**
+     * Estimate the median for grouped data that has been binned
+     * around the midpoints of consecutive, fixed-width intervals.
+     *
+     * Uses interpolation within the median interval:
+     * L + interval * (n/2 - cf) / f
+     *
+     * where:
+     * - L is the lower limit of the median interval
+     * - cf is the cumulative frequency of the preceding interval
+     * - f is the number of elements in the median interval
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $interval the width of each bin
+     * @return float the estimated median for grouped data
+     *
+     * @throws InvalidDataInputException if the data is empty
+     */
+    public static function medianGrouped(array $data, float $interval = 1.0): float
+    {
+        sort($data);
+        $n = count($data);
+        if ($n === 0) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+
+        // Find the value at the midpoint (midpoint of the class interval)
+        $x = (float) $data[intdiv($n, 2)];
+
+        // Find where all the x values occur in the sorted data
+        // All x will lie within data[i:j]
+        $i = self::bisectLeft($data, $x);
+        $j = self::bisectRight($data, $x, $i);
+
+        // Lower limit of the median interval
+        $L = $x - $interval / 2.0;
+        // Cumulative frequency of the preceding interval
+        $cf = $i;
+        // Number of elements in the median interval
+        $f = $j - $i;
+
+        return $L + $interval * ($n / 2.0 - $cf) / $f;
+    }
+
+    /**
+     * Binary search: find the leftmost position where $target can be inserted
+     * in $data while keeping it sorted.
+     *
+     * @param  array<int|float>  $data sorted array
+     * @param  float  $target value to locate
+     */
+    private static function bisectLeft(array $data, float $target): int
+    {
+        $lo = 0;
+        $hi = count($data);
+        while ($lo < $hi) {
+            $mid = intdiv($lo + $hi, 2);
+            if ($data[$mid] < $target) {
+                $lo = $mid + 1;
+            } else {
+                $hi = $mid;
+            }
+        }
+
+        return $lo;
+    }
+
+    /**
+     * Binary search: find the rightmost position where $target can be inserted
+     * in $data while keeping it sorted.
+     *
+     * @param  array<int|float>  $data sorted array
+     * @param  float  $target value to locate
+     * @param  int  $lo lower bound for the search
+     */
+    private static function bisectRight(array $data, float $target, int $lo = 0): int
+    {
+        $hi = count($data);
+        while ($lo < $hi) {
+            $mid = intdiv($lo + $hi, 2);
+            if ($data[$mid] <= $target) {
+                $lo = $mid + 1;
+            } else {
+                $hi = $mid;
+            }
+        }
+
+        return $lo;
+    }
+
+    /**
      * Return the low median of data.
      * The low median is always a member of the data set.
      * When the number of data points is odd, the middle value is returned.

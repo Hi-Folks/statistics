@@ -67,6 +67,7 @@ The various mathematical statistics are listed below:
 | `median()` | median or "middle value" of data |
 | `medianLow()` | low median of data |
 | `medianHigh()` | high median of data |
+| `medianGrouped()` | median of grouped data, using interpolation |
 | `mode()` | single mode (most common value) of discrete or nominal data |
 | `multimode()` | list of modes (most common values) of discrete or nominal data |
 | `quantiles()` | cut points dividing the range of a probability distribution into continuous intervals with equal probabilities |
@@ -190,6 +191,35 @@ $median = Stat::medianHigh([1, 3, 5]);
 // 3
 $median = Stat::medianHigh([1, 3, 5, 7]);
 // 5
+```
+
+#### Stat::medianGrouped( array $data, float $interval = 1.0 )
+Estimate the median for numeric data that has been grouped or binned around the midpoints of consecutive, fixed-width intervals.
+The `$interval` parameter specifies the width of each bin (default `1.0`). This function uses interpolation within the median interval, assuming values are evenly distributed across each bin.
+
+```php
+use HiFolks\Statistics\Stat;
+$median = Stat::medianGrouped([1, 2, 2, 3, 4, 4, 4, 4, 4, 5]);
+// 3.7
+$median = Stat::medianGrouped([1, 3, 3, 5, 7]);
+// 3.25
+$median = Stat::medianGrouped([1, 3, 3, 5, 7], 2);
+// 3.5
+```
+
+For example, demographic data summarized into ten-year age groups:
+```php
+use HiFolks\Statistics\Stat;
+// 172 people aged 20-30, 484 aged 30-40, 387 aged 40-50, etc.
+$data = array_merge(
+    array_fill(0, 172, 25),
+    array_fill(0, 484, 35),
+    array_fill(0, 387, 45),
+    array_fill(0, 22, 55),
+    array_fill(0, 6, 65),
+);
+round(Stat::medianGrouped($data, 10), 1);
+// 37.5
 ```
 
 #### Stat::quantiles( array $data, $n=4, $round=null  )

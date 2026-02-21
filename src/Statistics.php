@@ -174,6 +174,18 @@ class Statistics
     }
 
     /**
+     * Estimate the median for grouped data.
+     *
+     * @param  float  $interval the width of each bin
+     *
+     * @see Stat::medianGrouped()
+     */
+    public function medianGrouped(float $interval = 1.0): float
+    {
+        return Stat::medianGrouped($this->numericalArray(), $interval);
+    }
+
+    /**
      * Return the first quartile.
      *
      * @see Stat::firstQuartile()

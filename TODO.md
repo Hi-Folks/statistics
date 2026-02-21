@@ -12,10 +12,7 @@
   Missing Parameters/Variants
 
 
-  Feature: linear_regression() with proportional=True
-  Python: Supports proportional regression (intercept forced to 0)
-  This Package: No proportional option
-  ────────────────────────────────────────
+
   Feature: variance(data, xbar) / pvariance(data, mu)
   Python: Can pass pre-computed mean to avoid recalculation
   This Package: No pre-computed mean parameter

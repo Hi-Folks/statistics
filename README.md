@@ -75,8 +75,8 @@ The various mathematical statistics are listed below:
 | `firstQuartile()` | first quartile, is the value at which 25 percent of the data is below it |
 | `pstdev()` | Population standard deviation |
 | `stdev()` | Sample standard deviation |
-| `pvariance()` | variance for a population |
-| `variance()` | variance for a sample |
+| `pvariance()` | variance for a population (supports pre-computed mean via `mu`) |
+| `variance()` | variance for a sample (supports pre-computed mean via `xbar`) |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
@@ -276,7 +276,7 @@ $stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4);
 // 1.0811
 ```
 
-#### Stat::variance ( array $data)
+#### Stat::variance ( array $data, ?int $round = null, int|float|null $xbar = null)
 Variance is a measure of dispersion of data points from the mean.
 Low variance indicates that data points are generally similar and do not vary widely from the mean.
 High variance indicates that data values have greater variability and are more widely dispersed from the mean.
@@ -288,11 +288,23 @@ $variance = Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]);
 // 1.3720238095238095
 ```
 
-If you need to calculate the variance on the whole population and not just on a sample you need to use *pvariance* method:
+If you have already computed the mean, you can pass it via `xbar` to avoid recalculation:
+```php
+$data = [2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5];
+$mean = Stat::mean($data);
+$variance = Stat::variance($data, xbar: $mean);
+```
+
+If you need to calculate the variance on the whole population and not just on a sample you need to use *pvariance* method. You can optionally pass the population mean via `mu`:
 ```php
 use HiFolks\Statistics\Stat;
 $variance = Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25]);
 // 1.25
+
+// With pre-computed mean:
+$data = [0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25];
+$mu = Stat::mean($data);
+$variance = Stat::pvariance($data, mu: $mu);
 ```
 
 

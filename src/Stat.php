@@ -423,14 +423,14 @@ class Stat
      *
      * @throws InvalidDataInputException if the data is empty
      */
-    public static function pvariance(array $data, ?int $round = null): float
+    public static function pvariance(array $data, ?int $round = null, int|float|null $mu = null): float
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements === 0) {
             throw new InvalidDataInputException("The data must not be empty.");
         }
         $sumSquareDifferences = 0.0;
-        $average = self::mean($data);
+        $average = $mu ?? self::mean($data);
 
         foreach ($data as $i) {
             // sum of squares of differences between
@@ -467,7 +467,7 @@ class Stat
      *
      * @throws InvalidDataInputException if data size is less than 2
      */
-    public static function variance(array $data, ?int $round = null): float
+    public static function variance(array $data, ?int $round = null, int|float|null $xbar = null): float
     {
         $num_of_elements = self::count($data);
         if ($num_of_elements <= 1) {
@@ -476,7 +476,7 @@ class Stat
             );
         }
         $sumSquareDifferences = 0.0;
-        $average = self::mean($data);
+        $average = $xbar ?? self::mean($data);
 
         foreach ($data as $i) {
             // sum of squares of differences between

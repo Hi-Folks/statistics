@@ -196,10 +196,30 @@ class StatTest extends TestCase
         $this->assertEquals(1.3720238095238095, Stat::variance([2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5]));
     }
 
+    public function test_calculates_variance_with_precomputed_mean(): void
+    {
+        $data = [2.75, 1.75, 1.25, 0.25, 0.5, 1.25, 3.5];
+        $mean = Stat::mean($data);
+        $this->assertEquals(
+            Stat::variance($data),
+            Stat::variance($data, xbar: $mean),
+        );
+    }
+
     public function test_calculates_pvariance(): void
     {
         $this->assertEquals(1.25, Stat::pvariance([0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25]));
         $this->assertEquals(0.6875, Stat::pvariance([1, 2, 3, 3]));
+    }
+
+    public function test_calculates_pvariance_with_precomputed_mean(): void
+    {
+        $data = [0.0, 0.25, 0.25, 1.25, 1.5, 1.75, 2.75, 3.25];
+        $mean = Stat::mean($data);
+        $this->assertEquals(
+            Stat::pvariance($data),
+            Stat::pvariance($data, mu: $mean),
+        );
     }
 
     public function test_calculates_geometric_mean(): void

@@ -575,4 +575,114 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::linearRegression([0, 0, 0, 0, 0], [1, 2, 3, 4, 5], proportional: true);
     }
+
+    public function test_kde_normal(): void
+    {
+        $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];
+        $f = Stat::kde($data, 1.5);
+        $this->assertIsCallable($f);
+
+        $density = $f(2.5);
+        $this->assertIsFloat($density);
+        $this->assertGreaterThan(0, $density);
+
+        // Verify against manually computed value
+        // f(2.5) = (1/(6*1.5)) * sum of K((2.5 - xi)/1.5)
+        $n = count($data);
+        $h = 1.5;
+        $sum = 0.0;
+        $sqrt2pi = sqrt(2.0 * M_PI);
+        foreach ($data as $xi) {
+            $t = (2.5 - $xi) / $h;
+            $sum += exp(-$t * $t / 2.0) / $sqrt2pi;
+        }
+        $expected = $sum / ($n * $h);
+        $this->assertEqualsWithDelta($expected, $density, 1e-10);
+    }
+
+    public function test_kde_all_kernels(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $kernels = [
+            'normal', 'logistic', 'sigmoid',
+            'rectangular', 'triangular', 'parabolic',
+            'quartic', 'triweight', 'cosine',
+        ];
+
+        foreach ($kernels as $kernel) {
+            $f = Stat::kde($data, 1.0, $kernel);
+            $this->assertIsCallable($f, "Kernel '$kernel' should return a callable");
+            $density = $f(3.0);
+            $this->assertGreaterThanOrEqual(0, $density, "Kernel '$kernel' density should be >= 0");
+        }
+    }
+
+    public function test_kde_cumulative(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $F = Stat::kde($data, 1.0, 'normal', cumulative: true);
+        $this->assertIsCallable($F);
+
+        // CDF should be monotonically non-decreasing
+        $prev = $F(-100.0);
+        foreach ([-10.0, 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 10.0, 100.0] as $x) {
+            $current = $F($x);
+            $this->assertGreaterThanOrEqual($prev, $current, "CDF should be non-decreasing at x=$x");
+            $prev = $current;
+        }
+
+        // Approaches 0 far left and 1 far right
+        $this->assertEqualsWithDelta(0.0, $F(-100.0), 0.01);
+        $this->assertEqualsWithDelta(1.0, $F(100.0), 0.01);
+    }
+
+    public function test_kde_aliases(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $x = 3.0;
+
+        // gauss == normal
+        $f1 = Stat::kde($data, 1.0, 'gauss');
+        $f2 = Stat::kde($data, 1.0, 'normal');
+        $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
+
+        // uniform == rectangular
+        $f1 = Stat::kde($data, 1.0, 'uniform');
+        $f2 = Stat::kde($data, 1.0, 'rectangular');
+        $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
+
+        // epanechnikov == parabolic
+        $f1 = Stat::kde($data, 1.0, 'epanechnikov');
+        $f2 = Stat::kde($data, 1.0, 'parabolic');
+        $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
+
+        // biweight == quartic
+        $f1 = Stat::kde($data, 1.0, 'biweight');
+        $f2 = Stat::kde($data, 1.0, 'quartic');
+        $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
+    }
+
+    public function test_kde_empty_data(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kde([], 1.0);
+    }
+
+    public function test_kde_invalid_bandwidth(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kde([1.0, 2.0], 0.0);
+    }
+
+    public function test_kde_invalid_bandwidth_negative(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kde([1.0, 2.0], -1.0);
+    }
+
+    public function test_kde_invalid_kernel(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kde([1.0, 2.0], 1.0, 'invalid_kernel');
+    }
 }

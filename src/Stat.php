@@ -716,6 +716,171 @@ class Stat
     }
 
     /**
+     * Create a continuous probability density function or cumulative distribution
+     * function from discrete sample data using Kernel Density Estimation.
+     *
+     * Returns a Closure that estimates the density (or CDF) at any given point.
+     *
+     * @param  array<int|float>  $data  sample data
+     * @param  float  $h  bandwidth (smoothing parameter), must be > 0
+     * @param  string  $kernel  kernel name (normal, logistic, sigmoid, rectangular, triangular, parabolic, quartic, triweight, cosine) or alias
+     * @param  bool  $cumulative  if true, return CDF estimator; otherwise PDF estimator
+     * @return \Closure  a callable that takes a float and returns the estimated density or CDF value
+     *
+     * @throws InvalidDataInputException if data is empty, bandwidth <= 0, or kernel is invalid
+     */
+    public static function kde(
+        array $data,
+        float $h,
+        string $kernel = 'normal',
+        bool $cumulative = false,
+    ): \Closure {
+        if ($data === []) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+        if ($h <= 0) {
+            throw new InvalidDataInputException("Bandwidth h must be positive.");
+        }
+
+        $aliases = [
+            'gauss' => 'normal',
+            'uniform' => 'rectangular',
+            'epanechnikov' => 'parabolic',
+            'biweight' => 'quartic',
+        ];
+        $kernel = strtolower($kernel);
+        if (isset($aliases[$kernel])) {
+            $kernel = $aliases[$kernel];
+        }
+
+        $sqrt2pi = sqrt(2.0 * M_PI);
+
+        // Standard normal CDF using Abramowitz & Stegun approximation (7.1.26)
+        $normalCdf = static function (float $t) use ($sqrt2pi): float {
+            $negative = $t < 0;
+            $t = abs($t);
+            $b1 = 0.319381530;
+            $b2 = -0.356563782;
+            $b3 = 1.781477937;
+            $b4 = -1.821255978;
+            $b5 = 1.330274429;
+            $p = 0.2316419;
+            $k = 1.0 / (1.0 + $p * $t);
+            $pdf = exp(-$t * $t / 2.0) / $sqrt2pi;
+            $cdf = 1.0 - $pdf * $k * ($b1 + $k * ($b2 + $k * ($b3 + $k * ($b4 + $k * $b5))));
+
+            return $negative ? 1.0 - $cdf : $cdf;
+        };
+
+        $kernels = [
+            'normal' => [
+                'pdf' => static fn(float $t): float => exp(-$t * $t / 2.0) / $sqrt2pi,
+                'cdf' => $normalCdf,
+                'support' => null,
+            ],
+            'logistic' => [
+                'pdf' => static fn(float $t): float => 0.5 / (1.0 + cosh($t)),
+                'cdf' => static fn(float $t): float => 1.0 / (1.0 + exp(-$t)),
+                'support' => null,
+            ],
+            'sigmoid' => [
+                'pdf' => static fn(float $t): float => (1.0 / M_PI) / cosh($t),
+                'cdf' => static fn(float $t): float => (2.0 / M_PI) * atan(exp($t)),
+                'support' => null,
+            ],
+            'rectangular' => [
+                'pdf' => static fn(float $t): float => 0.5,
+                'cdf' => static fn(float $t): float => 0.5 * $t + 0.5,
+                'support' => 1.0,
+            ],
+            'triangular' => [
+                'pdf' => static fn(float $t): float => 1.0 - abs($t),
+                'cdf' => static fn(float $t): float => $t >= 0
+                    ? 1.0 - (1.0 - $t) * (1.0 - $t) / 2.0
+                    : (1.0 + $t) * (1.0 + $t) / 2.0,
+                'support' => 1.0,
+            ],
+            'parabolic' => [
+                'pdf' => static fn(float $t): float => 0.75 * (1.0 - $t * $t),
+                'cdf' => static fn(float $t): float => -0.25 * $t * $t * $t + 0.75 * $t + 0.5,
+                'support' => 1.0,
+            ],
+            'quartic' => [
+                'pdf' => static fn(float $t): float => (15.0 / 16.0) * (1.0 - $t * $t) ** 2,
+                'cdf' => static fn(float $t): float => (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5,
+                'support' => 1.0,
+            ],
+            'triweight' => [
+                'pdf' => static fn(float $t): float => (35.0 / 32.0) * (1.0 - $t * $t) ** 3,
+                'cdf' => static fn(float $t): float => (35.0 * $t - 35.0 * $t ** 3 + 21.0 * $t ** 5 - 5.0 * $t ** 7) / 32.0 + 0.5,
+                'support' => 1.0,
+            ],
+            'cosine' => [
+                'pdf' => static fn(float $t): float => (M_PI / 4.0) * cos(M_PI * $t / 2.0),
+                'cdf' => static fn(float $t): float => 0.5 * sin(M_PI * $t / 2.0) + 0.5,
+                'support' => 1.0,
+            ],
+        ];
+
+        if (! isset($kernels[$kernel])) {
+            $valid = implode(', ', array_merge(array_keys($kernels), array_keys($aliases)));
+            throw new InvalidDataInputException(
+                "Unknown kernel '{$kernel}'. Valid kernels: {$valid}.",
+            );
+        }
+
+        $kernelDef = $kernels[$kernel];
+        $support = $kernelDef['support'];
+        $fn = $cumulative ? $kernelDef['cdf'] : $kernelDef['pdf'];
+
+        $sorted = $data;
+        sort($sorted);
+        $n = count($sorted);
+
+        if ($cumulative) {
+            return static function (float $x) use ($sorted, $n, $h, $fn, $support): float {
+                $sum = 0.0;
+                if ($support !== null) {
+                    $lo = self::bisectLeft($sorted, $x - $h * $support);
+                    $hi = self::bisectRight($sorted, $x + $h * $support);
+                    for ($i = $lo; $i < $hi; $i++) {
+                        $t = ($x - $sorted[$i]) / $h;
+                        $sum += $fn($t);
+                    }
+                    // Points entirely to the left contribute 1.0 each
+                    $sum += $lo;
+                } else {
+                    for ($i = 0; $i < $n; $i++) {
+                        $t = ($x - $sorted[$i]) / $h;
+                        $sum += $fn($t);
+                    }
+                }
+
+                return $sum / $n;
+            };
+        }
+
+        return static function (float $x) use ($sorted, $n, $h, $fn, $support): float {
+            $sum = 0.0;
+            if ($support !== null) {
+                $lo = self::bisectLeft($sorted, $x - $h * $support);
+                $hi = self::bisectRight($sorted, $x + $h * $support);
+                for ($i = $lo; $i < $hi; $i++) {
+                    $t = ($x - $sorted[$i]) / $h;
+                    $sum += $fn($t);
+                }
+            } else {
+                for ($i = 0; $i < $n; $i++) {
+                    $t = ($x - $sorted[$i]) / $h;
+                    $sum += $fn($t);
+                }
+            }
+
+            return $sum / ($n * $h);
+        };
+    }
+
+    /**
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
      * @return array<int|float>

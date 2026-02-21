@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.3 - WIP
+- Adding `kde()` method for Kernel Density Estimation — returns a closure that estimates PDF or CDF from sample data, supporting 9 kernel functions with aliases
+
 ## 1.2.2 - 2026-02-21
 - Adding `method` parameter to `quantiles()` supporting `'exclusive'` (default) and `'inclusive'` interpolation methods
 - Adding `medianGrouped()` method for estimating the median of grouped/binned continuous data using interpolation

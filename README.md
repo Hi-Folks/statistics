@@ -82,6 +82,7 @@ The various mathematical statistics are listed below:
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
+| `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.
@@ -398,6 +399,34 @@ list($slope, $intercept) = Stat::linearRegression(
 );
 // $slope = 2.0
 // $intercept = 0.0
+```
+
+#### Stat::kde ( array $data , float $h , string $kernel = 'normal' , bool $cumulative = false )
+Create a continuous probability density function (or cumulative distribution function) from discrete sample data using Kernel Density Estimation.
+Returns a `Closure` that can be called with any point to estimate the density (or CDF value).
+
+Supported kernels: `normal` (alias `gauss`), `logistic`, `sigmoid`, `rectangular` (alias `uniform`), `triangular`, `parabolic` (alias `epanechnikov`), `quartic` (alias `biweight`), `triweight`, `cosine`.
+
+```php
+$data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];
+$f = Stat::kde($data, h: 1.5);
+$f(2.5);
+// estimated density at x = 2.5
+```
+
+Using a different kernel:
+
+```php
+$f = Stat::kde($data, h: 1.5, kernel: 'triangular');
+$f(2.5);
+```
+
+Cumulative distribution function:
+
+```php
+$F = Stat::kde($data, h: 1.5, cumulative: true);
+$F(2.5);
+// estimated CDF at x = 2.5 (probability that a value is <= 2.5)
 ```
 
 ### Freq class

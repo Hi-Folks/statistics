@@ -1,9 +1,10 @@
 # Changelog
 
-## 1.2.3 - WIP
+## 1.2.3 - 2026-02-21
 - Adding `kde()` method for Kernel Density Estimation — returns a closure that estimates PDF or CDF from sample data, supporting 9 kernel functions with aliases
 - Adding `kdeRandom()` method for random sampling from a Kernel Density Estimate — returns a closure that generates random floats from the KDE distribution
 - Introducing `KdeKernel` backed string enum — `kde()` and `kdeRandom()`. It accepts `KdeKernel` enum cases
+- Adding Kernel Density Estimation (KDE) examples
 
 ## 1.2.2 - 2026-02-21
 - Adding `method` parameter to `quantiles()` supporting `'exclusive'` (default) and `'inclusive'` interpolation methods

@@ -77,6 +77,8 @@ The various mathematical statistics are listed below:
 | `stdev()` | Sample standard deviation |
 | `pvariance()` | variance for a population (supports pre-computed mean via `mu`) |
 | `variance()` | variance for a sample (supports pre-computed mean via `xbar`) |
+| `skewness()` | adjusted Fisher-Pearson sample skewness |
+| `pskewness()` | population (biased) skewness |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
@@ -317,6 +319,28 @@ $mu = Stat::mean($data);
 $variance = Stat::pvariance($data, mu: $mu);
 ```
 
+
+#### Stat::skewness ( array $data, ?int $round = null )
+Skewness is a measure of the asymmetry of a distribution. The adjusted Fisher-Pearson formula is used, which is the same as Excel's `SKEW()` and Python's `scipy.stats.skew(bias=False)`.
+
+A positive skewness indicates a right-skewed distribution (tail extends to the right), while a negative skewness indicates a left-skewed distribution. A symmetric distribution has a skewness of 0.
+
+Requires at least 3 data points.
+
+```php
+use HiFolks\Statistics\Stat;
+$skewness = Stat::skewness([1, 2, 3, 4, 5]);
+// 0.0 (symmetric)
+
+$skewness = Stat::skewness([1, 1, 1, 1, 1, 10]);
+// positive (right-skewed)
+```
+
+If you need the population (biased) skewness instead of the sample skewness, use `pskewness()`. This is equivalent to `scipy.stats.skew(bias=True)`:
+```php
+use HiFolks\Statistics\Stat;
+$pskewness = Stat::pskewness([1, 1, 1, 1, 1, 10]);
+```
 
 #### Stat::covariance ( array $x , array $y )
 Covariance, static method, returns the sample covariance of two inputs *$x* and *$y*.

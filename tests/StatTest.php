@@ -241,6 +241,99 @@ class StatTest extends TestCase
         );
     }
 
+    public function test_calculates_skewness_symmetric(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Stat::skewness([1, 2, 3, 4, 5]), 1e-10);
+    }
+
+    public function test_calculates_skewness_right_skewed(): void
+    {
+        $skewness = Stat::skewness([1, 1, 1, 1, 1, 10]);
+        $this->assertGreaterThan(0, $skewness);
+    }
+
+    public function test_calculates_skewness_left_skewed(): void
+    {
+        $skewness = Stat::skewness([1, 10, 10, 10, 10, 10]);
+        $this->assertLessThan(0, $skewness);
+    }
+
+    public function test_calculates_skewness_with_rounding(): void
+    {
+        $skewness = Stat::skewness([1, 1, 1, 1, 1, 10], 4);
+        $this->assertGreaterThan(0, $skewness);
+        $this->assertEquals(round($skewness, 4), $skewness);
+    }
+
+    public function test_skewness_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::skewness([]);
+    }
+
+    public function test_skewness_with_two_elements(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::skewness([1, 2]);
+    }
+
+    public function test_skewness_with_identical_values(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::skewness([5, 5, 5, 5]);
+    }
+
+    public function test_calculates_pskewness_symmetric(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Stat::pskewness([1, 2, 3, 4, 5]), 1e-10);
+    }
+
+    public function test_calculates_pskewness_right_skewed(): void
+    {
+        $pskewness = Stat::pskewness([1, 1, 1, 1, 1, 10]);
+        $this->assertGreaterThan(0, $pskewness);
+    }
+
+    public function test_calculates_pskewness_left_skewed(): void
+    {
+        $pskewness = Stat::pskewness([1, 10, 10, 10, 10, 10]);
+        $this->assertLessThan(0, $pskewness);
+    }
+
+    public function test_calculates_pskewness_with_rounding(): void
+    {
+        $pskewness = Stat::pskewness([1, 1, 1, 1, 1, 10], 4);
+        $this->assertGreaterThan(0, $pskewness);
+        $this->assertEquals(round($pskewness, 4), $pskewness);
+    }
+
+    public function test_pskewness_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::pskewness([]);
+    }
+
+    public function test_pskewness_with_two_elements(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::pskewness([1, 2]);
+    }
+
+    public function test_pskewness_with_identical_values(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::pskewness([5, 5, 5, 5]);
+    }
+
+    public function test_pskewness_less_than_skewness_for_small_samples(): void
+    {
+        $data = [1, 1, 1, 1, 1, 10];
+        $skewness = Stat::skewness($data);
+        $pskewness = Stat::pskewness($data);
+        // Population skewness magnitude is smaller than sample skewness for small n
+        $this->assertLessThan(abs($skewness), abs($pskewness));
+    }
+
     public function test_calculates_geometric_mean(): void
     {
         $this->assertEquals(36, Stat::geometricMean([54, 24, 36], 2));

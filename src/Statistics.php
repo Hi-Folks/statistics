@@ -272,6 +272,30 @@ class Statistics
     }
 
     /**
+     * Return the adjusted Fisher-Pearson sample skewness.
+     *
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::skewness()
+     */
+    public function skewness(?int $round = null): float
+    {
+        return Stat::skewness($this->numericalArray(), $round);
+    }
+
+    /**
+     * Return the population (biased) skewness.
+     *
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::pskewness()
+     */
+    public function pskewness(?int $round = null): float
+    {
+        return Stat::pskewness($this->numericalArray(), $round);
+    }
+
+    /**
      * Return the geometric mean of the numeric data.
      *
      * @param  int|null  $round whether to round the result

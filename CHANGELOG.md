@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.4 - WIP
+- Adding `skewness()` method for adjusted Fisher-Pearson sample skewness
+- Adding `pskewness()` method for population (biased) skewness
+- Full Coverage Tests (adding some edge cases)
+- Create KDE example
+
 ## 1.2.3 - 2026-02-21
 - Adding `kde()` method for Kernel Density Estimation — returns a closure that estimates PDF or CDF from sample data, supporting 9 kernel functions with aliases
 - Adding `kdeRandom()` method for random sampling from a Kernel Density Estimate — returns a closure that generates random floats from the KDE distribution

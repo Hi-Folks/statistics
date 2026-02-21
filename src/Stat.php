@@ -511,6 +511,78 @@ class Stat
     }
 
     /**
+     * Return the adjusted Fisher-Pearson sample skewness of the data.
+     * This is the same formula used by Excel's SKEW() and scipy.stats.skew(bias=False).
+     *
+     * Formula: [n / ((n-1)(n-2))] * Σ((xi - x̄) / s)³
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @return float skewness
+     *
+     * @throws InvalidDataInputException if the data has fewer than 3 elements or all values are identical
+     */
+    public static function skewness(array $data, ?int $round = null): float
+    {
+        $n = self::count($data);
+        if ($n < 3) {
+            throw new InvalidDataInputException("Skewness requires at least 3 data points.");
+        }
+
+        $mean = self::mean($data);
+        $stdev = self::stdev($data);
+
+        if ($stdev == 0) {
+            throw new InvalidDataInputException("Skewness is undefined when all values are identical (standard deviation is zero).");
+        }
+
+        $sumCubes = 0.0;
+        foreach ($data as $xi) {
+            $sumCubes += (($xi - $mean) / $stdev) ** 3;
+        }
+
+        $skewness = ($n / (($n - 1) * ($n - 2))) * $sumCubes;
+
+        return Math::round($skewness, $round);
+    }
+
+    /**
+     * Return the population (biased) skewness of the data.
+     * This is the same formula used by scipy.stats.skew(bias=True).
+     *
+     * Formula: (1/n) * Σ((xi - x̄) / σ)³
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @return float population skewness
+     *
+     * @throws InvalidDataInputException if the data has fewer than 3 elements or all values are identical
+     */
+    public static function pskewness(array $data, ?int $round = null): float
+    {
+        $n = self::count($data);
+        if ($n < 3) {
+            throw new InvalidDataInputException("Skewness requires at least 3 data points.");
+        }
+
+        $mean = self::mean($data);
+        $pstdev = self::pstdev($data);
+
+        if ($pstdev == 0) {
+            throw new InvalidDataInputException("Skewness is undefined when all values are identical (standard deviation is zero).");
+        }
+
+        $sumCubes = 0.0;
+        foreach ($data as $xi) {
+            $sumCubes += (($xi - $mean) / $pstdev) ** 3;
+        }
+
+        $pskewness = $sumCubes / $n;
+
+        return Math::round($pskewness, $round);
+    }
+
+    /**
      * Return the geometric mean of the numeric data.
      * That is the number that can replace each of these numbers so that their product
      * does not change.

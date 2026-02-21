@@ -177,6 +177,16 @@ class StatisticTest extends TestCase
         $this->assertEquals(0.6875, Statistics::make([1, 2, 3, 3])->pvariance());
     }
 
+    public function test_calculates_skewness(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Statistics::make([1, 2, 3, 4, 5])->skewness(), 1e-10);
+    }
+
+    public function test_calculates_pskewness(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Statistics::make([1, 2, 3, 4, 5])->pskewness(), 1e-10);
+    }
+
     public function test_calculates_geometric_mean(): void
     {
         $this->assertEquals(36, Statistics::make([54, 24, 36])->geometricMean(2));

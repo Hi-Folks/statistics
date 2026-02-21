@@ -81,6 +81,9 @@ echo "Quartiles (Q1, Q2, Q3): "
     . round($quartiles[2], 2)
     . "s"
     . PHP_EOL;
+echo "Skewness: " . Stat::skewness($times, 4)
+    . " (positive = right-skewed, a few slow finishers pull the tail right)"
+    . PHP_EOL;
 
 // --- Normal Distribution Model ---
 echo PHP_EOL . "=== Normal Distribution Model ===" . PHP_EOL . PHP_EOL;

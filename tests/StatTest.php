@@ -503,4 +503,31 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::linearRegression([3, 3, 3, 3, 3], [1, 1, 1, 1, 1]);
     }
+
+    public function test_calculates_proportional_linear_regression(): void
+    {
+        [$slope, $intercept] = Stat::linearRegression(
+            [1, 2, 3, 4, 5],
+            [2, 4, 6, 8, 10],
+            proportional: true,
+        );
+        $this->assertIsFloat($slope);
+        $this->assertEquals(2.0, $slope);
+        $this->assertSame(0.0, $intercept);
+
+        [$slope, $intercept] = Stat::linearRegression(
+            [1, 2, 3, 4, 5],
+            [3, 5, 7, 9, 11],
+            proportional: true,
+        );
+        $this->assertIsFloat($slope);
+        $this->assertEquals(2.27, round($slope, 2));
+        $this->assertSame(0.0, $intercept);
+    }
+
+    public function test_proportional_linear_regression_with_all_zeros_x(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::linearRegression([0, 0, 0, 0, 0], [1, 2, 3, 4, 5], proportional: true);
+    }
 }

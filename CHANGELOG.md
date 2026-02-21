@@ -3,6 +3,7 @@
 ## 1.2.2 - WIP
 - Adding `medianGrouped()` method for estimating the median of grouped/binned continuous data using interpolation
 - Adding Spearman rank correlation via `method` parameter in `correlation()` (`method='ranked'`)
+- Adding proportional linear regression via `proportional` parameter in `linearRegression()` for regression through the origin
 
 
 ## 1.2.1 - 2026-02-20

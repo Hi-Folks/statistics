@@ -81,7 +81,7 @@ The various mathematical statistics are listed below:
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
 | `covariance()` | the sample covariance of two inputs |
-| `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares |
+| `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.
@@ -347,7 +347,7 @@ $correlation = Stat::correlation(
 // 1.0
 ```
 
-#### Stat::linearRegression ( array $x , array $y )
+#### Stat::linearRegression ( array $x , array $y , bool $proportional = false )
 Return the slope and intercept of simple linear regression  parameters estimated using ordinary least squares.
 Simple linear regression describes the relationship between an independent variable *$x* and a dependent variable *$y* in terms of a linear function.
 
@@ -366,6 +366,18 @@ What happens in 2022, according to the samples above?
 ```php
 round($slope * 2022 + $intercept);
 // 17.0
+```
+
+When `proportional` is `true`, the regression line is forced through the origin (intercept = 0). This is useful when the relationship between *$x* and *$y* is known to be proportional:
+
+```php
+list($slope, $intercept) = Stat::linearRegression(
+    [1, 2, 3, 4, 5],
+    [2, 4, 6, 8, 10],
+    proportional: true,
+);
+// $slope = 2.0
+// $intercept = 0.0
 ```
 
 ### Freq class

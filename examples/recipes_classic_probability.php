@@ -12,7 +12,6 @@ use HiFolks\Statistics\NormalDist;
  *
  * Using NormalDist to solve classic probability problems.
  */
-
 echo "=== Classic Probability Problems ===" . PHP_EOL . PHP_EOL;
 
 // --- SAT scores are normally distributed with mean 1060 and std dev 195 ---

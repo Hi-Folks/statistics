@@ -14,7 +14,6 @@ use HiFolks\Statistics\Stat;
  * NormalDist can generate random samples to use as inputs for
  * Monte Carlo simulations.
  */
-
 echo "=== Monte Carlo Simulation ===" . PHP_EOL . PHP_EOL;
 
 /**

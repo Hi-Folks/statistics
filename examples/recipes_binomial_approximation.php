@@ -17,7 +17,6 @@ use HiFolks\Statistics\NormalDist;
  * and 35% prefer Ruby. The "Python" room holds 500 people.
  * What is the probability that the room will stay within capacity?
  */
-
 echo "=== Approximating Binomial Distributions ===" . PHP_EOL . PHP_EOL;
 
 $n = 750;            // Sample size (attendees)

@@ -65,35 +65,35 @@ echo "Sample size: " . count($times) . PHP_EOL;
 echo "Mean time: " . round($mean, 2) . " seconds" . PHP_EOL;
 echo "Median time: " . round($median, 2) . " seconds" . PHP_EOL;
 echo "Standard deviation: " . round($std, 2) . " seconds" . PHP_EOL;
-echo "Min: " .
-    $min .
-    "s | Max: " .
-    $max .
-    "s | Range: " .
-    round($range, 2) .
-    "s" .
-    PHP_EOL;
-echo "Quartiles (Q1, Q2, Q3): " .
-    round($quartiles[0], 2) .
-    "s, " .
-    round($quartiles[1], 2) .
-    "s, " .
-    round($quartiles[2], 2) .
-    "s" .
-    PHP_EOL;
+echo "Min: "
+    . $min
+    . "s | Max: "
+    . $max
+    . "s | Range: "
+    . round($range, 2)
+    . "s"
+    . PHP_EOL;
+echo "Quartiles (Q1, Q2, Q3): "
+    . round($quartiles[0], 2)
+    . "s, "
+    . round($quartiles[1], 2)
+    . "s, "
+    . round($quartiles[2], 2)
+    . "s"
+    . PHP_EOL;
 
 // --- Normal Distribution Model ---
 echo PHP_EOL . "=== Normal Distribution Model ===" . PHP_EOL . PHP_EOL;
 
 $normal = NormalDist::fromSamples($times);
-echo "Estimated mu (mean): " .
-    $normal->getMeanRounded(2) .
-    " seconds" .
-    PHP_EOL;
-echo "Estimated sigma (std dev): " .
-    $normal->getSigmaRounded(2) .
-    " seconds" .
-    PHP_EOL;
+echo "Estimated mu (mean): "
+    . $normal->getMeanRounded(2)
+    . " seconds"
+    . PHP_EOL;
+echo "Estimated sigma (std dev): "
+    . $normal->getSigmaRounded(2)
+    . " seconds"
+    . PHP_EOL;
 
 // Compare model median vs actual median
 // For a normal distribution, median = mean, so getMedian() returns mu directly.
@@ -121,20 +121,20 @@ echo PHP_EOL . "=== Probability Questions ===" . PHP_EOL . PHP_EOL;
 $target = 113.0;
 $probUnder = $normal->cdfRounded($target, 4);
 $actualUnder = count(array_filter($times, fn(float $t): bool => $t <= $target));
-echo "Model: P(time <= " .
-    $target .
-    "s) = " .
-    round($probUnder * 100, 1) .
-    "%" .
-    PHP_EOL;
-echo "Actual: " .
-    $actualUnder .
-    "/" .
-    count($times) .
-    " = " .
-    round(($actualUnder / count($times)) * 100, 1) .
-    "%" .
-    PHP_EOL;
+echo "Model: P(time <= "
+    . $target
+    . "s) = "
+    . round($probUnder * 100, 1)
+    . "%"
+    . PHP_EOL;
+echo "Actual: "
+    . $actualUnder
+    . "/"
+    . count($times)
+    . " = "
+    . round(($actualUnder / count($times)) * 100, 1)
+    . "%"
+    . PHP_EOL;
 echo "(The gap shows the effect of skewness on the normal model)" . PHP_EOL;
 
 $pdfAt = $normal->pdfRounded($target, 6);
@@ -167,15 +167,15 @@ foreach ($results as $r) {
     $z = $normal->zscoreRounded($time, 2);
     $zFormatted = ($z >= 0 ? "+" : "") . number_format($z, 2);
 
-    echo str_pad($r["name"], 30) .
-        str_pad(number_format($time, 2) . "s", 10) .
-        str_pad($tier, 12) .
-        "z: " .
-        str_pad($zFormatted, 7) .
-        "(percentile: " .
-        min(round($percentile * 100, 1), 99.9) .
-        "%)" .
-        PHP_EOL;
+    echo str_pad($r["name"], 30)
+        . str_pad(number_format($time, 2) . "s", 10)
+        . str_pad($tier, 12)
+        . "z: "
+        . str_pad($zFormatted, 7)
+        . "(percentile: "
+        . min(round($percentile * 100, 1), 99.9)
+        . "%)"
+        . PHP_EOL;
 }
 
 // --- Frequency Table ---
@@ -183,10 +183,10 @@ echo PHP_EOL . "=== Frequency Table (2-second classes) ===" . PHP_EOL . PHP_EOL;
 
 $freqTable = Freq::frequencyTableBySize($times, 1);
 foreach ($freqTable as $class => $count) {
-    echo str_pad($class . "s", 8) .
-        str_repeat("*", $count) .
-        " (" .
-        $count .
-        ")" .
-        PHP_EOL;
+    echo str_pad($class . "s", 8)
+        . str_repeat("*", $count)
+        . " ("
+        . $count
+        . ")"
+        . PHP_EOL;
 }

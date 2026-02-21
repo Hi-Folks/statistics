@@ -14,7 +14,6 @@ use HiFolks\Statistics\NormalDist;
  * Given training data for height, weight, and foot size of males
  * and females, classify a new person based on their measurements.
  */
-
 echo "=== Naive Bayesian Classifier ===" . PHP_EOL . PHP_EOL;
 
 // --- Training data ---

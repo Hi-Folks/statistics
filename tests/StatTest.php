@@ -403,13 +403,15 @@ class StatTest extends TestCase
 
         // Linear (Pearson) correlation is imperfect
         $correlation = Stat::correlation($orbitalPeriod, $distFromSun);
+        $this->assertIsFloat($correlation);
         $this->assertEquals(0.9882, round($correlation, 4));
 
         // Kepler's third law: linear correlation between
         // the square of the period and the cube of the distance
-        $periodSquared = array_map(fn ($p) => $p * $p, $orbitalPeriod);
-        $distCubed = array_map(fn ($d) => $d * $d * $d, $distFromSun);
+        $periodSquared = array_map(fn(int $p): int => $p * $p, $orbitalPeriod);
+        $distCubed = array_map(fn(int $d): int => $d * $d * $d, $distFromSun);
         $correlation = Stat::correlation($periodSquared, $distCubed);
+        $this->assertIsFloat($correlation);
         $this->assertEquals(1.0, round($correlation, 4));
     }
 

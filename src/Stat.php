@@ -677,7 +677,7 @@ class Stat
             $indexed[] = [$data[$i], $i];
         }
 
-        usort($indexed, fn ($a, $b) => $a[0] <=> $b[0]);
+        usort($indexed, fn(array $a, array $b): int => $a[0] <=> $b[0]);
 
         $ranks = array_fill(0, $n, 0.0);
         $i = 0;

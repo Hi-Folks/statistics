@@ -361,6 +361,82 @@ class StatTest extends TestCase
         $this->assertEquals(0.71, $correlation);
     }
 
+    public function test_calculates_spearman_correlation(): void
+    {
+        // Monotonic relationship: ranks are perfectly correlated
+        $correlation = Stat::correlation(
+            [1, 2, 3, 4, 5],
+            [2, 4, 6, 8, 10],
+            'ranked',
+        );
+        $this->assertIsFloat($correlation);
+        $this->assertEqualsWithDelta(1.0, $correlation, 1e-9);
+
+        // Inverse monotonic relationship
+        $correlation = Stat::correlation(
+            [1, 2, 3, 4, 5],
+            [10, 8, 6, 4, 2],
+            'ranked',
+        );
+        $this->assertIsFloat($correlation);
+        $this->assertEqualsWithDelta(-1.0, $correlation, 1e-9);
+
+        // Non-linear but monotonic: Spearman = 1, Pearson < 1
+        $correlation = Stat::correlation(
+            [1, 2, 3, 4, 5],
+            [1, 4, 9, 16, 25],
+            'ranked',
+        );
+        $this->assertIsFloat($correlation);
+        $this->assertEqualsWithDelta(1.0, $correlation, 1e-9);
+    }
+
+    public function test_calculates_spearman_correlation_planets(): void
+    {
+        // Python docs example: planetary orbital periods and distances from the sun
+        $orbitalPeriod = [88, 225, 365, 687, 4331, 10_756, 30_687, 60_190];
+        $distFromSun = [58, 108, 150, 228, 778, 1_400, 2_900, 4_500];
+
+        // Perfect monotonic relationship → Spearman = 1.0
+        $correlation = Stat::correlation($orbitalPeriod, $distFromSun, 'ranked');
+        $this->assertEqualsWithDelta(1.0, $correlation, 1e-9);
+
+        // Linear (Pearson) correlation is imperfect
+        $correlation = Stat::correlation($orbitalPeriod, $distFromSun);
+        $this->assertIsFloat($correlation);
+        $this->assertEquals(0.9882, round($correlation, 4));
+
+        // Kepler's third law: linear correlation between
+        // the square of the period and the cube of the distance
+        $periodSquared = array_map(fn(int $p): int => $p * $p, $orbitalPeriod);
+        $distCubed = array_map(fn(int $d): int => $d * $d * $d, $distFromSun);
+        $correlation = Stat::correlation($periodSquared, $distCubed);
+        $this->assertIsFloat($correlation);
+        $this->assertEquals(1.0, round($correlation, 4));
+    }
+
+    public function test_calculates_spearman_correlation_with_ties(): void
+    {
+        // Ties should receive average ranks
+        $correlation = Stat::correlation(
+            [1, 2, 2, 3],
+            [10, 20, 20, 30],
+            'ranked',
+        );
+        $this->assertIsFloat($correlation);
+        $this->assertEqualsWithDelta(1.0, $correlation, 1e-9);
+    }
+
+    public function test_calculates_correlation_invalid_method(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::correlation(
+            [1, 2, 3],
+            [4, 5, 6],
+            'invalid',
+        );
+    }
+
     public function test_calculates_correlation_wrong_usage_different_lengths(): void
     {
         $this->expectException(InvalidDataInputException::class);

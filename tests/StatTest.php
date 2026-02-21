@@ -92,6 +92,40 @@ class StatTest extends TestCase
         Stat::medianHigh([]);
     }
 
+    public function test_calculates_median_grouped(): void
+    {
+        // Python: median_grouped([1, 2, 2, 3, 4, 4, 4, 4, 4, 5]) == 3.7
+        $this->assertEquals(3.7, Stat::medianGrouped([1, 2, 2, 3, 4, 4, 4, 4, 4, 5]));
+
+        // Python: median_grouped([52, 52, 53, 54]) == 52.5
+        $this->assertEquals(52.5, Stat::medianGrouped([52, 52, 53, 54]));
+
+        // Python: median_grouped([1, 3, 3, 5, 7]) == 3.25
+        $this->assertEquals(3.25, Stat::medianGrouped([1, 3, 3, 5, 7]));
+
+        // With interval=2: median_grouped([1, 3, 3, 5, 7], interval=2) == 3.5
+        $this->assertEquals(3.5, Stat::medianGrouped([1, 3, 3, 5, 7], 2));
+
+        // Demographics example from Python docs (interval=10)
+        $data = array_merge(
+            array_fill(0, 172, 25),
+            array_fill(0, 484, 35),
+            array_fill(0, 387, 45),
+            array_fill(0, 22, 55),
+            array_fill(0, 6, 65),
+        );
+        $this->assertEquals(37.5, round(Stat::medianGrouped($data, 10), 1));
+
+        // Single element: L = 1 - 0.5 = 0.5, result = 0.5 + 1*(0.5-0)/1 = 1.0
+        $this->assertEquals(1.0, Stat::medianGrouped([1]));
+    }
+
+    public function test_calculates_median_grouped_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::medianGrouped([]);
+    }
+
     public function test_calculates_mode(): void
     {
         $this->assertEquals(3, Stat::mode([1, 1, 2, 3, 3, 3, 3, 4]));

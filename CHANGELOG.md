@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2 - WIP
+- Adding `medianGrouped()` method for estimating the median of grouped/binned continuous data using interpolation
+
+
 ## 1.2.1 - 2026-02-20
 - Adding `invCdf()` method to normal distribution
 - Adding `getVariance()` method to normal distribution (sigma squared)

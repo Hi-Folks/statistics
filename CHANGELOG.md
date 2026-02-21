@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.4 - WIP
+## 1.2.4 - 2026-02-21
 - Adding `skewness()` method for adjusted Fisher-Pearson sample skewness
 - Adding `pskewness()` method for population (biased) skewness
 - Full Coverage Tests (adding some edge cases)

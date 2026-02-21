@@ -1,6 +1,5 @@
   Missing Functions
 
-
   Python Function: kde(data, h, kernel)
   Description: Kernel Density Estimation
   Status: Missing
@@ -9,33 +8,6 @@
   Description: Random sampling from KDE
   Status: Missing
 
-  Missing Parameters/Variants
-
-
-
-  Feature: variance(data, xbar) / pvariance(data, mu)
-  Python: Can pass pre-computed mean to avoid recalculation
-  This Package: No pre-computed mean parameter
-  ────────────────────────────────────────
-  Feature: quantiles() with method='inclusive'
-  Python: Supports both exclusive and inclusive methods
-  This Package: No method parameter
-
-  Summary
-
-  The package is actually very close to full parity with Python's statistics
-  module. The gaps are:
-
-  1. median_grouped - interpolation-based median for grouped/binned data
-  2. kde / kde_random - Kernel Density Estimation (added in Python 3.13,
-  relatively new)
-  3. Spearman rank correlation - via method parameter on correlation()
-  4. Proportional linear regression - forcing intercept through origin
-  5. Minor parameter additions (xbar/mu on variance/stdev, method on quantiles)
-
-  Items 1, 3, and 4 would be the most practical additions to reach near-complete
-   parity with Python's statistics module. The KDE functions (2) are newer and
-  more niche.
 
 
 

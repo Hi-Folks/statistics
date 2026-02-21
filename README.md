@@ -402,13 +402,16 @@ list($slope, $intercept) = Stat::linearRegression(
 // $intercept = 0.0
 ```
 
-#### Stat::kde ( array $data , float $h , string $kernel = 'normal' , bool $cumulative = false )
+#### Stat::kde ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , bool $cumulative = false )
 Create a continuous probability density function (or cumulative distribution function) from discrete sample data using Kernel Density Estimation.
 Returns a `Closure` that can be called with any point to estimate the density (or CDF value).
 
-Supported kernels: `normal` (alias `gauss`), `logistic`, `sigmoid`, `rectangular` (alias `uniform`), `triangular`, `parabolic` (alias `epanechnikov`), `quartic` (alias `biweight`), `triweight`, `cosine`.
+Supported kernels: `KdeKernel::Normal` (alias `KdeKernel::Gauss`), `KdeKernel::Logistic`, `KdeKernel::Sigmoid`, `KdeKernel::Rectangular` (alias `KdeKernel::Uniform`), `KdeKernel::Triangular`, `KdeKernel::Parabolic` (alias `KdeKernel::Epanechnikov`), `KdeKernel::Quartic` (alias `KdeKernel::Biweight`), `KdeKernel::Triweight`, `KdeKernel::Cosine`.
 
 ```php
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Enums\KdeKernel;
+
 $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];
 $f = Stat::kde($data, h: 1.5);
 $f(2.5);
@@ -418,7 +421,7 @@ $f(2.5);
 Using a different kernel:
 
 ```php
-$f = Stat::kde($data, h: 1.5, kernel: 'triangular');
+$f = Stat::kde($data, h: 1.5, kernel: KdeKernel::Triangular);
 $f(2.5);
 ```
 
@@ -430,13 +433,16 @@ $F(2.5);
 // estimated CDF at x = 2.5 (probability that a value is <= 2.5)
 ```
 
-#### Stat::kdeRandom ( array $data , float $h , string $kernel = 'normal' , ?int $seed = null )
+#### Stat::kdeRandom ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , ?int $seed = null )
 Generate random samples from a Kernel Density Estimate.
 Returns a `Closure` that, when called, produces a random float drawn from the KDE distribution defined by the data and bandwidth.
 
-Supported kernels: `normal` (alias `gauss`), `logistic`, `sigmoid`, `rectangular` (alias `uniform`), `triangular`, `parabolic` (alias `epanechnikov`), `quartic` (alias `biweight`), `triweight`, `cosine`.
+Supported kernels: `KdeKernel::Normal` (alias `KdeKernel::Gauss`), `KdeKernel::Logistic`, `KdeKernel::Sigmoid`, `KdeKernel::Rectangular` (alias `KdeKernel::Uniform`), `KdeKernel::Triangular`, `KdeKernel::Parabolic` (alias `KdeKernel::Epanechnikov`), `KdeKernel::Quartic` (alias `KdeKernel::Biweight`), `KdeKernel::Triweight`, `KdeKernel::Cosine`.
 
 ```php
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Enums\KdeKernel;
+
 $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];
 $rand = Stat::kdeRandom($data, h: 1.5, seed: 8675309);
 $samples = [];
@@ -449,7 +455,7 @@ for ($i = 0; $i < 10; $i++) {
 Using a different kernel:
 
 ```php
-$rand = Stat::kdeRandom($data, h: 1.5, kernel: 'triangular', seed: 42);
+$rand = Stat::kdeRandom($data, h: 1.5, kernel: KdeKernel::Triangular, seed: 42);
 $rand();
 ```
 

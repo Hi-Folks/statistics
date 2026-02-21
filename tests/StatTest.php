@@ -3,6 +3,7 @@
 namespace HiFolks\Statistics\Tests;
 
 use HiFolks\Statistics\Exception\InvalidDataInputException;
+use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Stat;
 use PHPUnit\Framework\TestCase;
 
@@ -603,24 +604,19 @@ class StatTest extends TestCase
     public function test_kde_all_kernels(): void
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
-        $kernels = [
-            'normal', 'logistic', 'sigmoid',
-            'rectangular', 'triangular', 'parabolic',
-            'quartic', 'triweight', 'cosine',
-        ];
 
-        foreach ($kernels as $kernel) {
+        foreach (KdeKernel::cases() as $kernel) {
             $f = Stat::kde($data, 1.0, $kernel);
-            $this->assertIsCallable($f, "Kernel '$kernel' should return a callable");
+            $this->assertIsCallable($f, "Kernel '{$kernel->value}' should return a callable");
             $density = $f(3.0);
-            $this->assertGreaterThanOrEqual(0, $density, "Kernel '$kernel' density should be >= 0");
+            $this->assertGreaterThanOrEqual(0, $density, "Kernel '{$kernel->value}' density should be >= 0");
         }
     }
 
     public function test_kde_cumulative(): void
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
-        $F = Stat::kde($data, 1.0, 'normal', cumulative: true);
+        $F = Stat::kde($data, 1.0, KdeKernel::Normal, cumulative: true);
         $this->assertIsCallable($F);
 
         // CDF should be monotonically non-decreasing
@@ -642,23 +638,23 @@ class StatTest extends TestCase
         $x = 3.0;
 
         // gauss == normal
-        $f1 = Stat::kde($data, 1.0, 'gauss');
-        $f2 = Stat::kde($data, 1.0, 'normal');
+        $f1 = Stat::kde($data, 1.0, KdeKernel::Gauss);
+        $f2 = Stat::kde($data, 1.0, KdeKernel::Normal);
         $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
 
         // uniform == rectangular
-        $f1 = Stat::kde($data, 1.0, 'uniform');
-        $f2 = Stat::kde($data, 1.0, 'rectangular');
+        $f1 = Stat::kde($data, 1.0, KdeKernel::Uniform);
+        $f2 = Stat::kde($data, 1.0, KdeKernel::Rectangular);
         $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
 
         // epanechnikov == parabolic
-        $f1 = Stat::kde($data, 1.0, 'epanechnikov');
-        $f2 = Stat::kde($data, 1.0, 'parabolic');
+        $f1 = Stat::kde($data, 1.0, KdeKernel::Epanechnikov);
+        $f2 = Stat::kde($data, 1.0, KdeKernel::Parabolic);
         $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
 
         // biweight == quartic
-        $f1 = Stat::kde($data, 1.0, 'biweight');
-        $f2 = Stat::kde($data, 1.0, 'quartic');
+        $f1 = Stat::kde($data, 1.0, KdeKernel::Biweight);
+        $f2 = Stat::kde($data, 1.0, KdeKernel::Quartic);
         $this->assertEqualsWithDelta($f1($x), $f2($x), 1e-15);
     }
 
@@ -680,12 +676,6 @@ class StatTest extends TestCase
         Stat::kde([1.0, 2.0], -1.0);
     }
 
-    public function test_kde_invalid_kernel(): void
-    {
-        $this->expectException(InvalidDataInputException::class);
-        Stat::kde([1.0, 2.0], 1.0, 'invalid_kernel');
-    }
-
     public function test_kde_random_returns_callable(): void
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
@@ -699,17 +689,12 @@ class StatTest extends TestCase
     public function test_kde_random_all_kernels(): void
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
-        $kernels = [
-            'normal', 'logistic', 'sigmoid',
-            'rectangular', 'triangular', 'parabolic',
-            'quartic', 'triweight', 'cosine',
-        ];
 
-        foreach ($kernels as $kernel) {
+        foreach (KdeKernel::cases() as $kernel) {
             $sampler = Stat::kdeRandom($data, 1.0, $kernel, seed: 42);
-            $this->assertIsCallable($sampler, "Kernel '$kernel' should return a callable");
+            $this->assertIsCallable($sampler, "Kernel '{$kernel->value}' should return a callable");
             $value = $sampler();
-            $this->assertIsFloat($value, "Kernel '$kernel' should return a float");
+            $this->assertIsFloat($value, "Kernel '{$kernel->value}' should return a float");
         }
     }
 
@@ -717,13 +702,13 @@ class StatTest extends TestCase
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
 
-        $sampler1 = Stat::kdeRandom($data, 1.0, 'normal', seed: 123);
+        $sampler1 = Stat::kdeRandom($data, 1.0, KdeKernel::Normal, seed: 123);
         $values1 = [];
         for ($i = 0; $i < 10; $i++) {
             $values1[] = $sampler1();
         }
 
-        $sampler2 = Stat::kdeRandom($data, 1.0, 'normal', seed: 123);
+        $sampler2 = Stat::kdeRandom($data, 1.0, KdeKernel::Normal, seed: 123);
         $values2 = [];
         for ($i = 0; $i < 10; $i++) {
             $values2[] = $sampler2();
@@ -736,10 +721,10 @@ class StatTest extends TestCase
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
         $aliasPairs = [
-            ['gauss', 'normal'],
-            ['uniform', 'rectangular'],
-            ['epanechnikov', 'parabolic'],
-            ['biweight', 'quartic'],
+            [KdeKernel::Gauss, KdeKernel::Normal],
+            [KdeKernel::Uniform, KdeKernel::Rectangular],
+            [KdeKernel::Epanechnikov, KdeKernel::Parabolic],
+            [KdeKernel::Biweight, KdeKernel::Quartic],
         ];
 
         foreach ($aliasPairs as [$alias, $canonical]) {
@@ -758,7 +743,7 @@ class StatTest extends TestCase
             $this->assertSame(
                 $values1,
                 $values2,
-                "Alias '$alias' should produce same results as '$canonical'",
+                "Alias '{$alias->value}' should produce same results as '{$canonical->value}'",
             );
         }
     }
@@ -782,7 +767,7 @@ class StatTest extends TestCase
     {
         $data = [1.0, 2.0, 3.0, 4.0, 5.0];
         $dataMean = 3.0;
-        $sampler = Stat::kdeRandom($data, 0.5, 'normal', seed: 42);
+        $sampler = Stat::kdeRandom($data, 0.5, KdeKernel::Normal, seed: 42);
 
         $sum = 0.0;
         $n = 10000;
@@ -804,11 +789,5 @@ class StatTest extends TestCase
     {
         $this->expectException(InvalidDataInputException::class);
         Stat::kdeRandom([1.0, 2.0], 0.0);
-    }
-
-    public function test_kde_random_invalid_kernel(): void
-    {
-        $this->expectException(InvalidDataInputException::class);
-        Stat::kdeRandom([1.0, 2.0], 1.0, 'invalid_kernel');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Stat
@@ -723,16 +724,16 @@ class Stat
      *
      * @param  array<int|float>  $data  sample data
      * @param  float  $h  bandwidth (smoothing parameter), must be > 0
-     * @param  string  $kernel  kernel name (normal, logistic, sigmoid, rectangular, triangular, parabolic, quartic, triweight, cosine) or alias
+     * @param  KdeKernel  $kernel  kernel to use for estimation
      * @param  bool  $cumulative  if true, return CDF estimator; otherwise PDF estimator
      * @return \Closure  a callable that takes a float and returns the estimated density or CDF value
      *
-     * @throws InvalidDataInputException if data is empty, bandwidth <= 0, or kernel is invalid
+     * @throws InvalidDataInputException if data is empty or bandwidth <= 0
      */
     public static function kde(
         array $data,
         float $h,
-        string $kernel = 'normal',
+        KdeKernel $kernel = KdeKernel::Normal,
         bool $cumulative = false,
     ): \Closure {
         if ($data === []) {
@@ -742,16 +743,7 @@ class Stat
             throw new InvalidDataInputException("Bandwidth h must be positive.");
         }
 
-        $aliases = [
-            'gauss' => 'normal',
-            'uniform' => 'rectangular',
-            'epanechnikov' => 'parabolic',
-            'biweight' => 'quartic',
-        ];
-        $kernel = strtolower($kernel);
-        if (isset($aliases[$kernel])) {
-            $kernel = $aliases[$kernel];
-        }
+        $kernel = $kernel->resolve();
 
         $sqrt2pi = sqrt(2.0 * M_PI);
 
@@ -773,63 +765,56 @@ class Stat
         };
 
         $kernels = [
-            'normal' => [
+            KdeKernel::Normal->value => [
                 'pdf' => static fn(float $t): float => exp(-$t * $t / 2.0) / $sqrt2pi,
                 'cdf' => $normalCdf,
                 'support' => null,
             ],
-            'logistic' => [
+            KdeKernel::Logistic->value => [
                 'pdf' => static fn(float $t): float => 0.5 / (1.0 + cosh($t)),
                 'cdf' => static fn(float $t): float => 1.0 / (1.0 + exp(-$t)),
                 'support' => null,
             ],
-            'sigmoid' => [
+            KdeKernel::Sigmoid->value => [
                 'pdf' => static fn(float $t): float => (1.0 / M_PI) / cosh($t),
                 'cdf' => static fn(float $t): float => (2.0 / M_PI) * atan(exp($t)),
                 'support' => null,
             ],
-            'rectangular' => [
+            KdeKernel::Rectangular->value => [
                 'pdf' => static fn(float $t): float => 0.5,
                 'cdf' => static fn(float $t): float => 0.5 * $t + 0.5,
                 'support' => 1.0,
             ],
-            'triangular' => [
+            KdeKernel::Triangular->value => [
                 'pdf' => static fn(float $t): float => 1.0 - abs($t),
                 'cdf' => static fn(float $t): float => $t >= 0
                     ? 1.0 - (1.0 - $t) * (1.0 - $t) / 2.0
                     : (1.0 + $t) * (1.0 + $t) / 2.0,
                 'support' => 1.0,
             ],
-            'parabolic' => [
+            KdeKernel::Parabolic->value => [
                 'pdf' => static fn(float $t): float => 0.75 * (1.0 - $t * $t),
                 'cdf' => static fn(float $t): float => -0.25 * $t * $t * $t + 0.75 * $t + 0.5,
                 'support' => 1.0,
             ],
-            'quartic' => [
+            KdeKernel::Quartic->value => [
                 'pdf' => static fn(float $t): float => (15.0 / 16.0) * (1.0 - $t * $t) ** 2,
                 'cdf' => static fn(float $t): float => (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5,
                 'support' => 1.0,
             ],
-            'triweight' => [
+            KdeKernel::Triweight->value => [
                 'pdf' => static fn(float $t): float => (35.0 / 32.0) * (1.0 - $t * $t) ** 3,
                 'cdf' => static fn(float $t): float => (35.0 * $t - 35.0 * $t ** 3 + 21.0 * $t ** 5 - 5.0 * $t ** 7) / 32.0 + 0.5,
                 'support' => 1.0,
             ],
-            'cosine' => [
+            KdeKernel::Cosine->value => [
                 'pdf' => static fn(float $t): float => (M_PI / 4.0) * cos(M_PI * $t / 2.0),
                 'cdf' => static fn(float $t): float => 0.5 * sin(M_PI * $t / 2.0) + 0.5,
                 'support' => 1.0,
             ],
         ];
 
-        if (! isset($kernels[$kernel])) {
-            $valid = implode(', ', array_merge(array_keys($kernels), array_keys($aliases)));
-            throw new InvalidDataInputException(
-                "Unknown kernel '{$kernel}'. Valid kernels: {$valid}.",
-            );
-        }
-
-        $kernelDef = $kernels[$kernel];
+        $kernelDef = $kernels[$kernel->value]; // @phpstan-ignore offsetAccess.notFound
         $support = $kernelDef['support'];
         $fn = $cumulative ? $kernelDef['cdf'] : $kernelDef['pdf'];
 
@@ -888,16 +873,16 @@ class Stat
      *
      * @param  array<int|float>  $data  sample data
      * @param  float  $h  bandwidth (smoothing parameter), must be > 0
-     * @param  string  $kernel  kernel name or alias
+     * @param  KdeKernel  $kernel  kernel to use for estimation
      * @param  int|null  $seed  optional seed for reproducibility
      * @return \Closure  a callable that returns a random float from the KDE
      *
-     * @throws InvalidDataInputException if data is empty, bandwidth <= 0, or kernel is invalid
+     * @throws InvalidDataInputException if data is empty or bandwidth <= 0
      */
     public static function kdeRandom(
         array $data,
         float $h,
-        string $kernel = 'normal',
+        KdeKernel $kernel = KdeKernel::Normal,
         ?int $seed = null,
     ): \Closure {
         if ($data === []) {
@@ -907,16 +892,7 @@ class Stat
             throw new InvalidDataInputException("Bandwidth h must be positive.");
         }
 
-        $aliases = [
-            'gauss' => 'normal',
-            'uniform' => 'rectangular',
-            'epanechnikov' => 'parabolic',
-            'biweight' => 'quartic',
-        ];
-        $kernel = strtolower($kernel);
-        if (isset($aliases[$kernel])) {
-            $kernel = $aliases[$kernel];
-        }
+        $kernel = $kernel->resolve();
 
         // Acklam rational approximation for standard normal inverse CDF
         $normalInvCdf = static function (float $p): float {
@@ -995,15 +971,15 @@ class Stat
             => ($t < -1.0 || $t > 1.0) ? 0.0 : (35.0 / 32.0) * (1.0 - $t * $t) ** 3;
 
         $invcdfMap = [
-            'normal' => $normalInvCdf,
-            'logistic' => static fn(float $p): float => log($p / (1.0 - $p)),
-            'sigmoid' => static fn(float $p): float => log(tan($p * M_PI / 2.0)),
-            'rectangular' => static fn(float $p): float => 2.0 * $p - 1.0,
-            'triangular' => static fn(float $p): float
+            KdeKernel::Normal->value => $normalInvCdf,
+            KdeKernel::Logistic->value => static fn(float $p): float => log($p / (1.0 - $p)),
+            KdeKernel::Sigmoid->value => static fn(float $p): float => log(tan($p * M_PI / 2.0)),
+            KdeKernel::Rectangular->value => static fn(float $p): float => 2.0 * $p - 1.0,
+            KdeKernel::Triangular->value => static fn(float $p): float
                 => $p < 0.5 ? sqrt(2.0 * $p) - 1.0 : 1.0 - sqrt(2.0 - 2.0 * $p),
-            'parabolic' => static fn(float $p): float
+            KdeKernel::Parabolic->value => static fn(float $p): float
                 => 2.0 * cos((acos(2.0 * $p - 1.0) + M_PI) / 3.0),
-            'quartic' => static function (float $p) use ($newtonRaphson, $quarticCdf, $quarticPdf): float {
+            KdeKernel::Quartic->value => static function (float $p) use ($newtonRaphson, $quarticCdf, $quarticPdf): float {
                 if ($p <= 0.5) {
                     $sign = 1.0;
                 } else {
@@ -1021,7 +997,7 @@ class Stat
                 $x *= $sign;
                 return $newtonRaphson($sign === 1.0 ? $p : 1.0 - $p, $quarticCdf, $quarticPdf, $x);
             },
-            'triweight' => static function (float $p) use ($newtonRaphson, $triweightCdf, $triweightPdf): float {
+            KdeKernel::Triweight->value => static function (float $p) use ($newtonRaphson, $triweightCdf, $triweightPdf): float {
                 if ($p <= 0.5) {
                     $sign = 1.0;
                 } else {
@@ -1035,17 +1011,10 @@ class Stat
                 $x *= $sign;
                 return $newtonRaphson($sign === 1.0 ? $p : 1.0 - $p, $triweightCdf, $triweightPdf, $x);
             },
-            'cosine' => static fn(float $p): float => (2.0 / M_PI) * asin(2.0 * $p - 1.0),
+            KdeKernel::Cosine->value => static fn(float $p): float => (2.0 / M_PI) * asin(2.0 * $p - 1.0),
         ];
 
-        if (! isset($invcdfMap[$kernel])) {
-            $valid = implode(', ', array_merge(array_keys($invcdfMap), array_keys($aliases)));
-            throw new InvalidDataInputException(
-                "Unknown kernel '{$kernel}'. Valid kernels: {$valid}.",
-            );
-        }
-
-        $invcdf = $invcdfMap[$kernel];
+        $invcdf = $invcdfMap[$kernel->value]; // @phpstan-ignore offsetAccess.notFound
         $n = count($data);
 
         if ($seed !== null) {

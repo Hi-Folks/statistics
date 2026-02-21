@@ -881,6 +881,185 @@ class Stat
     }
 
     /**
+     * Generate random samples from a Kernel Density Estimate.
+     *
+     * Returns a Closure that, when called, produces a random float drawn
+     * from the KDE distribution defined by the data and bandwidth.
+     *
+     * @param  array<int|float>  $data  sample data
+     * @param  float  $h  bandwidth (smoothing parameter), must be > 0
+     * @param  string  $kernel  kernel name or alias
+     * @param  int|null  $seed  optional seed for reproducibility
+     * @return \Closure  a callable that returns a random float from the KDE
+     *
+     * @throws InvalidDataInputException if data is empty, bandwidth <= 0, or kernel is invalid
+     */
+    public static function kdeRandom(
+        array $data,
+        float $h,
+        string $kernel = 'normal',
+        ?int $seed = null,
+    ): \Closure {
+        if ($data === []) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+        if ($h <= 0) {
+            throw new InvalidDataInputException("Bandwidth h must be positive.");
+        }
+
+        $aliases = [
+            'gauss' => 'normal',
+            'uniform' => 'rectangular',
+            'epanechnikov' => 'parabolic',
+            'biweight' => 'quartic',
+        ];
+        $kernel = strtolower($kernel);
+        if (isset($aliases[$kernel])) {
+            $kernel = $aliases[$kernel];
+        }
+
+        // Acklam rational approximation for standard normal inverse CDF
+        $normalInvCdf = static function (float $p): float {
+            $a = [
+                -3.969683028665376e+01,
+                2.209460984245205e+02,
+                -2.759285104469687e+02,
+                1.383577518672690e+02,
+                -3.066479806614716e+01,
+                2.506628277459239e+00,
+            ];
+            $b = [
+                -5.447609879822406e+01,
+                1.615858368580409e+02,
+                -1.556989798598866e+02,
+                6.680131188771972e+01,
+                -1.328068155288572e+01,
+            ];
+            $c = [
+                -7.784894002430293e-03,
+                -3.223964580411365e-01,
+                -2.400758277161838e+00,
+                -2.549732539343734e+00,
+                4.374664141464968e+00,
+                2.938163982698783e+00,
+            ];
+            $d = [
+                7.784695709041462e-03,
+                3.224671290700398e-01,
+                2.445134137142996e+00,
+                3.754408661907416e+00,
+            ];
+
+            $pLow = 0.02425;
+            $pHigh = 1.0 - $pLow;
+            if ($p < $pLow) {
+                $q = sqrt(-2.0 * log($p));
+                return ((((($c[0] * $q + $c[1]) * $q + $c[2]) * $q + $c[3]) * $q + $c[4]) * $q + $c[5])
+                    / (((($d[0] * $q + $d[1]) * $q + $d[2]) * $q + $d[3]) * $q + 1.0);
+            }
+
+            if ($p <= $pHigh) {
+                $q = $p - 0.5;
+                $r = $q * $q;
+                return ((((($a[0] * $r + $a[1]) * $r + $a[2]) * $r + $a[3]) * $r + $a[4]) * $r + $a[5]) * $q
+                    / ((((($b[0] * $r + $b[1]) * $r + $b[2]) * $r + $b[3]) * $r + $b[4]) * $r + 1.0);
+            }
+            $q = sqrt(-2.0 * log(1.0 - $p));
+            return -((((($c[0] * $q + $c[1]) * $q + $c[2]) * $q + $c[3]) * $q + $c[4]) * $q + $c[5])
+                / (((($d[0] * $q + $d[1]) * $q + $d[2]) * $q + $d[3]) * $q + 1.0);
+        };
+
+        // Newton-Raphson solver for kernels without closed-form inverse CDF
+        $newtonRaphson = static function (float $p, callable $cdf, callable $pdf, float $x0): float {
+            $x = $x0;
+            for ($i = 0; $i < 100; $i++) {
+                $err = $cdf($x) - $p;
+                if (abs($err) <= 1e-12) {
+                    break;
+                }
+                $x -= $err / $pdf($x);
+            }
+            return $x;
+        };
+
+        // Quartic CDF and PDF for Newton-Raphson
+        $quarticCdf = static fn(float $t): float
+            => $t <= -1.0 ? 0.0 : ($t >= 1.0 ? 1.0 : (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5);
+        $quarticPdf = static fn(float $t): float
+            => ($t < -1.0 || $t > 1.0) ? 0.0 : (15.0 / 16.0) * (1.0 - $t * $t) ** 2;
+
+        // Triweight CDF and PDF for Newton-Raphson
+        $triweightCdf = static fn(float $t): float
+            => $t <= -1.0 ? 0.0 : ($t >= 1.0 ? 1.0 : (35.0 * $t - 35.0 * $t ** 3 + 21.0 * $t ** 5 - 5.0 * $t ** 7) / 32.0 + 0.5);
+        $triweightPdf = static fn(float $t): float
+            => ($t < -1.0 || $t > 1.0) ? 0.0 : (35.0 / 32.0) * (1.0 - $t * $t) ** 3;
+
+        $invcdfMap = [
+            'normal' => $normalInvCdf,
+            'logistic' => static fn(float $p): float => log($p / (1.0 - $p)),
+            'sigmoid' => static fn(float $p): float => log(tan($p * M_PI / 2.0)),
+            'rectangular' => static fn(float $p): float => 2.0 * $p - 1.0,
+            'triangular' => static fn(float $p): float
+                => $p < 0.5 ? sqrt(2.0 * $p) - 1.0 : 1.0 - sqrt(2.0 - 2.0 * $p),
+            'parabolic' => static fn(float $p): float
+                => 2.0 * cos((acos(2.0 * $p - 1.0) + M_PI) / 3.0),
+            'quartic' => static function (float $p) use ($newtonRaphson, $quarticCdf, $quarticPdf): float {
+                if ($p <= 0.5) {
+                    $sign = 1.0;
+                } else {
+                    $sign = -1.0;
+                    $p = 1.0 - $p;
+                }
+                if ($p < 0.0106) {
+                    $x = (2.0 * $p) ** 0.3838 - 1.0;
+                } else {
+                    $x = (2.0 * $p) ** 0.4258865685331 - 1.0;
+                    if ($p < 0.499) {
+                        $x += 0.026818732 * sin(7.101753784 * $p + 2.73230839482953);
+                    }
+                }
+                $x *= $sign;
+                return $newtonRaphson($sign === 1.0 ? $p : 1.0 - $p, $quarticCdf, $quarticPdf, $x);
+            },
+            'triweight' => static function (float $p) use ($newtonRaphson, $triweightCdf, $triweightPdf): float {
+                if ($p <= 0.5) {
+                    $sign = 1.0;
+                } else {
+                    $sign = -1.0;
+                    $p = 1.0 - $p;
+                }
+                $x = (2.0 * $p) ** 0.3400218741872791 - 1.0;
+                if ($p > 0.00001 && $p < 0.499) {
+                    $x -= 0.033 * sin(1.07 * 2.0 * M_PI * ($p - 0.035));
+                }
+                $x *= $sign;
+                return $newtonRaphson($sign === 1.0 ? $p : 1.0 - $p, $triweightCdf, $triweightPdf, $x);
+            },
+            'cosine' => static fn(float $p): float => (2.0 / M_PI) * asin(2.0 * $p - 1.0),
+        ];
+
+        if (! isset($invcdfMap[$kernel])) {
+            $valid = implode(', ', array_merge(array_keys($invcdfMap), array_keys($aliases)));
+            throw new InvalidDataInputException(
+                "Unknown kernel '{$kernel}'. Valid kernels: {$valid}.",
+            );
+        }
+
+        $invcdf = $invcdfMap[$kernel];
+        $n = count($data);
+
+        if ($seed !== null) {
+            mt_srand($seed);
+        }
+
+        return static function () use ($data, $n, $h, $invcdf): float {
+            $i = mt_rand(0, $n - 1);
+            $u = mt_rand(1, mt_getrandmax()) / mt_getrandmax();
+            return $data[$i] + $h * $invcdf($u);
+        };
+    }
+
+    /**
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
      * @return array<int|float>

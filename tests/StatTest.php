@@ -685,4 +685,130 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::kde([1.0, 2.0], 1.0, 'invalid_kernel');
     }
+
+    public function test_kde_random_returns_callable(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $sampler = Stat::kdeRandom($data, 1.0);
+        $this->assertIsCallable($sampler);
+
+        $value = $sampler();
+        $this->assertIsFloat($value);
+    }
+
+    public function test_kde_random_all_kernels(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $kernels = [
+            'normal', 'logistic', 'sigmoid',
+            'rectangular', 'triangular', 'parabolic',
+            'quartic', 'triweight', 'cosine',
+        ];
+
+        foreach ($kernels as $kernel) {
+            $sampler = Stat::kdeRandom($data, 1.0, $kernel, seed: 42);
+            $this->assertIsCallable($sampler, "Kernel '$kernel' should return a callable");
+            $value = $sampler();
+            $this->assertIsFloat($value, "Kernel '$kernel' should return a float");
+        }
+    }
+
+    public function test_kde_random_seed_reproducibility(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+
+        $sampler1 = Stat::kdeRandom($data, 1.0, 'normal', seed: 123);
+        $values1 = [];
+        for ($i = 0; $i < 10; $i++) {
+            $values1[] = $sampler1();
+        }
+
+        $sampler2 = Stat::kdeRandom($data, 1.0, 'normal', seed: 123);
+        $values2 = [];
+        for ($i = 0; $i < 10; $i++) {
+            $values2[] = $sampler2();
+        }
+
+        $this->assertSame($values1, $values2);
+    }
+
+    public function test_kde_random_aliases(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $aliasPairs = [
+            ['gauss', 'normal'],
+            ['uniform', 'rectangular'],
+            ['epanechnikov', 'parabolic'],
+            ['biweight', 'quartic'],
+        ];
+
+        foreach ($aliasPairs as [$alias, $canonical]) {
+            $sampler1 = Stat::kdeRandom($data, 1.0, $alias, seed: 42);
+            $values1 = [];
+            for ($i = 0; $i < 5; $i++) {
+                $values1[] = $sampler1();
+            }
+
+            $sampler2 = Stat::kdeRandom($data, 1.0, $canonical, seed: 42);
+            $values2 = [];
+            for ($i = 0; $i < 5; $i++) {
+                $values2[] = $sampler2();
+            }
+
+            $this->assertSame(
+                $values1,
+                $values2,
+                "Alias '$alias' should produce same results as '$canonical'",
+            );
+        }
+    }
+
+    public function test_kde_random_known_output(): void
+    {
+        $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];
+        $rand = Stat::kdeRandom($data, 1.5, seed: 8675309);
+        $results = [];
+        for ($i = 0; $i < 10; $i++) {
+            $results[] = round($rand(), 1);
+        }
+
+        $this->assertSame(
+            [2.5, 3.3, -1.8, 7.3, -2.1, 4.6, 4.4, 5.9, -3.2, -1.6],
+            $results,
+        );
+    }
+
+    public function test_kde_random_statistical_properties(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $dataMean = 3.0;
+        $sampler = Stat::kdeRandom($data, 0.5, 'normal', seed: 42);
+
+        $sum = 0.0;
+        $n = 10000;
+        for ($i = 0; $i < $n; $i++) {
+            $sum += $sampler();
+        }
+        $sampleMean = $sum / $n;
+
+        $this->assertEqualsWithDelta($dataMean, $sampleMean, 0.15);
+    }
+
+    public function test_kde_random_empty_data(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kdeRandom([], 1.0);
+    }
+
+    public function test_kde_random_invalid_bandwidth(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kdeRandom([1.0, 2.0], 0.0);
+    }
+
+    public function test_kde_random_invalid_kernel(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kdeRandom([1.0, 2.0], 1.0, 'invalid_kernel');
+    }
 }

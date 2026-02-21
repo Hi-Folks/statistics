@@ -83,6 +83,7 @@ The various mathematical statistics are listed below:
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
+| `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 
 #### Stat::mean( array $data )
 Return the sample arithmetic mean of the array _$data_.
@@ -427,6 +428,29 @@ Cumulative distribution function:
 $F = Stat::kde($data, h: 1.5, cumulative: true);
 $F(2.5);
 // estimated CDF at x = 2.5 (probability that a value is <= 2.5)
+```
+
+#### Stat::kdeRandom ( array $data , float $h , string $kernel = 'normal' , ?int $seed = null )
+Generate random samples from a Kernel Density Estimate.
+Returns a `Closure` that, when called, produces a random float drawn from the KDE distribution defined by the data and bandwidth.
+
+Supported kernels: `normal` (alias `gauss`), `logistic`, `sigmoid`, `rectangular` (alias `uniform`), `triangular`, `parabolic` (alias `epanechnikov`), `quartic` (alias `biweight`), `triweight`, `cosine`.
+
+```php
+$data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];
+$rand = Stat::kdeRandom($data, h: 1.5, seed: 8675309);
+$samples = [];
+for ($i = 0; $i < 10; $i++) {
+    $samples[] = round($rand(), 1);
+}
+// [2.5, 3.3, -1.8, 7.3, -2.1, 4.6, 4.4, 5.9, -3.2, -1.6]
+```
+
+Using a different kernel:
+
+```php
+$rand = Stat::kdeRandom($data, h: 1.5, kernel: 'triangular', seed: 42);
+$rand();
 ```
 
 ### Freq class

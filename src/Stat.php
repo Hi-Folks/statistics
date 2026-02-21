@@ -325,14 +325,16 @@ class Stat
      * @param  mixed[]  $data
      * @param  int  $n number of quantiles
      * @param  int|null  $round whether to round the result
-     * @return mixed[] array of quntiles
+     * @param  string  $method 'exclusive' (default) or 'inclusive'
+     * @return mixed[] array of quantiles
      *
-     * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2
+     * @throws InvalidDataInputException if number of quantiles is less than 1, or the data size is less than 2, or the method is invalid
      */
     public static function quantiles(
         array $data,
         int $n = 4,
         ?int $round = null,
+        string $method = 'exclusive',
     ): array {
         $count = self::count($data);
         if ($count < 2 || $n < 1) {
@@ -341,20 +343,37 @@ class Stat
             );
         }
 
+        if ($method !== 'exclusive' && $method !== 'inclusive') {
+            throw new InvalidDataInputException(
+                "Invalid method '{$method}'. Must be 'exclusive' or 'inclusive'.",
+            );
+        }
+
         sort($data);
-        $m = $count + 1;
         $result = [];
-        foreach (range(1, $n - 1) as $i) {
-            $j = (int) floor(($i * $m) / $n);
-            if ($j < 1) {
-                $j = 1;
-            } elseif ($j > $count - 1) {
-                $j = $count - 1;
+
+        if ($method === 'inclusive') {
+            $m = $count - 1;
+            foreach (range(1, $n - 1) as $i) {
+                $j = intdiv($i * $m, $n);
+                $delta = $i * $m - $j * $n;
+                $interpolated = ($data[$j] * ($n - $delta) + $data[$j + 1] * $delta) / $n;
+                $result[] = Math::round($interpolated, $round);
             }
-            $delta = $i * $m - $j * $n;
-            $interpolated
-                = ($data[$j - 1] * ($n - $delta) + $data[$j] * $delta) / $n;
-            $result[] = Math::round($interpolated, $round);
+        } else {
+            $m = $count + 1;
+            foreach (range(1, $n - 1) as $i) {
+                $j = (int) floor(($i * $m) / $n);
+                if ($j < 1) {
+                    $j = 1;
+                } elseif ($j > $count - 1) {
+                    $j = $count - 1;
+                }
+                $delta = $i * $m - $j * $n;
+                $interpolated
+                    = ($data[$j - 1] * ($n - $delta) + $data[$j] * $delta) / $n;
+                $result[] = Math::round($interpolated, $round);
+            }
         }
 
         return $result;

@@ -282,6 +282,31 @@ class StatTest extends TestCase
         Stat::quantiles([1, 2, 3], 0);
     }
 
+    public function test_calculates_quantiles_inclusive(): void
+    {
+        $q = Stat::quantiles([1, 2, 3, 4, 5], method: 'inclusive');
+        $this->assertEquals(2.0, $q[0]);
+        $this->assertEquals(3.0, $q[1]);
+        $this->assertEquals(4.0, $q[2]);
+
+        $q = Stat::quantiles([1, 2, 3, 4, 5], 10, method: 'inclusive');
+        $this->assertEquals(1.4, $q[0]);
+        $this->assertEquals(1.8, $q[1]);
+        $this->assertEquals(2.2, $q[2]);
+        $this->assertEquals(2.6, $q[3]);
+        $this->assertEquals(3.0, $q[4]);
+        $this->assertEquals(3.4, $q[5]);
+        $this->assertEquals(3.8, $q[6]);
+        $this->assertEquals(4.2, $q[7]);
+        $this->assertEquals(4.6, $q[8]);
+    }
+
+    public function test_calculates_quantiles_with_invalid_method(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::quantiles([1, 2, 3], method: 'invalid');
+    }
+
     public function test_calculates_first_quartile(): void
     {
         $q = Stat::firstQuartile([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88, 76]);

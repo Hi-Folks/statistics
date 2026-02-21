@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.2.2 - WIP
+- Adding `method` parameter to `quantiles()` supporting `'exclusive'` (default) and `'inclusive'` interpolation methods
 - Adding `medianGrouped()` method for estimating the median of grouped/binned continuous data using interpolation
 - Adding Spearman rank correlation via `method` parameter in `correlation()` (`method='ranked'`)
 - Adding proportional linear regression via `proportional` parameter in `linearRegression()` for regression through the origin

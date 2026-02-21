@@ -70,7 +70,7 @@ The various mathematical statistics are listed below:
 | `medianGrouped()` | median of grouped data, using interpolation |
 | `mode()` | single mode (most common value) of discrete or nominal data |
 | `multimode()` | list of modes (most common values) of discrete or nominal data |
-| `quantiles()` | cut points dividing the range of a probability distribution into continuous intervals with equal probabilities |
+| `quantiles()` | cut points dividing the range of a probability distribution into continuous intervals with equal probabilities (supports `exclusive` and `inclusive` methods) |
 | `thirdQuartile()` | 3rd quartile, is the value at which 75 percent of the data is below it |
 | `firstQuartile()` | first quartile, is the value at which 25 percent of the data is below it |
 | `pstdev()` | Population standard deviation |
@@ -222,9 +222,13 @@ round(Stat::medianGrouped($data, 10), 1);
 // 37.5
 ```
 
-#### Stat::quantiles( array $data, $n=4, $round=null  )
+#### Stat::quantiles( array $data, $n=4, $round=null, $method='exclusive'  )
 Divide data into n continuous intervals with equal probability. Returns a list of n - 1 cut points separating the intervals.
 Set n to 4 for quartiles (the default). Set n to 10 for deciles. Set n to 100 for percentiles which gives the 99 cut points that separate data into 100 equal-sized groups.
+
+The `$method` parameter controls the interpolation method:
+- `'exclusive'` (default): uses `m = count + 1`. Suitable for sampled data that may have more extreme values beyond the sample.
+- `'inclusive'`: uses `m = count - 1`. Suitable for population data or samples known to include the most extreme values. The minimum value is treated as the 0th percentile and the maximum as the 100th percentile.
 
 
 ```php
@@ -233,6 +237,10 @@ $quantiles = Stat::quantiles([98, 90, 70,18,92,92,55,83,45,95,88]);
 // [ 55.0, 88.0, 92.0 ]
 $quantiles = Stat::quantiles([105, 129, 87, 86, 111, 111, 89, 81, 108, 92, 110,100, 75, 105, 103, 109, 76, 119, 99, 91, 103, 129,106, 101, 84, 111, 74, 87, 86, 103, 103, 106, 86,111, 75, 87, 102, 121, 111, 88, 89, 101, 106, 95,103, 107, 101, 81, 109, 104], 10);
 // [81.0, 86.2, 89.0, 99.4, 102.5, 103.6, 106.0, 109.8, 111.0]
+
+// Inclusive method
+$quantiles = Stat::quantiles([1, 2, 3, 4, 5], method: 'inclusive');
+// [2.0, 3.0, 4.0]
 ```
 #### Stat::firstQuartile( array $data, $round=null  )
 The lower quartile, or first quartile (Q1), is the value under which 25% of data points are found when they are arranged in increasing order.

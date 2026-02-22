@@ -11,6 +11,7 @@
 - Adding `medianAbsoluteDeviation()` method for median absolute deviation — robust dispersion measure resistant to outliers
 - Adding `zscores()` method for computing z-scores of each value in a dataset
 - Adding `outliers()` method for z-score based outlier detection with configurable threshold
+- Adding `iqrOutliers()` method for IQR-based outlier detection (box plot whiskers), robust for skewed data
 
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis

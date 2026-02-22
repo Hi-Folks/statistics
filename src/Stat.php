@@ -773,6 +773,37 @@ class Stat
     }
 
     /**
+     * Return values from the dataset that are outliers based on the IQR method.
+     * A value is an outlier if it falls below Q1 - factor * IQR or above Q3 + factor * IQR.
+     *
+     * This method is robust and does not assume a normal distribution, making it
+     * suitable for skewed data. It is the same method used for box plot whiskers.
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $factor  IQR multiplier (default 1.5 for mild outliers, use 3.0 for extreme)
+     * @return array<int|float> the outlier values
+     *
+     * @throws InvalidDataInputException if data has fewer than 2 elements
+     */
+    public static function iqrOutliers(array $data, float $factor = 1.5): array
+    {
+        $q1 = self::firstQuartile($data);
+        $q3 = self::thirdQuartile($data);
+        $iqr = $q3 - $q1;
+        $lowerFence = $q1 - $factor * $iqr;
+        $upperFence = $q3 + $factor * $iqr;
+
+        $outliers = [];
+        foreach ($data as $value) {
+            if ($value < $lowerFence || $value > $upperFence) {
+                $outliers[] = $value;
+            }
+        }
+
+        return $outliers;
+    }
+
+    /**
      * Return the variance from the numeric data.
      *
      * @param  array<int|float>  $data

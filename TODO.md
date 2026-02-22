@@ -1,10 +1,6 @@
 ## Missing Functions
 
-### Descriptive Statistics
 
-- Weighted median - median with weights (like fmean supports weights, but median doesn't)
-- Standard error of the mean (SEM)
-- Mean absolute deviation (MAD)
 
 
 ### Correlation & Regression
@@ -31,10 +27,8 @@
 - Uniform distribution
 - Exponential distribution
 
-### Outlier Detection
 
-- IQR-based outlier detection (the building blocks exist with firstQuartile/thirdQuartile, but no dedicated method)
-- Z-score based outlier detection
+
 
 ### Ranking & Order Statistics
 

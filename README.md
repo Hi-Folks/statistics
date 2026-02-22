@@ -89,6 +89,7 @@ The various mathematical statistics are listed below:
 | `coefficientOfVariation()` | coefficient of variation (CV%), relative dispersion as percentage |
 | `zscores()` | z-scores for each value — how many standard deviations from the mean |
 | `outliers()` | outlier detection based on z-score threshold |
+| `iqrOutliers()` | outlier detection based on IQR method (box plot whiskers), robust for skewed data |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
@@ -512,6 +513,27 @@ $outliers = Stat::outliers([1, 2, 3, 4, 5, 6, 7, 8, 9, 100]);
 
 $outliers = Stat::outliers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1.0);
 // values more than 1 stdev from the mean
+```
+
+#### Stat::iqrOutliers( array $data, float $factor = 1.5 )
+Return values that are outliers based on the Interquartile Range (IQR) method. A value is an outlier if it falls below `Q1 - factor * IQR` or above `Q3 + factor * IQR`. This is the same method used for box plot whiskers.
+
+Unlike z-score based detection, the IQR method is **robust** — it does not assume a normal distribution and is not influenced by extreme values themselves. This makes it the preferred choice for skewed data or when the dataset may already contain outliers that would distort the mean and standard deviation.
+
+Use `factor: 1.5` (default) for mild outliers, or `factor: 3.0` for extreme outliers only.
+
+**Example: Ski downhill race times**
+
+In a ski downhill race, most athletes finish between 108–116 seconds. A time of 200s (e.g. a crash/DNF) or 50s (e.g. a timing error) would be flagged as outliers:
+
+```php
+use HiFolks\Statistics\Stat;
+$times = [110.2, 112.5, 108.9, 115.3, 111.7, 114.0, 109.8, 113.6, 200.0, 50.0];
+$outliers = Stat::iqrOutliers($times);
+// [200.0, 50.0] — the crash and the timing error are detected
+
+$extremeOnly = Stat::iqrOutliers($times, 3.0);
+// only the most extreme values
 ```
 
 #### Stat::covariance ( array $x , array $y )

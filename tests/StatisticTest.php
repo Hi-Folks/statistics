@@ -330,4 +330,12 @@ class StatisticTest extends TestCase
         $s = Statistics::make([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 100]);
         $this->assertContains(100, $s->outliers());
     }
+
+    public function test_iqr_outliers(): void
+    {
+        $s = Statistics::make([110.2, 112.5, 108.9, 115.3, 111.7, 114.0, 109.8, 113.6, 200.0, 50.0]);
+        $outliers = $s->iqrOutliers();
+        $this->assertContains(200.0, $outliers);
+        $this->assertContains(50.0, $outliers);
+    }
 }

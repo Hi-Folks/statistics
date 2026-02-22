@@ -1420,4 +1420,55 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::outliers([5, 5, 5, 5]);
     }
+
+    // --- iqrOutliers ---
+
+    public function test_iqr_outliers_detects_extreme_values(): void
+    {
+        // Ski downhill race times (seconds): most between 108-118, one DNF-like 200, one impossibly fast 50
+        $times = [110.2, 112.5, 108.9, 115.3, 111.7, 114.0, 109.8, 113.6, 200.0, 50.0];
+        $outliers = Stat::iqrOutliers($times);
+        $this->assertContains(200.0, $outliers);
+        $this->assertContains(50.0, $outliers);
+        // Normal times should not be flagged
+        $this->assertNotContains(112.5, $outliers);
+    }
+
+    public function test_iqr_outliers_no_outliers(): void
+    {
+        $data = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+        $outliers = Stat::iqrOutliers($data);
+        $this->assertEmpty($outliers);
+    }
+
+    public function test_iqr_outliers_custom_factor(): void
+    {
+        // With factor 3.0 (extreme outliers only), fewer values flagged
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30];
+        $mild = Stat::iqrOutliers($data, 1.5);
+        $extreme = Stat::iqrOutliers($data, 3.0);
+        $this->assertGreaterThanOrEqual(count($extreme), count($mild));
+    }
+
+    public function test_iqr_outliers_identical_values(): void
+    {
+        // IQR = 0, so any different value is an outlier... but all values are the same
+        $data = [5, 5, 5, 5, 5];
+        $outliers = Stat::iqrOutliers($data);
+        $this->assertEmpty($outliers);
+    }
+
+    public function test_iqr_outliers_with_negative_values(): void
+    {
+        $data = [-100, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100];
+        $outliers = Stat::iqrOutliers($data);
+        $this->assertContains(-100, $outliers);
+        $this->assertContains(100, $outliers);
+    }
+
+    public function test_iqr_outliers_too_few_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::iqrOutliers([5]);
+    }
 }

@@ -324,6 +324,19 @@ class Statistics
     }
 
     /**
+     * Return values that are outliers based on the IQR method.
+     *
+     * @param  float  $factor  IQR multiplier (default 1.5)
+     * @return array<int|float>
+     *
+     * @see Stat::iqrOutliers()
+     */
+    public function iqrOutliers(float $factor = 1.5): array
+    {
+        return Stat::iqrOutliers($this->numericalArray(), $factor);
+    }
+
+    /**
      * Return the variance from the numeric data
      *
      * @param  int|null  $round whether to round the result

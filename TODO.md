@@ -4,8 +4,6 @@
 
 - Trimmed/Truncated mean - mean after removing outliers (top/bottom x%)
 - Weighted median - median with weights (like fmean supports weights, but median doesn't)
-- Skewness - measure of asymmetry of the distribution
-- Kurtosis - measure of "tailedness" of the distribution
 - Standard error of the mean (SEM)
 - Coefficient of variation (CV) - stdev / mean, useful for comparing variability across datasets
 - Mean absolute deviation (MAD)
@@ -49,4 +47,4 @@
 
 ### Notes
 
-The most impactful additions would likely be skewness, kurtosis, coefficient of variation, percentile, and Spearman correlation — these are commonly needed and align well with the package's existing scope (inspired by Python's statistics module).
+The most impactful additions would likely be (skewness DONE), (kurtosis DONE), coefficient of variation, percentile, and Spearman correlation — these are commonly needed and align well with the package's existing scope (inspired by Python's statistics module).

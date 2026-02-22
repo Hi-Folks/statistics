@@ -583,6 +583,49 @@ class Stat
     }
 
     /**
+     * Return the excess kurtosis of the data using the sample formula.
+     * This is the same formula used by Excel's KURT() and Python's
+     * scipy.stats.kurtosis(bias=False, fisher=True).
+     *
+     * Excess kurtosis measures the "tailedness" of a distribution relative
+     * to a normal distribution. A normal distribution has excess kurtosis 0.
+     * Positive values (leptokurtic) indicate heavier tails and more outliers;
+     * negative values (platykurtic) indicate lighter tails and fewer outliers.
+     *
+     * Formula: [n(n+1) / ((n-1)(n-2)(n-3))] * Σ((xi - x̄) / s)⁴ − [3(n-1)² / ((n-2)(n-3))]
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @return float excess kurtosis
+     *
+     * @throws InvalidDataInputException if the data has fewer than 4 elements or all values are identical
+     */
+    public static function kurtosis(array $data, ?int $round = null): float
+    {
+        $n = self::count($data);
+        if ($n < 4) {
+            throw new InvalidDataInputException("Kurtosis requires at least 4 data points.");
+        }
+
+        $mean = self::mean($data);
+        $stdev = self::stdev($data);
+
+        if ($stdev == 0) {
+            throw new InvalidDataInputException("Kurtosis is undefined when all values are identical (standard deviation is zero).");
+        }
+
+        $sumFourth = 0.0;
+        foreach ($data as $xi) {
+            $sumFourth += (($xi - $mean) / $stdev) ** 4;
+        }
+
+        $kurtosis = ($n * ($n + 1)) / (($n - 1) * ($n - 2) * ($n - 3)) * $sumFourth
+            - (3 * ($n - 1) ** 2) / (($n - 2) * ($n - 3));
+
+        return Math::round($kurtosis, $round);
+    }
+
+    /**
      * Return the geometric mean of the numeric data.
      * That is the number that can replace each of these numbers so that their product
      * does not change.

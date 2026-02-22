@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.5 - WIP
+- Adding `kurtosis()` method for excess kurtosis
+- 
 ## 1.2.4 - 2026-02-21
 - Adding `skewness()` method for adjusted Fisher-Pearson sample skewness
 - Adding `pskewness()` method for population (biased) skewness

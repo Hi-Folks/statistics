@@ -296,6 +296,18 @@ class Statistics
     }
 
     /**
+     * Return the excess kurtosis (sample formula).
+     *
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::kurtosis()
+     */
+    public function kurtosis(?int $round = null): float
+    {
+        return Stat::kurtosis($this->numericalArray(), $round);
+    }
+
+    /**
      * Return the geometric mean of the numeric data.
      *
      * @param  int|null  $round whether to round the result

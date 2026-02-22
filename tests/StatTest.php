@@ -334,6 +334,50 @@ class StatTest extends TestCase
         $this->assertLessThan(abs($skewness), abs($pskewness));
     }
 
+    public function test_calculates_kurtosis_normal_like(): void
+    {
+        // A uniform-ish symmetric dataset: excess kurtosis near 0 or negative
+        $this->assertEqualsWithDelta(-1.2, Stat::kurtosis([1, 2, 3, 4, 5]), 0.1);
+    }
+
+    public function test_calculates_kurtosis_heavy_tails(): void
+    {
+        // Data with outliers should have positive excess kurtosis (leptokurtic)
+        $kurtosis = Stat::kurtosis([1, 2, 2, 2, 2, 2, 2, 2, 2, 50]);
+        $this->assertGreaterThan(0, $kurtosis);
+    }
+
+    public function test_calculates_kurtosis_light_tails(): void
+    {
+        // Uniform-like data should have negative excess kurtosis (platykurtic)
+        $kurtosis = Stat::kurtosis([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        $this->assertLessThan(0, $kurtosis);
+    }
+
+    public function test_calculates_kurtosis_with_rounding(): void
+    {
+        $kurtosis = Stat::kurtosis([1, 2, 2, 2, 2, 2, 2, 2, 2, 50], 4);
+        $this->assertEquals(round($kurtosis, 4), $kurtosis);
+    }
+
+    public function test_kurtosis_with_empty_array(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kurtosis([]);
+    }
+
+    public function test_kurtosis_with_three_elements(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kurtosis([1, 2, 3]);
+    }
+
+    public function test_kurtosis_with_identical_values(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::kurtosis([5, 5, 5, 5]);
+    }
+
     public function test_calculates_geometric_mean(): void
     {
         $this->assertEquals(36, Stat::geometricMean([54, 24, 36], 2));

@@ -79,6 +79,7 @@ The various mathematical statistics are listed below:
 | `variance()` | variance for a sample (supports pre-computed mean via `xbar`) |
 | `skewness()` | adjusted Fisher-Pearson sample skewness |
 | `pskewness()` | population (biased) skewness |
+| `kurtosis()` | excess kurtosis (sample formula, 0 for normal distribution) |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
@@ -340,6 +341,22 @@ If you need the population (biased) skewness instead of the sample skewness, use
 ```php
 use HiFolks\Statistics\Stat;
 $pskewness = Stat::pskewness([1, 1, 1, 1, 1, 10]);
+```
+
+#### Stat::kurtosis ( array $data, ?int $round = null )
+Kurtosis measures the "tailedness" of a distribution — how much data lives in the extreme tails compared to a normal distribution. This method returns the **excess kurtosis** using the sample formula, which is the same as Excel's `KURT()` and Python's `scipy.stats.kurtosis(bias=False)`.
+
+A normal distribution has excess kurtosis of 0. Positive values (leptokurtic) indicate heavier tails and more outliers. Negative values (platykurtic) indicate lighter tails and fewer outliers.
+
+Requires at least 4 data points.
+
+```php
+use HiFolks\Statistics\Stat;
+$kurtosis = Stat::kurtosis([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+// negative (platykurtic, lighter tails than normal)
+
+$kurtosis = Stat::kurtosis([1, 2, 2, 2, 2, 2, 2, 2, 2, 50]);
+// positive (leptokurtic, heavier tails due to outlier)
 ```
 
 #### Stat::covariance ( array $x , array $y )

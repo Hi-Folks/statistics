@@ -187,6 +187,12 @@ class StatisticTest extends TestCase
         $this->assertEqualsWithDelta(0.0, Statistics::make([1, 2, 3, 4, 5])->pskewness(), 1e-10);
     }
 
+    public function test_calculates_kurtosis(): void
+    {
+        // Uniform-like data: negative excess kurtosis
+        $this->assertLessThan(0, Statistics::make([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])->kurtosis());
+    }
+
     public function test_calculates_geometric_mean(): void
     {
         $this->assertEquals(36, Statistics::make([54, 24, 36])->geometricMean(2));

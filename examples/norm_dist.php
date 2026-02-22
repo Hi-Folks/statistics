@@ -84,6 +84,9 @@ echo "Quartiles (Q1, Q2, Q3): "
 echo "Skewness: " . Stat::skewness($times, 4)
     . " (positive = right-skewed, a few slow finishers pull the tail right)"
     . PHP_EOL;
+echo "Kurtosis: " . Stat::kurtosis($times, 4)
+    . " (positive = leptokurtic, heavy tails with outliers)"
+    . PHP_EOL;
 
 // --- Normal Distribution Model ---
 echo PHP_EOL . "=== Normal Distribution Model ===" . PHP_EOL . PHP_EOL;
@@ -193,3 +196,9 @@ foreach ($freqTable as $class => $count) {
         . ")"
         . PHP_EOL;
 }
+
+// --- Distribution Shape ---
+echo PHP_EOL . "=== Distribution Shape ===" . PHP_EOL . PHP_EOL;
+
+echo "Skewness: " . Stat::skewness($times, 4) . PHP_EOL;
+echo "Kurtosis: " . Stat::kurtosis($times, 4) . PHP_EOL;

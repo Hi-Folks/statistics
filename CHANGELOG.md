@@ -5,6 +5,7 @@
 - Adding `percentile()` method for computing the value at any percentile (0–100) with linear interpolation
 - Adding `coefficientOfVariation()` method for relative dispersion (CV%), supporting both sample and population modes
 - Adding `trimmedMean()` method for robust central tendency — computes the mean after removing outliers from each side
+- Adding `weightedMedian()` method for computing the median with weighted observations
 
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis

@@ -66,6 +66,7 @@ The various mathematical statistics are listed below:
 | `fmean()` | floating-point arithmetic mean, with optional weighting and precision |
 | `trimmedMean()` | trimmed (truncated) mean — mean after removing outliers from each side |
 | `median()` | median or "middle value" of data |
+| `weightedMedian()` | weighted median — median with weights, where each value has a different importance |
 | `medianLow()` | low median of data |
 | `medianHigh()` | high median of data |
 | `medianGrouped()` | median of grouped data, using interpolation |
@@ -190,6 +191,23 @@ $median = Stat::median([1, 3, 5]);
 // 3
 $median = Stat::median([1, 3, 5, 7]);
 // 4
+```
+
+#### Stat::weightedMedian( array $data, array $weights, ?int $round = null )
+Return the weighted median of the data. The weighted median is the value where the cumulative weight reaches 50% of the total weight. This is useful for survey data, financial analysis, or any dataset where observations have different importance.
+
+All weights must be positive numbers and the weights array must have the same length as the data array.
+
+```php
+use HiFolks\Statistics\Stat;
+$median = Stat::weightedMedian([1, 2, 3], [1, 1, 1]);
+// 2.0 (equal weights, same as regular median)
+
+$median = Stat::weightedMedian([1, 2, 3], [1, 1, 10]);
+// 3.0 (heavy weight on 3 pulls the median)
+
+$median = Stat::weightedMedian([1, 2, 3, 4], [1, 1, 1, 1]);
+// 2.5 (equal weights, even count — averages the two middle values)
 ```
 
 #### Stat::medianLow( array $data )

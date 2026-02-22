@@ -287,4 +287,13 @@ class StatisticTest extends TestCase
         $result = $s->trimmedMean(0.2, 2);
         $this->assertEquals(round($result, 2), $result);
     }
+
+    public function test_weighted_median(): void
+    {
+        $s = Statistics::make([1, 2, 3]);
+        // Equal weights → same as regular median
+        $this->assertEqualsWithDelta(2.0, $s->weightedMedian([1, 1, 1]), 1e-10);
+        // Heavy weight on 3 → weighted median is 3
+        $this->assertEqualsWithDelta(3.0, $s->weightedMedian([1, 1, 10]), 1e-10);
+    }
 }

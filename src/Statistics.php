@@ -187,6 +187,19 @@ class Statistics
     }
 
     /**
+     * Return the weighted median.
+     *
+     * @param  array<int|float>  $weights  array of weights (same length as data, all > 0)
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::weightedMedian()
+     */
+    public function weightedMedian(array $weights, ?int $round = null): float
+    {
+        return Stat::weightedMedian($this->numericalArray(), $weights, $round);
+    }
+
+    /**
      * Estimate the median for grouped data.
      *
      * @param  float  $interval the width of each bin

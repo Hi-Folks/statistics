@@ -1170,4 +1170,71 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::trimmedMean([1, 2, 3], -0.1);
     }
+
+    // --- weightedMedian ---
+
+    public function test_weighted_median_basic(): void
+    {
+        // Values: [1, 2, 3], Weights: [1, 1, 1] → equal weights, same as regular median
+        $this->assertEqualsWithDelta(2.0, Stat::weightedMedian([1, 2, 3], [1, 1, 1]), 1e-10);
+    }
+
+    public function test_weighted_median_skewed_weights(): void
+    {
+        // Heavy weight on 3 pulls the weighted median to 3
+        $this->assertEqualsWithDelta(3.0, Stat::weightedMedian([1, 2, 3], [1, 1, 10]), 1e-10);
+    }
+
+    public function test_weighted_median_unsorted_data(): void
+    {
+        // Data not pre-sorted — method should sort internally
+        $this->assertEqualsWithDelta(
+            Stat::weightedMedian([1, 2, 3], [1, 1, 1]),
+            Stat::weightedMedian([3, 1, 2], [1, 1, 1]),
+            1e-10,
+        );
+    }
+
+    public function test_weighted_median_interpolation_at_midpoint(): void
+    {
+        // Cumulative weight hits exactly 50% between two values → average them
+        // Values: [1, 2, 3, 4], Weights: [1, 1, 1, 1] → total=4, half=2
+        // After [1,2]: cumulative = 2 = half → average of 2 and 3 = 2.5
+        $this->assertEqualsWithDelta(2.5, Stat::weightedMedian([1, 2, 3, 4], [1, 1, 1, 1]), 1e-10);
+    }
+
+    public function test_weighted_median_single_element(): void
+    {
+        $this->assertEqualsWithDelta(42.0, Stat::weightedMedian([42], [5]), 1e-10);
+    }
+
+    public function test_weighted_median_with_rounding(): void
+    {
+        $result = Stat::weightedMedian([1, 2, 3, 4], [1, 1, 1, 1], 1);
+        $this->assertEquals(round($result, 1), $result);
+    }
+
+    public function test_weighted_median_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::weightedMedian([], []);
+    }
+
+    public function test_weighted_median_length_mismatch_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::weightedMedian([1, 2, 3], [1, 2]);
+    }
+
+    public function test_weighted_median_negative_weight_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::weightedMedian([1, 2, 3], [1, -1, 1]);
+    }
+
+    public function test_weighted_median_zero_weight_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::weightedMedian([1, 2, 3], [1, 0, 1]);
+    }
 }

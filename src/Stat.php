@@ -189,6 +189,67 @@ class Stat
     }
 
     /**
+     * Return the weighted median of the data.
+     * The weighted median is the value where the cumulative weight
+     * reaches 50% of the total weight.
+     *
+     * @param  array<int|float>  $data
+     * @param  array<int|float>  $weights  array of weights (same length as $data, all > 0)
+     * @param  int|null  $round whether to round the result
+     * @return float the weighted median
+     *
+     * @throws InvalidDataInputException if the data is empty, weights length mismatches,
+     *         or any weight is not positive
+     */
+    public static function weightedMedian(array $data, array $weights, ?int $round = null): float
+    {
+        $count = self::count($data);
+        if ($count === 0) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+        if ($count !== count($weights)) {
+            throw new InvalidDataInputException(
+                "Data and weights must have the same number of elements.",
+            );
+        }
+
+        // Validate weights and pair with data
+        $paired = [];
+        for ($i = 0; $i < $count; $i++) {
+            if (!is_numeric($weights[$i]) || $weights[$i] <= 0) {
+                throw new InvalidDataInputException(
+                    "All weights must be positive numbers.",
+                );
+            }
+            $paired[] = [(float) $data[$i], (float) $weights[$i]];
+        }
+
+        // Sort by value
+        usort($paired, fn(array $a, array $b): int => $a[0] <=> $b[0]);
+
+        $totalWeight = array_sum($weights);
+        $halfWeight = $totalWeight / 2.0;
+        $cumulative = 0.0;
+
+        for ($i = 0; $i < $count; $i++) {
+            $cumulative += $paired[$i][1];
+            if ($cumulative > $halfWeight) {
+                return Math::round($paired[$i][0], $round);
+            }
+            if ($cumulative === $halfWeight && $i + 1 < $count) {
+                // Exactly at the midpoint — average with the next value
+                return Math::round(($paired[$i][0] + $paired[$i + 1][0]) / 2.0, $round);
+            }
+        }
+
+        // Fallback: last element (all weight in one point)
+        /** @var array{float, float} $last */
+        $last = end($paired);
+
+        return Math::round($last[0], $round);
+    }
+
+    /**
      * Estimate the median for grouped data that has been binned
      * around the midpoints of consecutive, fixed-width intervals.
      *

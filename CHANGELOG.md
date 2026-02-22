@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.0 - WIP
+## 1.3.0 - 2026-02-22
 - Adding `StreamingStat` class (experimental) for streaming/online computation of mean, variance, stdev, skewness, kurtosis, sum, min, and max with O(1) memory
 - Adding `percentile()` method for computing the value at any percentile (0–100) with linear interpolation
 - Adding `coefficientOfVariation()` method for relative dispersion (CV%), supporting both sample and population modes

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.5 - WIP
+## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis
 - 
 ## 1.2.4 - 2026-02-21

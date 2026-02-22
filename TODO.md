@@ -8,7 +8,6 @@
 
 - Kendall tau correlation - another rank-based correlation
 - Multiple/polynomial regression
-- R-squared (coefficient of determination)
 
 ### Hypothesis Testing
 

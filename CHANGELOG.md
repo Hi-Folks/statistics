@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.3.1 - WIP
+- Adding `rSquared()` method for R² (coefficient of determination) — proportion of variance explained by linear regression
+
 ## 1.3.0 - 2026-02-22
 - Adding `StreamingStat` class (experimental) for streaming/online computation of mean, variance, stdev, skewness, kurtosis, sum, min, and max with O(1) memory
 - Adding `percentile()` method for computing the value at any percentile (0–100) with linear interpolation
@@ -12,6 +15,7 @@
 - Adding `zscores()` method for computing z-scores of each value in a dataset
 - Adding `outliers()` method for z-score based outlier detection with configurable threshold
 - Adding `iqrOutliers()` method for IQR-based outlier detection (box plot whiskers), robust for skewed data
+- Adding `rSquared()` method for R² (coefficient of determination) — proportion of variance explained by linear regression
 
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis

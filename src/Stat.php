@@ -1680,4 +1680,58 @@ class Stat
 
         return [$slope, $intercept];
     }
+
+    /**
+     * Calculate the coefficient of determination (R²).
+     *
+     * R² measures the proportion of variance in y explained by the
+     * linear regression on x. Returns a value between 0 and 1.
+     *
+     * @param  array<int|float>  $x
+     * @param  array<int|float>  $y
+     * @throws InvalidDataInputException
+     */
+    public static function rSquared(array $x, array $y, bool $proportional = false, ?int $round = null): float
+    {
+        $countX = count($x);
+        $countY = count($y);
+
+        if ($countX !== $countY) {
+            throw new InvalidDataInputException(
+                "R-squared requires x and y arrays of the same length.",
+            );
+        }
+
+        if ($countX < 2) {
+            throw new InvalidDataInputException(
+                "R-squared requires at least 2 data points.",
+            );
+        }
+
+        [$slope, $intercept] = self::linearRegression($x, $y, $proportional);
+        $meanY = self::mean($y);
+
+        $ssRes = 0.0;
+        $ssTot = 0.0;
+
+        foreach ($y as $key => $yi) {
+            $predicted = $slope * $x[$key] + $intercept;
+            $ssRes += ($yi - $predicted) ** 2;
+            $ssTot += ($yi - $meanY) ** 2;
+        }
+
+        if ($ssTot == 0) {
+            throw new InvalidDataInputException(
+                "R-squared is undefined when y values are constant (zero variance).",
+            );
+        }
+
+        $rSquared = 1 - $ssRes / $ssTot;
+
+        if ($round !== null) {
+            return round($rSquared, $round);
+        }
+
+        return $rSquared;
+    }
 }

@@ -732,6 +732,59 @@ class StatTest extends TestCase
         Stat::linearRegression([0, 0, 0, 0, 0], [1, 2, 3, 4, 5], proportional: true);
     }
 
+    public function test_r_squared_perfect_fit(): void
+    {
+        $r2 = Stat::rSquared([1, 2, 3, 4, 5], [2, 4, 6, 8, 10]);
+        $this->assertEqualsWithDelta(1.0, $r2, 1e-10);
+    }
+
+    public function test_r_squared_real_data(): void
+    {
+        $r2 = Stat::rSquared(
+            [1971, 1975, 1979, 1982, 1983],
+            [1, 2, 3, 4, 5],
+        );
+        $this->assertEqualsWithDelta(0.961, round($r2, 4), 1e-4);
+    }
+
+    public function test_r_squared_with_rounding(): void
+    {
+        $r2 = Stat::rSquared(
+            [1971, 1975, 1979, 1982, 1983],
+            [1, 2, 3, 4, 5],
+            round: 2,
+        );
+        $this->assertSame(0.96, $r2);
+    }
+
+    public function test_r_squared_proportional(): void
+    {
+        $r2 = Stat::rSquared(
+            [1, 2, 3, 4, 5],
+            [2, 4, 6, 8, 10],
+            proportional: true,
+        );
+        $this->assertEqualsWithDelta(1.0, $r2, 1e-10);
+    }
+
+    public function test_r_squared_with_different_lengths(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::rSquared([1, 2, 3], [1, 2]);
+    }
+
+    public function test_r_squared_with_single_element(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::rSquared([1], [2]);
+    }
+
+    public function test_r_squared_with_constant_y(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::rSquared([1, 2, 3, 4, 5], [3, 3, 3, 3, 3]);
+    }
+
     public function test_kde_normal(): void
     {
         $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];

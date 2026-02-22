@@ -98,6 +98,7 @@ The various mathematical statistics are listed below:
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
+| `rSquared()` | coefficient of determination (R²) — proportion of variance explained by linear regression |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 | `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 

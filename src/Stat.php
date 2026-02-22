@@ -643,6 +643,23 @@ class Stat
     }
 
     /**
+     * Return the standard error of the mean (SEM).
+     * SEM measures how precisely the sample mean estimates the population mean.
+     *
+     * Formula: stdev / sqrt(n)
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @return float the standard error of the mean
+     *
+     * @throws InvalidDataInputException if data size is less than 2
+     */
+    public static function sem(array $data, ?int $round = null): float
+    {
+        return Math::round(self::stdev($data) / sqrt(self::count($data)), $round);
+    }
+
+    /**
      * Return the variance from the numeric data.
      *
      * @param  array<int|float>  $data

@@ -78,6 +78,7 @@ The various mathematical statistics are listed below:
 | `percentile()` | value at any percentile (0–100) with linear interpolation |
 | `pstdev()` | Population standard deviation |
 | `stdev()` | Sample standard deviation |
+| `sem()` | Standard error of the mean (SEM) — measures precision of the sample mean |
 | `pvariance()` | variance for a population (supports pre-computed mean via `mu`) |
 | `variance()` | variance for a sample (supports pre-computed mean via `xbar`) |
 | `skewness()` | adjusted Fisher-Pearson sample skewness |
@@ -339,6 +340,22 @@ $stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75]);
 // 1.0810874155219827
 $stdev = Stat::stdev([1.5, 2.5, 2.5, 2.75, 3.25, 4.75], 4);
 // 1.0811
+```
+
+#### Stat::sem( array $data, ?int $round = null )
+Return the standard error of the mean (SEM). SEM measures how precisely the sample mean estimates the population mean. It decreases as the sample size grows.
+
+Formula: `stdev / sqrt(n)`
+
+Requires at least 2 data points.
+
+```php
+use HiFolks\Statistics\Stat;
+$sem = Stat::sem([2, 4, 4, 4, 5, 5, 7, 9]);
+// 0.7559...
+
+$sem = Stat::sem([2, 4, 4, 4, 5, 5, 7, 9], 4);
+// 0.7559
 ```
 
 #### Stat::variance ( array $data, ?int $round = null, int|float|null $xbar = null)

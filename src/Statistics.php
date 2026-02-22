@@ -262,6 +262,18 @@ class Statistics
     }
 
     /**
+     * Return the standard error of the mean (SEM).
+     *
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::sem()
+     */
+    public function sem(?int $round = null): float
+    {
+        return Stat::sem($this->numericalArray(), $round);
+    }
+
+    /**
      * Return the variance from the numeric data
      *
      * @param  int|null  $round whether to round the result

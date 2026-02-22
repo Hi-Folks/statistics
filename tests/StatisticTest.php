@@ -3,6 +3,7 @@
 namespace HiFolks\Statistics\Tests;
 
 use HiFolks\Statistics\Exception\InvalidDataInputException;
+use HiFolks\Statistics\Stat;
 use HiFolks\Statistics\Statistics;
 use PHPUnit\Framework\TestCase;
 
@@ -295,5 +296,12 @@ class StatisticTest extends TestCase
         $this->assertEqualsWithDelta(2.0, $s->weightedMedian([1, 1, 1]), 1e-10);
         // Heavy weight on 3 → weighted median is 3
         $this->assertEqualsWithDelta(3.0, $s->weightedMedian([1, 1, 10]), 1e-10);
+    }
+
+    public function test_sem(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        $expected = Stat::stdev([2, 4, 4, 4, 5, 5, 7, 9]) / sqrt(8);
+        $this->assertEqualsWithDelta($expected, $s->sem(), 1e-10);
     }
 }

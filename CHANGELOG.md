@@ -6,6 +6,7 @@
 - Adding `coefficientOfVariation()` method for relative dispersion (CV%), supporting both sample and population modes
 - Adding `trimmedMean()` method for robust central tendency — computes the mean after removing outliers from each side
 - Adding `weightedMedian()` method for computing the median with weighted observations
+- Adding `sem()` method for standard error of the mean
 
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis

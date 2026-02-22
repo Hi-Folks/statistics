@@ -1237,4 +1237,33 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::weightedMedian([1, 2, 3], [1, 0, 1]);
     }
+
+    // --- sem ---
+
+    public function test_sem(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $expected = Stat::stdev($data) / sqrt(Stat::count($data));
+        $this->assertEqualsWithDelta($expected, Stat::sem($data), 1e-10);
+    }
+
+    public function test_sem_with_rounding(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::sem($data, 4);
+        $this->assertEquals(round($result, 4), $result);
+    }
+
+    public function test_sem_decreases_with_larger_sample(): void
+    {
+        $small = [1, 2, 3, 4, 5];
+        $large = [1, 2, 3, 4, 5, 1, 2, 3, 4, 5];
+        $this->assertGreaterThan(Stat::sem($large), Stat::sem($small));
+    }
+
+    public function test_sem_too_few_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::sem([5]);
+    }
 }

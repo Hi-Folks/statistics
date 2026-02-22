@@ -967,6 +967,40 @@ This class is inspired by Python’s `statistics.NormalDist` and aims to provide
 
 
 
+## StreamingStat (Experimental)
+
+> **Note**: `StreamingStat` is experimental in version 1.x. It will be released as stable in version 2. If you want to provide feedback, we are happy to hear from you — please open an issue at https://github.com/Hi-Folks/statistics/issues.
+
+`StreamingStat` computes descriptive statistics in a single pass with O(1) memory, ideal for large datasets or generator-based streams.
+
+```php
+use HiFolks\Statistics\StreamingStat;
+
+$s = new StreamingStat();
+$s->add(1)->add(2)->add(3)->add(4)->add(5);
+
+$s->count();     // 5
+$s->mean();      // 3.0
+$s->variance();  // 2.5
+$s->stdev();     // 1.5811...
+$s->skewness();  // 0.0
+$s->kurtosis();  // -1.2
+```
+
+| Method | Description | Min n |
+|---|---|---|
+| `count()` | Number of values added | 0 |
+| `mean(?int $round = null)` | Arithmetic mean | 1 |
+| `variance(?int $round = null)` | Sample variance | 2 |
+| `pvariance(?int $round = null)` | Population variance | 1 |
+| `stdev(?int $round = null)` | Sample standard deviation | 2 |
+| `pstdev(?int $round = null)` | Population standard deviation | 1 |
+| `skewness(?int $round = null)` | Sample skewness (adjusted Fisher-Pearson) | 3 |
+| `pskewness(?int $round = null)` | Population skewness | 3 |
+| `kurtosis(?int $round = null)` | Excess kurtosis (sample) | 4 |
+
+All methods throw `InvalidDataInputException` when insufficient data is available.
+
 ## Testing
 
 ```bash

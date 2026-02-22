@@ -1,8 +1,11 @@
 # Changelog
 
+## 1.3.0 - WIP
+- Adding `StreamingStat` class (experimental) for streaming/online computation of mean, variance, stdev, skewness, and kurtosis with O(1) memory
+
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis
-- 
+
 ## 1.2.4 - 2026-02-21
 - Adding `skewness()` method for adjusted Fisher-Pearson sample skewness
 - Adding `pskewness()` method for population (biased) skewness

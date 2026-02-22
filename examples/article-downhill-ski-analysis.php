@@ -316,8 +316,8 @@ echo "  (positive = heavy tails, outliers present)" . PHP_EOL;
 // =====================================================================
 echo PHP_EOL . "=== Step 9: Dispersion Measures Compared ===" . PHP_EOL . PHP_EOL;
 
-$stdev    = Stat::stdev($times, 4);
-$mad      = Stat::meanAbsoluteDeviation($times, 4);
+$stdev = Stat::stdev($times, 4);
+$mad = Stat::meanAbsoluteDeviation($times, 4);
 $medianAD = Stat::medianAbsoluteDeviation($times, 4);
 
 echo "Standard deviation:        " . $stdev . "s" . PHP_EOL;
@@ -333,8 +333,8 @@ echo "(within ~1 second of each other) and a few stragglers." . PHP_EOL;
 // =====================================================================
 echo PHP_EOL . "=== Step 10: Coefficient of Variation ===" . PHP_EOL . PHP_EOL;
 
-$cvFull  = Stat::coefficientOfVariation($times, 2);
-$top10   = array_slice($times, 0, 10);
+$cvFull = Stat::coefficientOfVariation($times, 2);
+$top10 = array_slice($times, 0, 10);
 $cvTop10 = Stat::coefficientOfVariation($top10, 2);
 
 echo "Full field CV: " . $cvFull . "%" . PHP_EOL;

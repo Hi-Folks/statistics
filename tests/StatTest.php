@@ -1266,4 +1266,85 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::sem([5]);
     }
+
+    // --- meanAbsoluteDeviation ---
+
+    public function test_mean_absolute_deviation(): void
+    {
+        // [1, 2, 3, 4, 5] → mean=3, deviations=[2,1,0,1,2], MAD=6/5=1.2
+        $this->assertEqualsWithDelta(1.2, Stat::meanAbsoluteDeviation([1, 2, 3, 4, 5]), 1e-10);
+    }
+
+    public function test_mean_absolute_deviation_single_element(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Stat::meanAbsoluteDeviation([42]), 1e-10);
+    }
+
+    public function test_mean_absolute_deviation_identical_values(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Stat::meanAbsoluteDeviation([5, 5, 5, 5]), 1e-10);
+    }
+
+    public function test_mean_absolute_deviation_with_rounding(): void
+    {
+        $result = Stat::meanAbsoluteDeviation([1, 2, 3, 4, 5], 2);
+        $this->assertEquals(round($result, 2), $result);
+    }
+
+    public function test_mean_absolute_deviation_less_than_stdev(): void
+    {
+        // MAD is always <= stdev for any dataset
+        $data = [1, 2, 3, 10, 100];
+        $this->assertLessThanOrEqual(Stat::stdev($data), Stat::meanAbsoluteDeviation($data));
+    }
+
+    public function test_mean_absolute_deviation_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::meanAbsoluteDeviation([]);
+    }
+
+    // --- medianAbsoluteDeviation ---
+
+    public function test_median_absolute_deviation(): void
+    {
+        // [1, 2, 3, 4, 5] → median=3, deviations=[2,1,0,1,2], median of deviations=1
+        $this->assertEqualsWithDelta(1.0, Stat::medianAbsoluteDeviation([1, 2, 3, 4, 5]), 1e-10);
+    }
+
+    public function test_median_absolute_deviation_with_outlier(): void
+    {
+        // MAD should be resistant to the outlier
+        $clean = [1, 2, 3, 4, 5];
+        $withOutlier = [1, 2, 3, 4, 1000];
+        // median of clean = 3, deviations = [2,1,0,1,2], MAD = 1
+        // median of withOutlier = 3, deviations = [2,1,0,1,997], MAD = 1
+        $this->assertEqualsWithDelta(
+            Stat::medianAbsoluteDeviation($clean),
+            Stat::medianAbsoluteDeviation($withOutlier),
+            1e-10,
+        );
+    }
+
+    public function test_median_absolute_deviation_single_element(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Stat::medianAbsoluteDeviation([42]), 1e-10);
+    }
+
+    public function test_median_absolute_deviation_identical_values(): void
+    {
+        $this->assertEqualsWithDelta(0.0, Stat::medianAbsoluteDeviation([5, 5, 5, 5]), 1e-10);
+    }
+
+    public function test_median_absolute_deviation_with_rounding(): void
+    {
+        $result = Stat::medianAbsoluteDeviation([1, 2, 3, 4, 5, 6, 7, 8], 3);
+        $this->assertEquals(round($result, 3), $result);
+    }
+
+    public function test_median_absolute_deviation_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::medianAbsoluteDeviation([]);
+    }
 }

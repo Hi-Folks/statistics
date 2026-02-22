@@ -304,4 +304,16 @@ class StatisticTest extends TestCase
         $expected = Stat::stdev([2, 4, 4, 4, 5, 5, 7, 9]) / sqrt(8);
         $this->assertEqualsWithDelta($expected, $s->sem(), 1e-10);
     }
+
+    public function test_mean_absolute_deviation(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 5]);
+        $this->assertEqualsWithDelta(1.2, $s->meanAbsoluteDeviation(), 1e-10);
+    }
+
+    public function test_median_absolute_deviation(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 5]);
+        $this->assertEqualsWithDelta(1.0, $s->medianAbsoluteDeviation(), 1e-10);
+    }
 }

@@ -7,6 +7,8 @@
 - Adding `trimmedMean()` method for robust central tendency — computes the mean after removing outliers from each side
 - Adding `weightedMedian()` method for computing the median with weighted observations
 - Adding `sem()` method for standard error of the mean
+- Adding `meanAbsoluteDeviation()` method for mean absolute deviation — average distance from the mean
+- Adding `medianAbsoluteDeviation()` method for median absolute deviation — robust dispersion measure resistant to outliers
 
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis

@@ -274,6 +274,30 @@ class Statistics
     }
 
     /**
+     * Return the mean absolute deviation (MAD).
+     *
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::meanAbsoluteDeviation()
+     */
+    public function meanAbsoluteDeviation(?int $round = null): float
+    {
+        return Stat::meanAbsoluteDeviation($this->numericalArray(), $round);
+    }
+
+    /**
+     * Return the median absolute deviation.
+     *
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::medianAbsoluteDeviation()
+     */
+    public function medianAbsoluteDeviation(?int $round = null): float
+    {
+        return Stat::medianAbsoluteDeviation($this->numericalArray(), $round);
+    }
+
+    /**
      * Return the variance from the numeric data
      *
      * @param  int|null  $round whether to round the result

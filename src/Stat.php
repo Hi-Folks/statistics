@@ -660,6 +660,63 @@ class Stat
     }
 
     /**
+     * Return the mean absolute deviation (MAD) of the data.
+     * MAD is the average of the absolute deviations from the mean.
+     *
+     * Formula: (1/n) * Σ|xi - mean|
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @return float the mean absolute deviation
+     *
+     * @throws InvalidDataInputException if the data is empty
+     */
+    public static function meanAbsoluteDeviation(array $data, ?int $round = null): float
+    {
+        $count = self::count($data);
+        if ($count === 0) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+
+        $mean = self::mean($data);
+        $sum = 0.0;
+        foreach ($data as $value) {
+            $sum += abs($value - $mean);
+        }
+
+        return Math::round($sum / $count, $round);
+    }
+
+    /**
+     * Return the median absolute deviation of the data.
+     * This is the median of the absolute deviations from the median.
+     * It is a robust measure of dispersion, highly resistant to outliers.
+     *
+     * Formula: median(|xi - median(x)|)
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @return float the median absolute deviation
+     *
+     * @throws InvalidDataInputException if the data is empty
+     */
+    public static function medianAbsoluteDeviation(array $data, ?int $round = null): float
+    {
+        $count = self::count($data);
+        if ($count === 0) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+
+        $median = self::median($data);
+        $deviations = [];
+        foreach ($data as $value) {
+            $deviations[] = abs($value - $median);
+        }
+
+        return Math::round((float) self::median($deviations), $round);
+    }
+
+    /**
      * Return the variance from the numeric data.
      *
      * @param  array<int|float>  $data

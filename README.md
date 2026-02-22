@@ -79,6 +79,8 @@ The various mathematical statistics are listed below:
 | `pstdev()` | Population standard deviation |
 | `stdev()` | Sample standard deviation |
 | `sem()` | Standard error of the mean (SEM) — measures precision of the sample mean |
+| `meanAbsoluteDeviation()` | mean absolute deviation (MAD) — average distance from the mean |
+| `medianAbsoluteDeviation()` | median absolute deviation — median distance from the median, robust to outliers |
 | `pvariance()` | variance for a population (supports pre-computed mean via `mu`) |
 | `variance()` | variance for a sample (supports pre-computed mean via `xbar`) |
 | `skewness()` | adjusted Fisher-Pearson sample skewness |
@@ -356,6 +358,39 @@ $sem = Stat::sem([2, 4, 4, 4, 5, 5, 7, 9]);
 
 $sem = Stat::sem([2, 4, 4, 4, 5, 5, 7, 9], 4);
 // 0.7559
+```
+
+#### Stat::meanAbsoluteDeviation( array $data, ?int $round = null )
+Return the mean absolute deviation (MAD) — the average of the absolute deviations from the mean.
+
+MAD is a simple, intuitive measure of dispersion: it tells you "on average, how far values are from the mean". Unlike standard deviation, it does not square the differences, making it easier to interpret and somewhat less sensitive to outliers.
+
+Use MAD when you want a straightforward, interpretable measure of spread, especially for reporting to non-technical audiences.
+
+```php
+use HiFolks\Statistics\Stat;
+$mad = Stat::meanAbsoluteDeviation([1, 2, 3, 4, 5]);
+// 1.2
+
+$mad = Stat::meanAbsoluteDeviation([1, 2, 3, 4, 5], 1);
+// 1.2
+```
+
+#### Stat::medianAbsoluteDeviation( array $data, ?int $round = null )
+Return the median absolute deviation — the median of the absolute deviations from the median.
+
+This is one of the most **robust measures of dispersion** available. Because it uses the median (not the mean) as the center and takes the median (not the mean) of deviations, it is highly resistant to outliers. Even if up to half the data points are extreme, the median absolute deviation remains stable.
+
+Use it when your data may contain outliers, when you need a robust alternative to standard deviation, or for outlier detection (values far from the median in units of MAD are likely outliers).
+
+```php
+use HiFolks\Statistics\Stat;
+$mad = Stat::medianAbsoluteDeviation([1, 2, 3, 4, 5]);
+// 1.0
+
+// Robust to outliers — the outlier 1000 does not affect the result:
+$mad = Stat::medianAbsoluteDeviation([1, 2, 3, 4, 1000]);
+// 1.0
 ```
 
 #### Stat::variance ( array $data, ?int $round = null, int|float|null $xbar = null)

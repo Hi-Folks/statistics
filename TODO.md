@@ -15,7 +15,6 @@
 - Chi-squared test
 - Z-test
 - P-value calculation
-- Confidence intervals
 
 ### Other Distributions (beyond Normal)
 

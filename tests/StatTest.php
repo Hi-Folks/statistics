@@ -785,6 +785,82 @@ class StatTest extends TestCase
         Stat::rSquared([1, 2, 3, 4, 5], [3, 3, 3, 3, 3]);
     }
 
+    public function test_confidence_interval_95(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        [$lower, $upper] = Stat::confidenceInterval($data);
+        // mean = 5.0, stdev ≈ 2.1381, sem ≈ 0.7559, z = 1.96
+        // margin ≈ 1.4815
+        $this->assertEqualsWithDelta(3.5185, $lower, 0.01);
+        $this->assertEqualsWithDelta(6.4815, $upper, 0.01);
+    }
+
+    public function test_confidence_interval_99(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        [$lower, $upper] = Stat::confidenceInterval($data, confidenceLevel: 0.99);
+        // 99% CI is wider than 95% CI
+        $this->assertLessThan(3.5, $lower);
+        $this->assertGreaterThan(6.5, $upper);
+    }
+
+    public function test_confidence_interval_with_rounding(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        [$lower, $upper] = Stat::confidenceInterval($data, round: 2);
+        $this->assertSame(3.52, $lower);
+        $this->assertSame(6.48, $upper);
+    }
+
+    public function test_confidence_interval_narrows_with_more_data(): void
+    {
+        $small = [2, 4, 4, 4, 5, 5, 7, 9];
+        $large = [2, 4, 4, 4, 5, 5, 7, 9, 3, 4, 5, 6, 4, 5, 6, 5];
+        [$sLower, $sUpper] = Stat::confidenceInterval($small);
+        [$lLower, $lUpper] = Stat::confidenceInterval($large);
+        $this->assertLessThan($sUpper - $sLower, $lUpper - $lLower);
+    }
+
+    public function test_confidence_interval_single_element_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::confidenceInterval([42]);
+    }
+
+    public function test_confidence_interval_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::confidenceInterval([]);
+    }
+
+    public function test_confidence_interval_invalid_confidence_level_throws(): void
+    {
+        $data = [1, 2, 3, 4, 5];
+        $this->expectException(InvalidDataInputException::class);
+        Stat::confidenceInterval($data, confidenceLevel: 0.0);
+    }
+
+    public function test_confidence_interval_confidence_level_one_throws(): void
+    {
+        $data = [1, 2, 3, 4, 5];
+        $this->expectException(InvalidDataInputException::class);
+        Stat::confidenceInterval($data, confidenceLevel: 1.0);
+    }
+
+    public function test_confidence_interval_confidence_level_above_one_throws(): void
+    {
+        $data = [1, 2, 3, 4, 5];
+        $this->expectException(InvalidDataInputException::class);
+        Stat::confidenceInterval($data, confidenceLevel: 1.5);
+    }
+
+    public function test_confidence_interval_negative_confidence_level_throws(): void
+    {
+        $data = [1, 2, 3, 4, 5];
+        $this->expectException(InvalidDataInputException::class);
+        Stat::confidenceInterval($data, confidenceLevel: -0.1);
+    }
+
     public function test_kde_normal(): void
     {
         $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];

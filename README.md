@@ -99,6 +99,7 @@ The various mathematical statistics are listed below:
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
 | `rSquared()` | coefficient of determination (R²) — proportion of variance explained by linear regression |
+| `confidenceInterval()` | confidence interval for the mean using the normal (z) distribution |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 | `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 
@@ -622,6 +623,54 @@ list($slope, $intercept) = Stat::linearRegression(
 );
 // $slope = 2.0
 // $intercept = 0.0
+```
+
+#### Stat::rSquared( array $x, array $y, bool $proportional = false, ?int $round = null )
+Return the coefficient of determination (R²) — the proportion of variance in the dependent variable explained by the linear regression model. Values range from 0 (no explanatory power) to 1 (perfect fit).
+
+Requires at least 2 data points and arrays of the same length.
+
+```php
+use HiFolks\Statistics\Stat;
+$r2 = Stat::rSquared([1, 2, 3, 4, 5], [2, 4, 6, 8, 10]);
+// 1.0 (perfect linear relationship)
+
+$r2 = Stat::rSquared(
+    [1971, 1975, 1979, 1982, 1983],
+    [1, 2, 3, 4, 5],
+    round: 2,
+);
+// 0.96
+```
+
+With proportional regression (through the origin):
+
+```php
+$r2 = Stat::rSquared(
+    [1, 2, 3, 4, 5],
+    [2, 4, 6, 8, 10],
+    proportional: true,
+);
+// 1.0
+```
+
+#### Stat::confidenceInterval( array $data, float $confidenceLevel = 0.95, ?int $round = null )
+Return the confidence interval for the mean using the normal (z) distribution.
+
+Computes: `mean ± z * (stdev / √n)`, where the z-critical value is derived from the inverse normal CDF.
+
+Requires at least 2 data points. The confidence level must be between 0 and 1 exclusive.
+
+```php
+use HiFolks\Statistics\Stat;
+[$lower, $upper] = Stat::confidenceInterval([2, 4, 4, 4, 5, 5, 7, 9]);
+// 95% CI: [3.52, 6.48] (approximately)
+
+[$lower, $upper] = Stat::confidenceInterval([2, 4, 4, 4, 5, 5, 7, 9], confidenceLevel: 0.99);
+// 99% CI: wider interval
+
+[$lower, $upper] = Stat::confidenceInterval([2, 4, 4, 4, 5, 5, 7, 9], round: 2);
+// [3.52, 6.48]
 ```
 
 #### Stat::kde ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , bool $cumulative = false )

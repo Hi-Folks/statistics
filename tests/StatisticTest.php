@@ -305,6 +305,24 @@ class StatisticTest extends TestCase
         $this->assertEqualsWithDelta($expected, $s->sem(), 1e-10);
     }
 
+    public function test_confidence_interval(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        [$lower, $upper] = $s->confidenceInterval();
+        [$expectedLower, $expectedUpper] = Stat::confidenceInterval([2, 4, 4, 4, 5, 5, 7, 9]);
+        $this->assertEqualsWithDelta($expectedLower, $lower, 1e-10);
+        $this->assertEqualsWithDelta($expectedUpper, $upper, 1e-10);
+    }
+
+    public function test_confidence_interval_with_params(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        [$lower, $upper] = $s->confidenceInterval(confidenceLevel: 0.99, round: 2);
+        [$expectedLower, $expectedUpper] = Stat::confidenceInterval([2, 4, 4, 4, 5, 5, 7, 9], confidenceLevel: 0.99, round: 2);
+        $this->assertSame($expectedLower, $lower);
+        $this->assertSame($expectedUpper, $upper);
+    }
+
     public function test_mean_absolute_deviation(): void
     {
         $s = Statistics::make([1, 2, 3, 4, 5]);

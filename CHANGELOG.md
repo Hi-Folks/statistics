@@ -1,6 +1,7 @@
 # Changelog
 
 ## 1.3.1 - WIP
+- Adding `confidenceInterval()` method for computing confidence intervals for the mean using the normal (z) distribution
 - Adding `rSquared()` method for R² (coefficient of determination) — proportion of variance explained by linear regression
 
 ## 1.3.0 - 2026-02-22

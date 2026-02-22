@@ -274,6 +274,20 @@ class Statistics
     }
 
     /**
+     * Return the confidence interval for the mean using the normal (z) distribution.
+     *
+     * @param  float  $confidenceLevel the confidence level (e.g. 0.95 for 95%)
+     * @param  int|null  $round whether to round the result
+     * @return array{0: float, 1: float} [lower bound, upper bound]
+     *
+     * @see Stat::confidenceInterval()
+     */
+    public function confidenceInterval(float $confidenceLevel = 0.95, ?int $round = null): array
+    {
+        return Stat::confidenceInterval($this->numericalArray(), $confidenceLevel, $round);
+    }
+
+    /**
      * Return the mean absolute deviation (MAD).
      *
      * @param  int|null  $round whether to round the result

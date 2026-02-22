@@ -4,6 +4,7 @@ namespace HiFolks\Statistics;
 
 use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
+use HiFolks\Statistics\NormalDist;
 
 class Stat
 {
@@ -1733,5 +1734,50 @@ class Stat
         }
 
         return $rSquared;
+    }
+
+    /**
+     * Return the confidence interval for the mean using the normal (z) distribution.
+     *
+     * Computes: mean ± z * (stdev / √n)
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $confidenceLevel the confidence level (e.g. 0.95 for 95%)
+     * @param  int|null  $round whether to round the result
+     * @return array{0: float, 1: float} [lower bound, upper bound]
+     *
+     * @throws InvalidDataInputException if data has fewer than 2 elements or confidence level is not in (0, 1)
+     */
+    public static function confidenceInterval(
+        array $data,
+        float $confidenceLevel = 0.95,
+        ?int $round = null,
+    ): array {
+        if (self::count($data) < 2) {
+            throw new InvalidDataInputException(
+                "Confidence interval requires at least 2 data points.",
+            );
+        }
+
+        if ($confidenceLevel <= 0.0 || $confidenceLevel >= 1.0) {
+            throw new InvalidDataInputException(
+                "Confidence level must be between 0 and 1 exclusive.",
+            );
+        }
+
+        $mean = self::mean($data);
+        $standardError = self::sem($data);
+
+        $zCritical = (new NormalDist(0.0, 1.0))->invCdf((1 + $confidenceLevel) / 2);
+        $margin = $zCritical * $standardError;
+
+        $lower = $mean - $margin;
+        $upper = $mean + $margin;
+
+        if ($round !== null) {
+            return [Math::round($lower, $round), Math::round($upper, $round)];
+        }
+
+        return [$lower, $upper];
     }
 }

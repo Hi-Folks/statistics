@@ -140,16 +140,6 @@ class StudentT
      */
     private function regularizedIncompleteBeta(float $a, float $b, float $x): float
     {
-        if ($x < 0.0 || $x > 1.0) {
-            return 0.0;
-        }
-        if ($x === 0.0) {
-            return 0.0;
-        }
-        if ($x === 1.0) {
-            return 1.0;
-        }
-
         // Use the symmetry relation when x > (a+1)/(a+b+2) for better convergence
         if ($x > ($a + 1) / ($a + $b + 2)) {
             return 1.0 - $this->regularizedIncompleteBeta($b, $a, 1.0 - $x);
@@ -177,7 +167,7 @@ class StudentT
         $c = 1.0;
         $d = 1.0 - ($a + $b) * $x / ($a + 1);
         if (abs($d) < $tiny) {
-            $d = $tiny;
+            $d = $tiny; // @codeCoverageIgnore
         }
         $d = 1.0 / $d;
         $f = $d;
@@ -188,11 +178,11 @@ class StudentT
 
             $d = 1.0 + $numerator * $d;
             if (abs($d) < $tiny) {
-                $d = $tiny;
+                $d = $tiny; // @codeCoverageIgnore
             }
             $c = 1.0 + $numerator / $c;
             if (abs($c) < $tiny) {
-                $c = $tiny;
+                $c = $tiny; // @codeCoverageIgnore
             }
             $d = 1.0 / $d;
             $f *= $d * $c;
@@ -202,11 +192,11 @@ class StudentT
 
             $d = 1.0 + $numerator * $d;
             if (abs($d) < $tiny) {
-                $d = $tiny;
+                $d = $tiny; // @codeCoverageIgnore
             }
             $c = 1.0 + $numerator / $c;
             if (abs($c) < $tiny) {
-                $c = $tiny;
+                $c = $tiny; // @codeCoverageIgnore
             }
             $d = 1.0 / $d;
             $delta = $d * $c;

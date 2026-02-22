@@ -190,4 +190,106 @@ class StudentTTest extends TestCase
         $val = $t->invCdfRounded(0.975, 3);
         $this->assertEqualsWithDelta(2.228, $val, 0.001);
     }
+
+    public function test_inv_cdf_extreme_tail(): void
+    {
+        // Very small p with df=1 (Cauchy) — the normal approximation
+        // initial guess lands where pdf is near zero, hitting the fpx < 1e-15 guard
+        $t = new StudentT(1);
+        $val = $t->invCdf(1e-10);
+        $this->assertLessThan(-1000.0, $val);
+    }
+
+    // --- Coverage: logGamma reflection formula (x < 0.5) ---
+
+    public function test_pdf_fractional_df_triggers_loggamma_reflection(): void
+    {
+        // df=0.5 => logGamma(0.25) is called, which triggers the
+        // reflection branch (x < 0.5) in logGamma
+        $t = new StudentT(0.5);
+        $this->assertGreaterThan(0.0, $t->pdf(0));
+        // Also verify cdf is still valid
+        $this->assertEqualsWithDelta(0.5, $t->cdf(0), 1e-6);
+    }
+
+    // --- Coverage: regularizedIncompleteBeta edge cases ---
+
+    public function test_cdf_very_large_t_value(): void
+    {
+        // Very large t => x = df/(df+t^2) ≈ 0, approaching the x===0 branch
+        $t = new StudentT(5);
+        $this->assertEqualsWithDelta(1.0, $t->cdf(1e8), 1e-6);
+    }
+
+    public function test_cdf_negative_very_large_t_value(): void
+    {
+        // Very negative t => cdf near 0
+        $t = new StudentT(5);
+        $this->assertEqualsWithDelta(0.0, $t->cdf(-1e8), 1e-6);
+    }
+
+    public function test_cdf_df1_wide_range(): void
+    {
+        // df=1 (Cauchy) with various t-values to exercise different
+        // paths in the incomplete beta (symmetry flip, CF convergence)
+        $t = new StudentT(1);
+        // Known Cauchy quantiles
+        $this->assertEqualsWithDelta(0.5, $t->cdf(0), 1e-6);
+        $this->assertEqualsWithDelta(0.75, $t->cdf(1), 1e-4);
+        $this->assertEqualsWithDelta(1.0 - 0.75, $t->cdf(-1), 1e-4);
+        // Extreme tails
+        $this->assertGreaterThan(0.99, $t->cdf(100));
+        $this->assertLessThan(0.01, $t->cdf(-100));
+    }
+
+    // --- Coverage: incompleteBetaCf tiny-value guards ---
+
+    public function test_cdf_df2_known_values(): void
+    {
+        // df=2: cdf(t) = 0.5 + t/(2*sqrt(2+t^2))
+        // This exercises the CF with a=1.0, b=0.5, which can produce
+        // near-zero denominators triggering the tiny guards
+        $t = new StudentT(2);
+        foreach ([0.5, 1.0, 2.0, 5.0] as $tv) {
+            $expected = 0.5 + $tv / (2 * sqrt(2 + $tv * $tv));
+            $this->assertEqualsWithDelta($expected, $t->cdf($tv), 1e-5, "df=2, t=$tv");
+        }
+    }
+
+    public function test_cdf_very_high_df(): void
+    {
+        // Very high df pushes x close to 1 in regularizedIncompleteBeta,
+        // forcing the symmetry flip branch
+        $t = new StudentT(10000);
+        $normal = new NormalDist(0, 1);
+        $this->assertEqualsWithDelta($normal->cdf(1.96), $t->cdf(1.96), 0.001);
+    }
+
+    public function test_cdf_small_t_many_df_values(): void
+    {
+        // Small t with various df to exercise different a/b ratios
+        // in the continued fraction, hitting different convergence paths
+        foreach ([1, 2, 3, 4, 5, 10, 50, 200] as $df) {
+            $t = new StudentT($df);
+            // cdf should be between 0.5 and 1 for positive t
+            $val = $t->cdf(0.1);
+            $this->assertGreaterThan(0.5, $val, "cdf(0.1) > 0.5 for df=$df");
+            $this->assertLessThan(1.0, $val, "cdf(0.1) < 1.0 for df=$df");
+        }
+    }
+
+    public function test_cdf_symmetry_identity(): void
+    {
+        // cdf(t) + cdf(-t) = 1 for all t and df
+        // This exercises both branches (t >= 0 and t < 0) of the CDF
+        $t = new StudentT(3);
+        foreach ([0.1, 0.5, 1.0, 2.0, 5.0, 10.0] as $tv) {
+            $this->assertEqualsWithDelta(
+                1.0,
+                $t->cdf($tv) + $t->cdf(-$tv),
+                1e-10,
+                "cdf($tv) + cdf(-$tv) should equal 1",
+            );
+        }
+    }
 }

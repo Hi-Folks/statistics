@@ -1284,6 +1284,17 @@ class StatTest extends TestCase
         }
     }
 
+    public function test_kde_random_triangular_covers_both_branches(): void
+    {
+        $data = [1.0, 2.0, 3.0, 4.0, 5.0];
+        // Generate enough samples so both p < 0.5 and p >= 0.5 branches are hit
+        $sampler = Stat::kdeRandom($data, 1.0, KdeKernel::Triangular, seed: 42);
+        for ($i = 0; $i < 500; $i++) {
+            $value = $sampler();
+            $this->assertIsFloat($value);
+        }
+    }
+
     // --- percentile ---
 
     public function test_percentile_median_matches(): void

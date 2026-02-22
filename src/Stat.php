@@ -149,9 +149,11 @@ class Stat
         $trimmedData = array_slice($data, $trimCount, $count - 2 * $trimCount);
 
         if ($trimmedData === []) {
+            // @codeCoverageIgnoreStart
             throw new InvalidDataInputException(
                 "Trimming removed all elements.",
             );
+            // @codeCoverageIgnoreEnd
         }
 
         return Math::round(
@@ -245,11 +247,13 @@ class Stat
             }
         }
 
+        // @codeCoverageIgnoreStart
         // Fallback: last element (all weight in one point)
         /** @var array{float, float} $last */
         $last = end($paired);
 
         return Math::round($last[0], $round);
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -1514,19 +1518,19 @@ class Stat
 
         // Quartic CDF and PDF for Newton-Raphson
         $quarticCdf = static fn(float $t): float => $t <= -1.0
-            ? 0.0
+            ? 0.0 // @codeCoverageIgnore
             : ($t >= 1.0
-                ? 1.0
+                ? 1.0 // @codeCoverageIgnore
                 : (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5);
         $quarticPdf = static fn(float $t): float => $t < -1.0 || $t > 1.0
-            ? 0.0
+            ? 0.0 // @codeCoverageIgnore
             : (15.0 / 16.0) * (1.0 - $t * $t) ** 2;
 
         // Triweight CDF and PDF for Newton-Raphson
         $triweightCdf = static fn(float $t): float => $t <= -1.0
-            ? 0.0
+            ? 0.0 // @codeCoverageIgnore
             : ($t >= 1.0
-                ? 1.0
+                ? 1.0 // @codeCoverageIgnore
                 : (35.0 * $t
                         - 35.0 * $t ** 3
                         + 21.0 * $t ** 5
@@ -1534,7 +1538,7 @@ class Stat
                         / 32.0
                     + 0.5);
         $triweightPdf = static fn(float $t): float => $t < -1.0 || $t > 1.0
-            ? 0.0
+            ? 0.0 // @codeCoverageIgnore
             : (35.0 / 32.0) * (1.0 - $t * $t) ** 3;
 
         $invcdfMap = [

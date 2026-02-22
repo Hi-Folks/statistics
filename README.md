@@ -31,15 +31,18 @@
 
 <p align=center>
     <i>
-        Introducing a PHP package enabling comprehensive mathematical statistics calculations on numeric data.
+        A PHP package for descriptive statistics, normal distribution, outlier detection, and streaming analytics on numeric data.
     </i>
 </p>
 
-I've put together a package of useful statistical functions.
+This package provides a comprehensive set of statistical functions for PHP: descriptive statistics (mean, median, mode, standard deviation, variance, quantiles), robust measures (trimmed mean, weighted median, median absolute deviation), distribution modelling (normal distribution with PDF, CDF, and inverse CDF), outlier detection (z-score and IQR-based), z-scores, percentiles, coefficient of variation, frequency tables, correlation, linear regression, kernel density estimation, and O(1) memory streaming statistics.
 
-These functions originally stemmed from my exploration of FIT files, which contain a wealth of data about sports activities. Within these files, you can find detailed information on metrics such as Heart Rate, Speed, Cadence, Power, and more. I developed these statistical functions to help gain deeper insights into the numerical data and performance of these sports activities.
+It works with any numeric dataset — from sports telemetry and sensor data to race results, survey responses, and financial time series.
 
-The functions provided by this package, cover a range of measures, including mean, mode, median, range, quantiles, first quartile (25th percentile), third quartile (75th percentile), frequency tables (both cumulative and relative), standard deviation (applicable to both populations and samples), and variance (once again, for populations and samples).
+**Articles and resources:**
+- [Exploring Olympic Downhill Results with PHP Statistics](https://dev.to/robertobutti/exploring-olympic-downhill-results-with-php-statistics-3eo1) — a step-by-step analysis of 2026 Olympic downhill race data
+- [Statistics with PHP](https://dev.to/robertobutti/statistics-with-php-4pfp) — introduction to the package and its core functions
+- [PHP Statistics on Laravel News](https://laravel-news.com/php-statistics)
 
 > This package is inspired by the [Python statistics module](https://docs.python.org/3/library/statistics.html)
 

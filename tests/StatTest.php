@@ -1347,4 +1347,77 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::medianAbsoluteDeviation([]);
     }
+
+    // --- zscores ---
+
+    public function test_zscores(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $zscores = Stat::zscores($data);
+        $mean = (float) Stat::mean($data);
+        $stdev = Stat::stdev($data);
+
+        $this->assertCount(count($data), $zscores);
+        foreach ($data as $i => $value) {
+            $this->assertEqualsWithDelta(($value - $mean) / $stdev, $zscores[$i], 1e-10);
+        }
+    }
+
+    public function test_zscores_sum_to_zero(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $zscores = Stat::zscores($data);
+        $this->assertEqualsWithDelta(0.0, array_sum($zscores), 1e-10);
+    }
+
+    public function test_zscores_with_rounding(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $zscores = Stat::zscores($data, 2);
+        foreach ($zscores as $z) {
+            $this->assertEquals(round($z, 2), $z);
+        }
+    }
+
+    public function test_zscores_identical_values_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::zscores([5, 5, 5, 5]);
+    }
+
+    public function test_zscores_too_few_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::zscores([5]);
+    }
+
+    // --- outliers ---
+
+    public function test_outliers_detects_extreme_values(): void
+    {
+        $data = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 100];
+        $outliers = Stat::outliers($data);
+        $this->assertContains(100, $outliers);
+    }
+
+    public function test_outliers_no_outliers(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $outliers = Stat::outliers($data);
+        $this->assertEmpty($outliers);
+    }
+
+    public function test_outliers_custom_threshold(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        // With a very low threshold, more values are flagged
+        $outliers = Stat::outliers($data, 1.0);
+        $this->assertNotEmpty($outliers);
+    }
+
+    public function test_outliers_identical_values_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::outliers([5, 5, 5, 5]);
+    }
 }

@@ -717,6 +717,62 @@ class Stat
     }
 
     /**
+     * Return the z-scores for each value in the dataset.
+     * A z-score indicates how many standard deviations a value is from the mean.
+     *
+     * Formula: zi = (xi - mean) / stdev
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round each z-score
+     * @return array<float> the z-scores
+     *
+     * @throws InvalidDataInputException if data size is less than 2 or stdev is zero
+     */
+    public static function zscores(array $data, ?int $round = null): array
+    {
+        $mean = self::mean($data);
+        $stdev = self::stdev($data);
+        if ($stdev == 0) {
+            throw new InvalidDataInputException(
+                "Z-scores are undefined when all values are identical (standard deviation is zero).",
+            );
+        }
+
+        $zscores = [];
+        foreach ($data as $value) {
+            $zscores[] = Math::round(($value - $mean) / $stdev, $round);
+        }
+
+        return $zscores;
+    }
+
+    /**
+     * Return values from the dataset that are outliers based on z-score threshold.
+     * A value is considered an outlier if its absolute z-score exceeds the threshold.
+     *
+     * The default threshold of 3.0 is a common convention (values more than 3 standard
+     * deviations from the mean).
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $threshold  absolute z-score threshold (default 3.0)
+     * @return array<int|float> the outlier values
+     *
+     * @throws InvalidDataInputException if data size is less than 2 or stdev is zero
+     */
+    public static function outliers(array $data, float $threshold = 3.0): array
+    {
+        $zscores = self::zscores($data);
+        $outliers = [];
+        foreach ($data as $i => $value) {
+            if (abs($zscores[$i]) > $threshold) {
+                $outliers[] = $value;
+            }
+        }
+
+        return $outliers;
+    }
+
+    /**
      * Return the variance from the numeric data.
      *
      * @param  array<int|float>  $data

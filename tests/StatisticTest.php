@@ -316,4 +316,18 @@ class StatisticTest extends TestCase
         $s = Statistics::make([1, 2, 3, 4, 5]);
         $this->assertEqualsWithDelta(1.0, $s->medianAbsoluteDeviation(), 1e-10);
     }
+
+    public function test_zscores(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        $zscores = $s->zscores();
+        $this->assertCount(8, $zscores);
+        $this->assertEqualsWithDelta(0.0, array_sum($zscores), 1e-10);
+    }
+
+    public function test_outliers(): void
+    {
+        $s = Statistics::make([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 100]);
+        $this->assertContains(100, $s->outliers());
+    }
 }

@@ -298,6 +298,32 @@ class Statistics
     }
 
     /**
+     * Return the z-scores for each value in the dataset.
+     *
+     * @param  int|null  $round whether to round each z-score
+     * @return array<float>
+     *
+     * @see Stat::zscores()
+     */
+    public function zscores(?int $round = null): array
+    {
+        return Stat::zscores($this->numericalArray(), $round);
+    }
+
+    /**
+     * Return values that are outliers based on z-score threshold.
+     *
+     * @param  float  $threshold  absolute z-score threshold (default 3.0)
+     * @return array<int|float>
+     *
+     * @see Stat::outliers()
+     */
+    public function outliers(float $threshold = 3.0): array
+    {
+        return Stat::outliers($this->numericalArray(), $threshold);
+    }
+
+    /**
      * Return the variance from the numeric data
      *
      * @param  int|null  $round whether to round the result

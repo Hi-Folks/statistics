@@ -87,6 +87,8 @@ The various mathematical statistics are listed below:
 | `pskewness()` | population (biased) skewness |
 | `kurtosis()` | excess kurtosis (sample formula, 0 for normal distribution) |
 | `coefficientOfVariation()` | coefficient of variation (CV%), relative dispersion as percentage |
+| `zscores()` | z-scores for each value — how many standard deviations from the mean |
+| `outliers()` | outlier detection based on z-score threshold |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
@@ -480,6 +482,36 @@ $cv = Stat::coefficientOfVariation([10, 20, 30, 40, 50], round: 2);
 
 $cv = Stat::coefficientOfVariation([10, 20, 30, 40, 50], population: true);
 // ~47.14 (population)
+```
+
+#### Stat::zscores( array $data, ?int $round = null )
+Return the z-score for each value in the dataset. A z-score indicates how many standard deviations a value is from the mean. Z-scores are useful for standardizing data, comparing values from different distributions, and identifying outliers.
+
+The z-scores of any dataset always sum to zero, and values beyond ±2 or ±3 are typically considered unusual or outliers.
+
+Requires at least 2 data points and non-zero standard deviation.
+
+```php
+use HiFolks\Statistics\Stat;
+$zscores = Stat::zscores([2, 4, 4, 4, 5, 5, 7, 9]);
+// array of z-scores, one per value
+
+$zscores = Stat::zscores([2, 4, 4, 4, 5, 5, 7, 9], 2);
+// z-scores rounded to 2 decimal places
+```
+
+#### Stat::outliers( array $data, float $threshold = 3.0 )
+Return values from the dataset that are outliers based on z-score threshold. A value is considered an outlier if its absolute z-score exceeds the threshold.
+
+The default threshold of 3.0 is a widely used convention — in a normal distribution, about 99.7% of values fall within 3 standard deviations of the mean, so values beyond that are rare. Use a lower threshold (e.g. 2.0) for stricter detection, or a higher one for more lenient filtering.
+
+```php
+use HiFolks\Statistics\Stat;
+$outliers = Stat::outliers([1, 2, 3, 4, 5, 6, 7, 8, 9, 100]);
+// [100]
+
+$outliers = Stat::outliers([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 1.0);
+// values more than 1 stdev from the mean
 ```
 
 #### Stat::covariance ( array $x , array $y )

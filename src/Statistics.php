@@ -304,6 +304,21 @@ class Statistics
     }
 
     /**
+     * Perform a one-sample t-test for the mean.
+     *
+     * @param  float  $populationMean  the hypothesized population mean
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  whether to round the results
+     * @return array{tStatistic: float, pValue: float, degreesOfFreedom: int}
+     *
+     * @see Stat::tTest()
+     */
+    public function tTest(float $populationMean, Alternative $alternative = Alternative::TwoSided, ?int $round = null): array
+    {
+        return Stat::tTest($this->numericalArray(), $populationMean, $alternative, $round);
+    }
+
+    /**
      * Return the mean absolute deviation (MAD).
      *
      * @param  int|null  $round whether to round the result

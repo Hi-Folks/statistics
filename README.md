@@ -101,6 +101,7 @@ The various mathematical statistics are listed below:
 | `rSquared()` | coefficient of determination (R²) — proportion of variance explained by linear regression |
 | `confidenceInterval()` | confidence interval for the mean using the normal (z) distribution |
 | `zTest()` | one-sample Z-test — tests whether the sample mean differs significantly from a hypothesized population mean |
+| `tTest()` | one-sample t-test — like z-test but appropriate for small samples where the population standard deviation is unknown |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 | `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 
@@ -695,6 +696,27 @@ $result = Stat::zTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, round: 4);
 // ['zScore' => 2.6458, 'pValue' => 0.0081]
 ```
 
+#### Stat::tTest( array $data, float $populationMean, Alternative $alternative = Alternative::TwoSided, ?int $round = null )
+Perform a one-sample t-test for the mean. Tests whether the sample mean differs significantly from a hypothesized population mean using the Student's t-distribution. Unlike the z-test, the t-test is appropriate for small samples where the population standard deviation is unknown.
+
+Returns an associative array with `tStatistic`, `pValue`, and `degreesOfFreedom`. The alternative hypothesis can be `TwoSided` (default), `Greater`, or `Less`.
+
+Requires at least 2 data points.
+
+```php
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Enums\Alternative;
+
+$result = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0);
+// ['tStatistic' => 2.6457..., 'pValue' => 0.0331..., 'degreesOfFreedom' => 7]
+
+$result = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, alternative: Alternative::Greater);
+// one-tailed test: is the sample mean greater than 3?
+
+$result = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, round: 4);
+// ['tStatistic' => 2.6458, 'pValue' => 0.0331, 'degreesOfFreedom' => 7]
+```
+
 #### Stat::kde ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , bool $cumulative = false )
 Create a continuous probability density function (or cumulative distribution function) from discrete sample data using Kernel Density Estimation.
 Returns a `Closure` that can be called with any point to estimate the density (or CDF value).
@@ -1217,7 +1239,44 @@ $tempCelsius->getSigmaRounded(1); // 2.5
 
 This class is inspired by Python’s `statistics.NormalDist` and aims to provide similar functionality for PHP users. (Work in Progress)
 
+## `StudentT` class
 
+The `StudentT` class represents the Student’s t-distribution, which is used for hypothesis testing and confidence intervals when the population standard deviation is unknown, especially with small sample sizes. As the degrees of freedom increase, the t-distribution approaches the standard normal distribution.
+
+### Creating a StudentT instance
+
+```php
+use HiFolks\Statistics\StudentT;
+
+$t = new StudentT(df: 10); // 10 degrees of freedom
+```
+
+### Probability Density Function (PDF)
+
+```php
+$t = new StudentT(5);
+$t->pdf(0);        // ≈ 0.37961 (peak of the distribution)
+$t->pdf(2.0);      // density at t=2
+$t->pdfRounded(0); // 0.38
+```
+
+### Cumulative Distribution Function (CDF)
+
+```php
+$t = new StudentT(5);
+$t->cdf(0);    // 0.5 (symmetric around zero)
+$t->cdf(2.0);  // ≈ 0.94874
+$t->cdfRounded(2.0); // 0.949
+```
+
+### Inverse CDF (Quantile Function)
+
+```php
+$t = new StudentT(10);
+$t->invCdf(0.975);  // ≈ 2.228 (critical value for 95% two-sided test)
+$t->invCdf(0.5);    // 0.0 (median)
+$t->invCdfRounded(0.975, 3); // 2.228
+```
 
 ## StreamingStat (Experimental)
 

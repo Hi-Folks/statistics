@@ -375,4 +375,24 @@ class StatisticTest extends TestCase
         $this->assertSame($expected['zScore'], $result['zScore']);
         $this->assertSame($expected['pValue'], $result['pValue']);
     }
+
+    public function test_t_test(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        $result = $s->tTest(3.0);
+        $expected = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], 3.0);
+        $this->assertEqualsWithDelta($expected['tStatistic'], $result['tStatistic'], 1e-10);
+        $this->assertEqualsWithDelta($expected['pValue'], $result['pValue'], 1e-10);
+        $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_with_params(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        $result = $s->tTest(3.0, Alternative::Greater, round: 4);
+        $expected = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], 3.0, Alternative::Greater, round: 4);
+        $this->assertSame($expected['tStatistic'], $result['tStatistic']);
+        $this->assertSame($expected['pValue'], $result['pValue']);
+        $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
+    }
 }

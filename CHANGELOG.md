@@ -1,6 +1,8 @@
 # Changelog
 
 ## 1.3.1 - WIP
+- Adding `StudentT` class for the Student's t-distribution (pdf, cdf, invCdf) — building block for t-tests and confidence intervals with small samples
+- Adding `tTest()` method for one-sample t-test — like z-test but appropriate for small samples where the population standard deviation is unknown
 - Adding `zTest()` method for one-sample Z-test — tests whether the sample mean differs significantly from a hypothesized population mean (includes p-value calculation)
 - Adding `Alternative` enum (`TwoSided`, `Greater`, `Less`) for hypothesis testing
 - Adding `confidenceInterval()` method for computing confidence intervals for the mean using the normal (z) distribution

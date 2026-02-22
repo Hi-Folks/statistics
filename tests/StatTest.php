@@ -922,6 +922,84 @@ class StatTest extends TestCase
         Stat::zTest([], 0.0);
     }
 
+    // --- tTest ---
+
+    public function test_t_test_two_sided(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::tTest($data, 3.0);
+        // mean = 5.0, sem = stdev/sqrt(8) ≈ 0.7559
+        // tStatistic = (5.0 - 3.0) / 0.7559 ≈ 2.6458
+        $this->assertArrayHasKey('tStatistic', $result);
+        $this->assertArrayHasKey('pValue', $result);
+        $this->assertArrayHasKey('degreesOfFreedom', $result);
+        $this->assertEqualsWithDelta(2.6458, $result['tStatistic'], 0.001);
+        $this->assertLessThan(0.05, $result['pValue']);
+        $this->assertEquals(7, $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_greater(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::tTest($data, 3.0, Alternative::Greater);
+        // One-tailed p-value should be roughly half the two-sided
+        $twoSided = Stat::tTest($data, 3.0);
+        $this->assertEqualsWithDelta($twoSided['pValue'] / 2, $result['pValue'], 0.001);
+    }
+
+    public function test_t_test_less(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        // mean=5 > populationMean=3, so P(T < tStatistic) should be large
+        $result = Stat::tTest($data, 3.0, Alternative::Less);
+        $this->assertGreaterThan(0.95, $result['pValue']);
+    }
+
+    public function test_t_test_non_significant(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        // populationMean close to sample mean (5.0)
+        $result = Stat::tTest($data, 5.0);
+        $this->assertEqualsWithDelta(0.0, $result['tStatistic'], 1e-10);
+        $this->assertEqualsWithDelta(1.0, $result['pValue'], 0.01);
+    }
+
+    public function test_t_test_degrees_of_freedom(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $result = Stat::tTest($data, 5.0);
+        $this->assertEquals(9, $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_large_sample_converges_to_z_test(): void
+    {
+        // With a large sample, t-test p-value should approximate z-test p-value
+        $data = range(1, 100);
+        $tResult = Stat::tTest($data, 45.0);
+        $zResult = Stat::zTest($data, 45.0);
+        $this->assertEqualsWithDelta($zResult['pValue'], $tResult['pValue'], 0.01);
+    }
+
+    public function test_t_test_with_rounding(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::tTest($data, 3.0, round: 2);
+        $this->assertSame(round($result['tStatistic'], 2), $result['tStatistic']);
+        $this->assertSame(round($result['pValue'], 2), $result['pValue']);
+    }
+
+    public function test_t_test_single_element_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTest([42], 40.0);
+    }
+
+    public function test_t_test_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTest([], 0.0);
+    }
+
     public function test_kde_normal(): void
     {
         $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];

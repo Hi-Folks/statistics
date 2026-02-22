@@ -11,12 +11,11 @@
 
 ### Hypothesis Testing
 
-- T-test (one-sample, two-sample, paired)
+- T-test (two-sample, paired) — one-sample is done
 - Chi-squared test
 
 ### Other Distributions (beyond Normal)
 
-- Student's t-distribution
 - Chi-squared distribution
 - Binomial distribution
 - Poisson distribution

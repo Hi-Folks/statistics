@@ -6,6 +6,7 @@ use HiFolks\Statistics\Enums\Alternative;
 use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\NormalDist;
+use HiFolks\Statistics\StudentT;
 
 class Stat
 {
@@ -1821,6 +1822,52 @@ class Stat
         return [
             'zScore' => Math::round($zScore, $round),
             'pValue' => Math::round($pValue, $round),
+        ];
+    }
+
+    /**
+     * Perform a one-sample t-test for the mean.
+     *
+     * Tests whether the sample mean differs significantly from a hypothesized
+     * population mean using the Student's t-distribution. Unlike the z-test,
+     * the t-test is appropriate for small samples where the population standard
+     * deviation is unknown.
+     *
+     * @param  array<int|float>  $data  the sample data (at least 2 elements)
+     * @param  float  $populationMean  the hypothesized population mean (H₀: μ = populationMean)
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  optional decimal precision for rounding results
+     * @return array{tStatistic: float, pValue: float, degreesOfFreedom: int}
+     *
+     * @throws InvalidDataInputException if data has fewer than 2 elements
+     */
+    public static function tTest(
+        array $data,
+        float $populationMean,
+        Alternative $alternative = Alternative::TwoSided,
+        ?int $round = null,
+    ): array {
+        if (self::count($data) < 2) {
+            throw new InvalidDataInputException(
+                "T-test requires at least 2 data points.",
+            );
+        }
+
+        $df = self::count($data) - 1;
+        $tStatistic = (self::mean($data) - $populationMean) / self::sem($data);
+
+        $studentT = new StudentT($df);
+
+        $pValue = match ($alternative) {
+            Alternative::TwoSided => 2 * (1 - $studentT->cdf(abs($tStatistic))),
+            Alternative::Greater => 1 - $studentT->cdf($tStatistic),
+            Alternative::Less => $studentT->cdf($tStatistic),
+        };
+
+        return [
+            'tStatistic' => Math::round($tStatistic, $round),
+            'pValue' => Math::round($pValue, $round),
+            'degreesOfFreedom' => $df,
         ];
     }
 }

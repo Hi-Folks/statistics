@@ -224,4 +224,58 @@ class StreamingStatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         (new StreamingStat())->pvariance();
     }
+
+    public function test_sum(): void
+    {
+        $data = [1.5, 2.5, 3.0, 4.0, 5.5];
+        $s = $this->fromArray($data);
+        $this->assertEqualsWithDelta(array_sum($data), $s->sum(), self::TOLERANCE);
+    }
+
+    public function test_empty_sum_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        (new StreamingStat())->sum();
+    }
+
+    public function test_min(): void
+    {
+        $data = [3, -1, 4, 1, 5, -9, 2, 6];
+        $s = $this->fromArray($data);
+        $this->assertEqualsWithDelta(-9.0, $s->min(), self::TOLERANCE);
+    }
+
+    public function test_empty_min_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        (new StreamingStat())->min();
+    }
+
+    public function test_max(): void
+    {
+        $data = [3, -1, 4, 1, 5, -9, 2, 6];
+        $s = $this->fromArray($data);
+        $this->assertEqualsWithDelta(6.0, $s->max(), self::TOLERANCE);
+    }
+
+    public function test_empty_max_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        (new StreamingStat())->max();
+    }
+
+    public function test_min_max_single_element(): void
+    {
+        $s = (new StreamingStat())->add(42);
+        $this->assertEqualsWithDelta(42.0, $s->min(), self::TOLERANCE);
+        $this->assertEqualsWithDelta(42.0, $s->max(), self::TOLERANCE);
+    }
+
+    public function test_min_max_negative_values(): void
+    {
+        $data = [-10.5, -3.2, -7.8];
+        $s = $this->fromArray($data);
+        $this->assertEqualsWithDelta(-10.5, $s->min(), self::TOLERANCE);
+        $this->assertEqualsWithDelta(-3.2, $s->max(), self::TOLERANCE);
+    }
 }

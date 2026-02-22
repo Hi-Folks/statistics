@@ -24,11 +24,25 @@ class StreamingStat
 
     private float $m4 = 0.0;
 
+    private float $sum = 0.0;
+
+    private float $min = PHP_FLOAT_MAX;
+
+    private float $max = -PHP_FLOAT_MAX;
+
     /**
      * Add a value and update all accumulators using the online algorithm.
      */
     public function add(int|float $value): self
     {
+        $this->sum += $value;
+        if ($value < $this->min) {
+            $this->min = (float) $value;
+        }
+        if ($value > $this->max) {
+            $this->max = (float) $value;
+        }
+
         $n1 = $this->n;
         $this->n++;
         $n = $this->n;
@@ -55,6 +69,42 @@ class StreamingStat
     public function count(): int
     {
         return $this->n;
+    }
+
+    /**
+     * Return the sum of all values added.
+     */
+    public function sum(): float
+    {
+        if ($this->n < 1) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+
+        return $this->sum;
+    }
+
+    /**
+     * Return the minimum value added.
+     */
+    public function min(): float
+    {
+        if ($this->n < 1) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+
+        return $this->min;
+    }
+
+    /**
+     * Return the maximum value added.
+     */
+    public function max(): float
+    {
+        if ($this->n < 1) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+
+        return $this->max;
     }
 
     /**

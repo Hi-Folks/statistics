@@ -980,6 +980,9 @@ $s = new StreamingStat();
 $s->add(1)->add(2)->add(3)->add(4)->add(5);
 
 $s->count();     // 5
+$s->sum();       // 15.0
+$s->min();       // 1.0
+$s->max();       // 5.0
 $s->mean();      // 3.0
 $s->variance();  // 2.5
 $s->stdev();     // 1.5811...
@@ -990,6 +993,9 @@ $s->kurtosis();  // -1.2
 | Method | Description | Min n |
 |---|---|---|
 | `count()` | Number of values added | 0 |
+| `sum()` | Sum of all values | 1 |
+| `min()` | Minimum value | 1 |
+| `max()` | Maximum value | 1 |
 | `mean(?int $round = null)` | Arithmetic mean | 1 |
 | `variance(?int $round = null)` | Sample variance | 2 |
 | `pvariance(?int $round = null)` | Population variance | 1 |

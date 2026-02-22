@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.3.0 - WIP
-- Adding `StreamingStat` class (experimental) for streaming/online computation of mean, variance, stdev, skewness, and kurtosis with O(1) memory
+- Adding `StreamingStat` class (experimental) for streaming/online computation of mean, variance, stdev, skewness, kurtosis, sum, min, and max with O(1) memory
 
 ## 1.2.5 - 2026-02-22
 - Adding `kurtosis()` method for excess kurtosis

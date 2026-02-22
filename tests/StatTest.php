@@ -1015,4 +1015,105 @@ class StatTest extends TestCase
             $this->assertIsFloat($value);
         }
     }
+
+    // --- percentile ---
+
+    public function test_percentile_median_matches(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $p50 = Stat::percentile($data, 50);
+        $this->assertEqualsWithDelta(Stat::median($data), $p50, 1e-10);
+    }
+
+    public function test_percentile_quartiles(): void
+    {
+        $data = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20];
+        $q1 = Stat::percentile($data, 25);
+        $q3 = Stat::percentile($data, 75);
+        $this->assertEqualsWithDelta(Stat::firstQuartile($data), $q1, 1e-10);
+        $this->assertEqualsWithDelta(Stat::thirdQuartile($data), $q3, 1e-10);
+    }
+
+    public function test_percentile_boundaries(): void
+    {
+        $data = [10, 20, 30, 40, 50];
+        $this->assertEqualsWithDelta(10.0, Stat::percentile($data, 0), 1e-10);
+        $this->assertEqualsWithDelta(50.0, Stat::percentile($data, 100), 1e-10);
+    }
+
+    public function test_percentile_rounding(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $result = Stat::percentile($data, 33, 2);
+        $this->assertEquals(round($result, 2), $result);
+    }
+
+    public function test_percentile_too_few_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::percentile([1], 50);
+    }
+
+    public function test_percentile_out_of_range_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::percentile([1, 2, 3], 101);
+    }
+
+    public function test_percentile_negative_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::percentile([1, 2, 3], -1);
+    }
+
+    // --- coefficientOfVariation ---
+
+    public function test_coefficient_of_variation(): void
+    {
+        $data = [10, 20, 30, 40, 50];
+        $expected = (Stat::stdev($data) / abs((float) Stat::mean($data))) * 100;
+        $this->assertEqualsWithDelta($expected, Stat::coefficientOfVariation($data), 1e-10);
+    }
+
+    public function test_coefficient_of_variation_population(): void
+    {
+        $data = [10, 20, 30, 40, 50];
+        $expected = (Stat::pstdev($data) / abs((float) Stat::mean($data))) * 100;
+        $this->assertEqualsWithDelta($expected, Stat::coefficientOfVariation($data, population: true), 1e-10);
+    }
+
+    public function test_coefficient_of_variation_rounding(): void
+    {
+        $data = [10, 20, 30, 40, 50];
+        $result = Stat::coefficientOfVariation($data, 2);
+        $this->assertEquals(round($result, 2), $result);
+    }
+
+    public function test_coefficient_of_variation_low_dispersion(): void
+    {
+        // Nearly identical values → low CV
+        $data = [100, 100.1, 99.9, 100.2, 99.8];
+        $cv = Stat::coefficientOfVariation($data);
+        $this->assertLessThan(1.0, $cv);
+    }
+
+    public function test_coefficient_of_variation_zero_mean_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::coefficientOfVariation([-1, 0, 1]);
+    }
+
+    public function test_coefficient_of_variation_negative_mean(): void
+    {
+        $data = [-10, -20, -30];
+        // Should use abs(mean), so CV is still positive
+        $cv = Stat::coefficientOfVariation($data);
+        $this->assertGreaterThan(0, $cv);
+    }
+
+    public function test_coefficient_of_variation_too_few_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::coefficientOfVariation([5]);
+    }
 }

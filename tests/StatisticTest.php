@@ -241,4 +241,36 @@ class StatisticTest extends TestCase
     {
         $this->assertEquals(0, Statistics::make([])->min());
     }
+
+    public function test_percentile(): void
+    {
+        $s = Statistics::make([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]);
+        $this->assertEqualsWithDelta($s->median(), $s->percentile(50), 1e-10);
+        $this->assertEqualsWithDelta($s->firstQuartile(), $s->percentile(25), 1e-10);
+        $this->assertEqualsWithDelta($s->thirdQuartile(), $s->percentile(75), 1e-10);
+    }
+
+    public function test_percentile_with_rounding(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        $result = $s->percentile(33, 2);
+        $this->assertEquals(round($result, 2), $result);
+    }
+
+    public function test_coefficient_of_variation(): void
+    {
+        $s = Statistics::make([10, 20, 30, 40, 50]);
+        $cv = $s->coefficientOfVariation();
+        $this->assertGreaterThan(0, $cv);
+
+        $cvPop = $s->coefficientOfVariation(population: true);
+        $this->assertLessThan($cv, $cvPop);
+    }
+
+    public function test_coefficient_of_variation_with_rounding(): void
+    {
+        $s = Statistics::make([10, 20, 30, 40, 50]);
+        $result = $s->coefficientOfVariation(2);
+        $this->assertEquals(round($result, 2), $result);
+    }
 }

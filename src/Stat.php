@@ -413,6 +413,52 @@ class Stat
     }
 
     /**
+     * Return the value at the given percentile of the data.
+     *
+     * Uses linear interpolation between adjacent data points,
+     * consistent with the exclusive quantile method.
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $p  percentile in range 0..100
+     * @param  int|null  $round whether to round the result
+     * @return float the interpolated value at the given percentile
+     *
+     * @throws InvalidDataInputException if the data has fewer than 2 elements or p is out of range
+     */
+    public static function percentile(array $data, float $p, ?int $round = null): float
+    {
+        $count = self::count($data);
+        if ($count < 2) {
+            throw new InvalidDataInputException(
+                "Percentile requires at least 2 data points.",
+            );
+        }
+        if ($p < 0 || $p > 100) {
+            throw new InvalidDataInputException(
+                "Percentile must be between 0 and 100.",
+            );
+        }
+
+        sort($data);
+
+        // Exclusive method: rank = p/100 * (n + 1), 1-based index
+        $rank = ($p / 100) * ($count + 1);
+
+        if ($rank <= 1) {
+            return Math::round((float) $data[0], $round);
+        }
+        if ($rank >= $count) {
+            return Math::round((float) $data[$count - 1], $round);
+        }
+
+        $lower = (int) floor($rank) - 1;
+        $fraction = $rank - floor($rank);
+        $interpolated = $data[$lower] + $fraction * ($data[$lower + 1] - $data[$lower]);
+
+        return Math::round($interpolated, $round);
+    }
+
+    /**
      * Return the **population** standard deviation,
      * a measure of the amount of variation or dispersion of a set of values.
      * A low standard deviation indicates that
@@ -623,6 +669,37 @@ class Stat
             - (3 * ($n - 1) ** 2) / (($n - 2) * ($n - 3));
 
         return Math::round($kurtosis, $round);
+    }
+
+    /**
+     * Return the coefficient of variation (CV) of the data.
+     * The coefficient of variation is the ratio of the standard deviation
+     * to the mean, expressed as a percentage. It measures relative variability
+     * and is useful for comparing dispersion across datasets with different units or scales.
+     *
+     * @param  array<int|float>  $data
+     * @param  int|null  $round whether to round the result
+     * @param  bool  $population if true, use population stdev/mean; otherwise sample
+     * @return float the coefficient of variation as a percentage
+     *
+     * @throws InvalidDataInputException if the data has fewer than 2 elements (sample)
+     *         or is empty (population), or if the mean is zero
+     */
+    public static function coefficientOfVariation(
+        array $data,
+        ?int $round = null,
+        bool $population = false,
+    ): float {
+        $mean = self::mean($data);
+        if ($mean == 0) {
+            throw new InvalidDataInputException(
+                "Coefficient of variation is undefined when the mean is zero.",
+            );
+        }
+
+        $sd = $population ? self::pstdev($data) : self::stdev($data);
+
+        return Math::round(($sd / abs($mean)) * 100, $round);
     }
 
     /**

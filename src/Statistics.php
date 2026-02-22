@@ -308,6 +308,32 @@ class Statistics
     }
 
     /**
+     * Return the value at the given percentile.
+     *
+     * @param  float  $p  percentile in range 0..100
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::percentile()
+     */
+    public function percentile(float $p, ?int $round = null): float
+    {
+        return Stat::percentile($this->numericalArray(), $p, $round);
+    }
+
+    /**
+     * Return the coefficient of variation (CV%) of the numeric data.
+     *
+     * @param  int|null  $round whether to round the result
+     * @param  bool  $population if true, use population stdev/mean
+     *
+     * @see Stat::coefficientOfVariation()
+     */
+    public function coefficientOfVariation(?int $round = null, bool $population = false): float
+    {
+        return Stat::coefficientOfVariation($this->numericalArray(), $round, $population);
+    }
+
+    /**
      * Return the geometric mean of the numeric data.
      *
      * @param  int|null  $round whether to round the result

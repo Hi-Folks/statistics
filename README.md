@@ -73,6 +73,7 @@ The various mathematical statistics are listed below:
 | `quantiles()` | cut points dividing the range of a probability distribution into continuous intervals with equal probabilities (supports `exclusive` and `inclusive` methods) |
 | `thirdQuartile()` | 3rd quartile, is the value at which 75 percent of the data is below it |
 | `firstQuartile()` | first quartile, is the value at which 25 percent of the data is below it |
+| `percentile()` | value at any percentile (0–100) with linear interpolation |
 | `pstdev()` | Population standard deviation |
 | `stdev()` | Sample standard deviation |
 | `pvariance()` | variance for a population (supports pre-computed mean via `mu`) |
@@ -80,6 +81,7 @@ The various mathematical statistics are listed below:
 | `skewness()` | adjusted Fisher-Pearson sample skewness |
 | `pskewness()` | population (biased) skewness |
 | `kurtosis()` | excess kurtosis (sample formula, 0 for normal distribution) |
+| `coefficientOfVariation()` | coefficient of variation (CV%), relative dispersion as percentage |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
@@ -265,6 +267,20 @@ $percentile = Stat::thirdQuartile([98, 90, 70,18,92,92,55,83,45,95,88]);
 // 92.0
 ```
 
+#### Stat::percentile( array $data, float $p, ?int $round = null )
+Return the value at the given percentile of the data, using linear interpolation between adjacent data points (exclusive method, consistent with `quantiles()`).
+
+The percentile `$p` must be between 0 and 100. Requires at least 2 data points.
+
+```php
+use HiFolks\Statistics\Stat;
+$value = Stat::percentile([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 50);
+// 55.0 (median)
+
+$value = Stat::percentile([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 90);
+// 91.0
+```
+
 #### Stat::pstdev( array $data )
 Return the **Population** Standard Deviation, a measure of the amount of variation or dispersion of a set of values.
 A low standard deviation indicates that the values tend to be close to the mean of the set, while a high standard deviation indicates that the values are spread out over a wider range.
@@ -357,6 +373,25 @@ $kurtosis = Stat::kurtosis([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
 $kurtosis = Stat::kurtosis([1, 2, 2, 2, 2, 2, 2, 2, 2, 50]);
 // positive (leptokurtic, heavier tails due to outlier)
+```
+
+#### Stat::coefficientOfVariation( array $data, ?int $round = null, bool $population = false )
+The coefficient of variation (CV) is the ratio of the standard deviation to the mean, expressed as a percentage. It measures relative variability and is useful for comparing dispersion across datasets with different units or scales.
+
+By default it uses the sample standard deviation. Pass `population: true` to use the population standard deviation instead.
+
+Requires at least 2 data points (sample) or 1 (population). Throws if the mean is zero.
+
+```php
+use HiFolks\Statistics\Stat;
+$cv = Stat::coefficientOfVariation([10, 20, 30, 40, 50]);
+// ~52.70 (sample)
+
+$cv = Stat::coefficientOfVariation([10, 20, 30, 40, 50], round: 2);
+// 52.7
+
+$cv = Stat::coefficientOfVariation([10, 20, 30, 40, 50], population: true);
+// ~47.14 (population)
 ```
 
 #### Stat::covariance ( array $x , array $y )

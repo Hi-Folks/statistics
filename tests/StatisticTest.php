@@ -2,6 +2,7 @@
 
 namespace HiFolks\Statistics\Tests;
 
+use HiFolks\Statistics\Enums\Alternative;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Stat;
 use HiFolks\Statistics\Statistics;
@@ -355,5 +356,23 @@ class StatisticTest extends TestCase
         $outliers = $s->iqrOutliers();
         $this->assertContains(200.0, $outliers);
         $this->assertContains(50.0, $outliers);
+    }
+
+    public function test_z_test(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        $result = $s->zTest(3.0);
+        $expected = Stat::zTest([2, 4, 4, 4, 5, 5, 7, 9], 3.0);
+        $this->assertEqualsWithDelta($expected['zScore'], $result['zScore'], 1e-10);
+        $this->assertEqualsWithDelta($expected['pValue'], $result['pValue'], 1e-10);
+    }
+
+    public function test_z_test_with_params(): void
+    {
+        $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
+        $result = $s->zTest(3.0, Alternative::Greater, round: 4);
+        $expected = Stat::zTest([2, 4, 4, 4, 5, 5, 7, 9], 3.0, Alternative::Greater, round: 4);
+        $this->assertSame($expected['zScore'], $result['zScore']);
+        $this->assertSame($expected['pValue'], $result['pValue']);
     }
 }

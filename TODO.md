@@ -13,8 +13,6 @@
 
 - T-test (one-sample, two-sample, paired)
 - Chi-squared test
-- Z-test
-- P-value calculation
 
 ### Other Distributions (beyond Normal)
 

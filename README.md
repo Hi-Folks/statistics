@@ -100,6 +100,7 @@ The various mathematical statistics are listed below:
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
 | `rSquared()` | coefficient of determination (R²) — proportion of variance explained by linear regression |
 | `confidenceInterval()` | confidence interval for the mean using the normal (z) distribution |
+| `zTest()` | one-sample Z-test — tests whether the sample mean differs significantly from a hypothesized population mean |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 | `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 
@@ -671,6 +672,27 @@ use HiFolks\Statistics\Stat;
 
 [$lower, $upper] = Stat::confidenceInterval([2, 4, 4, 4, 5, 5, 7, 9], round: 2);
 // [3.52, 6.48]
+```
+
+#### Stat::zTest( array $data, float $populationMean, Alternative $alternative = Alternative::TwoSided, ?int $round = null )
+Perform a one-sample Z-test for the mean. Tests whether the sample mean differs significantly from a hypothesized population mean using the normal distribution.
+
+Returns an associative array with `zScore` and `pValue`. The alternative hypothesis can be `TwoSided` (default), `Greater`, or `Less`.
+
+Requires at least 2 data points.
+
+```php
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Enums\Alternative;
+
+$result = Stat::zTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0);
+// ['zScore' => 2.6457..., 'pValue' => 0.0081...]
+
+$result = Stat::zTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, alternative: Alternative::Greater);
+// one-tailed test: is the sample mean greater than 3?
+
+$result = Stat::zTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, round: 4);
+// ['zScore' => 2.6458, 'pValue' => 0.0081]
 ```
 
 #### Stat::kde ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , bool $cumulative = false )

@@ -2,6 +2,7 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Enums\Alternative;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 
 class Statistics
@@ -285,6 +286,21 @@ class Statistics
     public function confidenceInterval(float $confidenceLevel = 0.95, ?int $round = null): array
     {
         return Stat::confidenceInterval($this->numericalArray(), $confidenceLevel, $round);
+    }
+
+    /**
+     * Perform a one-sample Z-test for the mean.
+     *
+     * @param  float  $populationMean  the hypothesized population mean
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  whether to round the results
+     * @return array{zScore: float, pValue: float}
+     *
+     * @see Stat::zTest()
+     */
+    public function zTest(float $populationMean, Alternative $alternative = Alternative::TwoSided, ?int $round = null): array
+    {
+        return Stat::zTest($this->numericalArray(), $populationMean, $alternative, $round);
     }
 
     /**

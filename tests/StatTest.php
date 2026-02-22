@@ -2,6 +2,7 @@
 
 namespace HiFolks\Statistics\Tests;
 
+use HiFolks\Statistics\Enums\Alternative;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Stat;
@@ -859,6 +860,66 @@ class StatTest extends TestCase
         $data = [1, 2, 3, 4, 5];
         $this->expectException(InvalidDataInputException::class);
         Stat::confidenceInterval($data, confidenceLevel: -0.1);
+    }
+
+    // --- zTest ---
+
+    public function test_z_test_two_sided(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::zTest($data, 3.0);
+        // mean = 5.0, sem = stdev/sqrt(8) ≈ 0.7559
+        // zScore = (5.0 - 3.0) / 0.7559 ≈ 2.6458
+        $this->assertArrayHasKey('zScore', $result);
+        $this->assertArrayHasKey('pValue', $result);
+        $this->assertEqualsWithDelta(2.6458, $result['zScore'], 0.001);
+        $this->assertLessThan(0.05, $result['pValue']);
+    }
+
+    public function test_z_test_greater(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::zTest($data, 3.0, Alternative::Greater);
+        // One-tailed p-value should be roughly half the two-sided
+        $twoSided = Stat::zTest($data, 3.0);
+        $this->assertEqualsWithDelta($twoSided['pValue'] / 2, $result['pValue'], 0.001);
+    }
+
+    public function test_z_test_less(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        // mean=5 > populationMean=3, so P(Z < zScore) should be large
+        $result = Stat::zTest($data, 3.0, Alternative::Less);
+        $this->assertGreaterThan(0.95, $result['pValue']);
+    }
+
+    public function test_z_test_non_significant(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        // populationMean close to sample mean (5.0)
+        $result = Stat::zTest($data, 5.0);
+        $this->assertEqualsWithDelta(0.0, $result['zScore'], 1e-10);
+        $this->assertEqualsWithDelta(1.0, $result['pValue'], 0.01);
+    }
+
+    public function test_z_test_with_rounding(): void
+    {
+        $data = [2, 4, 4, 4, 5, 5, 7, 9];
+        $result = Stat::zTest($data, 3.0, round: 2);
+        $this->assertSame(round($result['zScore'], 2), $result['zScore']);
+        $this->assertSame(round($result['pValue'], 2), $result['pValue']);
+    }
+
+    public function test_z_test_single_element_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::zTest([42], 40.0);
+    }
+
+    public function test_z_test_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::zTest([], 0.0);
     }
 
     public function test_kde_normal(): void

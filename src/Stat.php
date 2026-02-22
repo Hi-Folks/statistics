@@ -2,6 +2,7 @@
 
 namespace HiFolks\Statistics;
 
+use HiFolks\Statistics\Enums\Alternative;
 use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\NormalDist;
@@ -1779,5 +1780,47 @@ class Stat
         }
 
         return [$lower, $upper];
+    }
+
+    /**
+     * Perform a one-sample Z-test for the mean.
+     *
+     * Tests whether the sample mean differs significantly from a known
+     * population mean using the normal distribution.
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $populationMean  the hypothesized population mean
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  whether to round the results
+     * @return array{zScore: float, pValue: float}
+     *
+     * @throws InvalidDataInputException if data has fewer than 2 elements
+     */
+    public static function zTest(
+        array $data,
+        float $populationMean,
+        Alternative $alternative = Alternative::TwoSided,
+        ?int $round = null,
+    ): array {
+        if (self::count($data) < 2) {
+            throw new InvalidDataInputException(
+                "Z-test requires at least 2 data points.",
+            );
+        }
+
+        $zScore = (self::mean($data) - $populationMean) / self::sem($data);
+
+        $normalDist = new NormalDist(0.0, 1.0);
+
+        $pValue = match ($alternative) {
+            Alternative::TwoSided => 2 * (1 - $normalDist->cdf(abs($zScore))),
+            Alternative::Greater => 1 - $normalDist->cdf($zScore),
+            Alternative::Less => $normalDist->cdf($zScore),
+        };
+
+        return [
+            'zScore' => Math::round($zScore, $round),
+            'pValue' => Math::round($pValue, $round),
+        ];
     }
 }

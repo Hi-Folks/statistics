@@ -114,6 +114,50 @@ class Stat
     }
 
     /**
+     * Return the trimmed (truncated) mean of the data.
+     * Computes the mean after removing the lowest and highest fraction of values.
+     * This is a robust measure of central tendency, less sensitive to outliers.
+     *
+     * @param  array<int|float>  $data
+     * @param  float  $proportionToCut  fraction (0..0.5) to trim from each side
+     * @param  int|null  $round whether to round the result
+     * @return float the trimmed mean
+     *
+     * @throws InvalidDataInputException if the data is empty, or proportionToCut is out of range,
+     *         or trimming would remove all elements
+     */
+    public static function trimmedMean(
+        array $data,
+        float $proportionToCut = 0.1,
+        ?int $round = null,
+    ): float {
+        $count = self::count($data);
+        if ($count === 0) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+        if ($proportionToCut < 0 || $proportionToCut >= 0.5) {
+            throw new InvalidDataInputException(
+                "proportionToCut must be in the range [0, 0.5).",
+            );
+        }
+
+        sort($data);
+        $trimCount = (int) floor($count * $proportionToCut);
+        $trimmedData = array_slice($data, $trimCount, $count - 2 * $trimCount);
+
+        if ($trimmedData === []) {
+            throw new InvalidDataInputException(
+                "Trimming removed all elements.",
+            );
+        }
+
+        return Math::round(
+            array_sum($trimmedData) / count($trimmedData),
+            $round,
+        );
+    }
+
+    /**
      * Return the median (middle value) of data,
      * using the common “mean of middle two” method.
      *
@@ -162,8 +206,10 @@ class Stat
      *
      * @throws InvalidDataInputException if the data is empty
      */
-    public static function medianGrouped(array $data, float $interval = 1.0): float
-    {
+    public static function medianGrouped(
+        array $data,
+        float $interval = 1.0,
+    ): float {
         sort($data);
         $n = count($data);
         if ($n === 0) {
@@ -185,7 +231,7 @@ class Stat
         // Number of elements in the median interval
         $f = $j - $i;
 
-        return $L + $interval * ($n / 2.0 - $cf) / $f;
+        return $L + ($interval * ($n / 2.0 - $cf)) / $f;
     }
 
     /**
@@ -219,8 +265,11 @@ class Stat
      * @param  float  $target value to locate
      * @param  int  $lo lower bound for the search
      */
-    private static function bisectRight(array $data, float $target, int $lo = 0): int
-    {
+    private static function bisectRight(
+        array $data,
+        float $target,
+        int $lo = 0,
+    ): int {
         $hi = count($data);
         while ($lo < $hi) {
             $mid = intdiv($lo + $hi, 2);
@@ -335,7 +384,7 @@ class Stat
         array $data,
         int $n = 4,
         ?int $round = null,
-        string $method = 'exclusive',
+        string $method = "exclusive",
     ): array {
         $count = self::count($data);
         if ($count < 2 || $n < 1) {
@@ -344,7 +393,7 @@ class Stat
             );
         }
 
-        if ($method !== 'exclusive' && $method !== 'inclusive') {
+        if ($method !== "exclusive" && $method !== "inclusive") {
             throw new InvalidDataInputException(
                 "Invalid method '{$method}'. Must be 'exclusive' or 'inclusive'.",
             );
@@ -353,12 +402,13 @@ class Stat
         sort($data);
         $result = [];
 
-        if ($method === 'inclusive') {
+        if ($method === "inclusive") {
             $m = $count - 1;
             foreach (range(1, $n - 1) as $i) {
                 $j = intdiv($i * $m, $n);
                 $delta = $i * $m - $j * $n;
-                $interpolated = ($data[$j] * ($n - $delta) + $data[$j + 1] * $delta) / $n;
+                $interpolated
+                    = ($data[$j] * ($n - $delta) + $data[$j + 1] * $delta) / $n;
                 $result[] = Math::round($interpolated, $round);
             }
         } else {
@@ -425,8 +475,11 @@ class Stat
      *
      * @throws InvalidDataInputException if the data has fewer than 2 elements or p is out of range
      */
-    public static function percentile(array $data, float $p, ?int $round = null): float
-    {
+    public static function percentile(
+        array $data,
+        float $p,
+        ?int $round = null,
+    ): float {
         $count = self::count($data);
         if ($count < 2) {
             throw new InvalidDataInputException(
@@ -453,7 +506,8 @@ class Stat
 
         $lower = (int) floor($rank) - 1;
         $fraction = $rank - floor($rank);
-        $interpolated = $data[$lower] + $fraction * ($data[$lower + 1] - $data[$lower]);
+        $interpolated
+            = $data[$lower] + $fraction * ($data[$lower + 1] - $data[$lower]);
 
         return Math::round($interpolated, $round);
     }
@@ -489,8 +543,11 @@ class Stat
      *
      * @throws InvalidDataInputException if the data is empty
      */
-    public static function pvariance(array $data, ?int $round = null, int|float|null $mu = null): float
-    {
+    public static function pvariance(
+        array $data,
+        ?int $round = null,
+        int|float|null $mu = null,
+    ): float {
         $num_of_elements = self::count($data);
         if ($num_of_elements === 0) {
             throw new InvalidDataInputException("The data must not be empty.");
@@ -533,8 +590,11 @@ class Stat
      *
      * @throws InvalidDataInputException if data size is less than 2
      */
-    public static function variance(array $data, ?int $round = null, int|float|null $xbar = null): float
-    {
+    public static function variance(
+        array $data,
+        ?int $round = null,
+        int|float|null $xbar = null,
+    ): float {
         $num_of_elements = self::count($data);
         if ($num_of_elements <= 1) {
             throw new InvalidDataInputException(
@@ -572,14 +632,18 @@ class Stat
     {
         $n = self::count($data);
         if ($n < 3) {
-            throw new InvalidDataInputException("Skewness requires at least 3 data points.");
+            throw new InvalidDataInputException(
+                "Skewness requires at least 3 data points.",
+            );
         }
 
         $mean = self::mean($data);
         $stdev = self::stdev($data);
 
         if ($stdev == 0) {
-            throw new InvalidDataInputException("Skewness is undefined when all values are identical (standard deviation is zero).");
+            throw new InvalidDataInputException(
+                "Skewness is undefined when all values are identical (standard deviation is zero).",
+            );
         }
 
         $sumCubes = 0.0;
@@ -608,14 +672,18 @@ class Stat
     {
         $n = self::count($data);
         if ($n < 3) {
-            throw new InvalidDataInputException("Skewness requires at least 3 data points.");
+            throw new InvalidDataInputException(
+                "Skewness requires at least 3 data points.",
+            );
         }
 
         $mean = self::mean($data);
         $pstdev = self::pstdev($data);
 
         if ($pstdev == 0) {
-            throw new InvalidDataInputException("Skewness is undefined when all values are identical (standard deviation is zero).");
+            throw new InvalidDataInputException(
+                "Skewness is undefined when all values are identical (standard deviation is zero).",
+            );
         }
 
         $sumCubes = 0.0;
@@ -650,14 +718,18 @@ class Stat
     {
         $n = self::count($data);
         if ($n < 4) {
-            throw new InvalidDataInputException("Kurtosis requires at least 4 data points.");
+            throw new InvalidDataInputException(
+                "Kurtosis requires at least 4 data points.",
+            );
         }
 
         $mean = self::mean($data);
         $stdev = self::stdev($data);
 
         if ($stdev == 0) {
-            throw new InvalidDataInputException("Kurtosis is undefined when all values are identical (standard deviation is zero).");
+            throw new InvalidDataInputException(
+                "Kurtosis is undefined when all values are identical (standard deviation is zero).",
+            );
         }
 
         $sumFourth = 0.0;
@@ -665,7 +737,8 @@ class Stat
             $sumFourth += (($xi - $mean) / $stdev) ** 4;
         }
 
-        $kurtosis = ($n * ($n + 1)) / (($n - 1) * ($n - 2) * ($n - 3)) * $sumFourth
+        $kurtosis
+            = (($n * ($n + 1)) / (($n - 1) * ($n - 2) * ($n - 3))) * $sumFourth
             - (3 * ($n - 1) ** 2) / (($n - 2) * ($n - 3));
 
         return Math::round($kurtosis, $round);
@@ -826,9 +899,12 @@ class Stat
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
      * or if the elements of the array are constants
      */
-    public static function correlation(array $x, array $y, string $method = 'linear'): false|float
-    {
-        if ($method !== 'linear' && $method !== 'ranked') {
+    public static function correlation(
+        array $x,
+        array $y,
+        string $method = "linear",
+    ): false|float {
+        if ($method !== "linear" && $method !== "ranked") {
             throw new InvalidDataInputException(
                 "Correlation method must be 'linear' or 'ranked'.",
             );
@@ -847,7 +923,7 @@ class Stat
             );
         }
 
-        if ($method === 'ranked') {
+        if ($method === "ranked") {
             $x = self::ranks($x);
             $y = self::ranks($y);
         }
@@ -932,7 +1008,9 @@ class Stat
             throw new InvalidDataInputException("The data must not be empty.");
         }
         if ($h <= 0) {
-            throw new InvalidDataInputException("Bandwidth h must be positive.");
+            throw new InvalidDataInputException(
+                "Bandwidth h must be positive.",
+            );
         }
 
         $kernel = $kernel->resolve();
@@ -943,79 +1021,107 @@ class Stat
         $normalCdf = static function (float $t) use ($sqrt2pi): float {
             $negative = $t < 0;
             $t = abs($t);
-            $b1 = 0.319381530;
+            $b1 = 0.31938153;
             $b2 = -0.356563782;
             $b3 = 1.781477937;
             $b4 = -1.821255978;
             $b5 = 1.330274429;
             $p = 0.2316419;
             $k = 1.0 / (1.0 + $p * $t);
-            $pdf = exp(-$t * $t / 2.0) / $sqrt2pi;
-            $cdf = 1.0 - $pdf * $k * ($b1 + $k * ($b2 + $k * ($b3 + $k * ($b4 + $k * $b5))));
+            $pdf = exp((-$t * $t) / 2.0) / $sqrt2pi;
+            $cdf
+                = 1.0
+                - $pdf
+                    * $k
+                    * ($b1 + $k * ($b2 + $k * ($b3 + $k * ($b4 + $k * $b5))));
 
             return $negative ? 1.0 - $cdf : $cdf;
         };
 
         $kernels = [
             KdeKernel::Normal->value => [
-                'pdf' => static fn(float $t): float => exp(-$t * $t / 2.0) / $sqrt2pi,
-                'cdf' => $normalCdf,
-                'support' => null,
+                "pdf" => static fn(float $t): float => exp((-$t * $t) / 2.0)
+                    / $sqrt2pi,
+                "cdf" => $normalCdf,
+                "support" => null,
             ],
             KdeKernel::Logistic->value => [
-                'pdf' => static fn(float $t): float => 0.5 / (1.0 + cosh($t)),
-                'cdf' => static fn(float $t): float => 1.0 / (1.0 + exp(-$t)),
-                'support' => null,
+                "pdf" => static fn(float $t): float => 0.5 / (1.0 + cosh($t)),
+                "cdf" => static fn(float $t): float => 1.0 / (1.0 + exp(-$t)),
+                "support" => null,
             ],
             KdeKernel::Sigmoid->value => [
-                'pdf' => static fn(float $t): float => (1.0 / M_PI) / cosh($t),
-                'cdf' => static fn(float $t): float => (2.0 / M_PI) * atan(exp($t)),
-                'support' => null,
+                "pdf" => static fn(float $t): float => 1.0 / M_PI / cosh($t),
+                "cdf" => static fn(float $t): float => (2.0 / M_PI)
+                    * atan(exp($t)),
+                "support" => null,
             ],
             KdeKernel::Rectangular->value => [
-                'pdf' => static fn(float $t): float => 0.5,
-                'cdf' => static fn(float $t): float => 0.5 * $t + 0.5,
-                'support' => 1.0,
+                "pdf" => static fn(float $t): float => 0.5,
+                "cdf" => static fn(float $t): float => 0.5 * $t + 0.5,
+                "support" => 1.0,
             ],
             KdeKernel::Triangular->value => [
-                'pdf' => static fn(float $t): float => 1.0 - abs($t),
-                'cdf' => static fn(float $t): float => $t >= 0
-                    ? 1.0 - (1.0 - $t) * (1.0 - $t) / 2.0
-                    : (1.0 + $t) * (1.0 + $t) / 2.0,
-                'support' => 1.0,
+                "pdf" => static fn(float $t): float => 1.0 - abs($t),
+                "cdf" => static fn(float $t): float => $t >= 0
+                    ? 1.0 - ((1.0 - $t) * (1.0 - $t)) / 2.0
+                    : ((1.0 + $t) * (1.0 + $t)) / 2.0,
+                "support" => 1.0,
             ],
             KdeKernel::Parabolic->value => [
-                'pdf' => static fn(float $t): float => 0.75 * (1.0 - $t * $t),
-                'cdf' => static fn(float $t): float => -0.25 * $t * $t * $t + 0.75 * $t + 0.5,
-                'support' => 1.0,
+                "pdf" => static fn(float $t): float => 0.75 * (1.0 - $t * $t),
+                "cdf" => static fn(float $t): float => -0.25 * $t * $t * $t
+                    + 0.75 * $t
+                    + 0.5,
+                "support" => 1.0,
             ],
             KdeKernel::Quartic->value => [
-                'pdf' => static fn(float $t): float => (15.0 / 16.0) * (1.0 - $t * $t) ** 2,
-                'cdf' => static fn(float $t): float => (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5,
-                'support' => 1.0,
+                "pdf" => static fn(float $t): float => (15.0 / 16.0)
+                    * (1.0 - $t * $t) ** 2,
+                "cdf" => static fn(float $t): float => (15.0 * $t
+                    - 10.0 * $t ** 3
+                    + 3.0 * $t ** 5)
+                    / 16.0
+                    + 0.5,
+                "support" => 1.0,
             ],
             KdeKernel::Triweight->value => [
-                'pdf' => static fn(float $t): float => (35.0 / 32.0) * (1.0 - $t * $t) ** 3,
-                'cdf' => static fn(float $t): float => (35.0 * $t - 35.0 * $t ** 3 + 21.0 * $t ** 5 - 5.0 * $t ** 7) / 32.0 + 0.5,
-                'support' => 1.0,
+                "pdf" => static fn(float $t): float => (35.0 / 32.0)
+                    * (1.0 - $t * $t) ** 3,
+                "cdf" => static fn(float $t): float => (35.0 * $t
+                    - 35.0 * $t ** 3
+                    + 21.0 * $t ** 5
+                    - 5.0 * $t ** 7)
+                    / 32.0
+                    + 0.5,
+                "support" => 1.0,
             ],
             KdeKernel::Cosine->value => [
-                'pdf' => static fn(float $t): float => (M_PI / 4.0) * cos(M_PI * $t / 2.0),
-                'cdf' => static fn(float $t): float => 0.5 * sin(M_PI * $t / 2.0) + 0.5,
-                'support' => 1.0,
+                "pdf" => static fn(float $t): float => (M_PI / 4.0)
+                    * cos((M_PI * $t) / 2.0),
+                "cdf" => static fn(float $t): float => 0.5
+                    * sin((M_PI * $t) / 2.0)
+                    + 0.5,
+                "support" => 1.0,
             ],
         ];
 
         $kernelDef = $kernels[$kernel->value]; // @phpstan-ignore offsetAccess.notFound
-        $support = $kernelDef['support'];
-        $fn = $cumulative ? $kernelDef['cdf'] : $kernelDef['pdf'];
+        $support = $kernelDef["support"];
+        $fn = $cumulative ? $kernelDef["cdf"] : $kernelDef["pdf"];
 
         $sorted = $data;
         sort($sorted);
         $n = count($sorted);
 
         if ($cumulative) {
-            return static function (float $x) use ($sorted, $n, $h, $fn, $support): float {
+            return static function (float $x) use (
+                $sorted,
+                $n,
+                $h,
+                $fn,
+                $support,
+            ): float {
                 $sum = 0.0;
                 if ($support !== null) {
                     $lo = self::bisectLeft($sorted, $x - $h * $support);
@@ -1037,7 +1143,13 @@ class Stat
             };
         }
 
-        return static function (float $x) use ($sorted, $n, $h, $fn, $support): float {
+        return static function (float $x) use (
+            $sorted,
+            $n,
+            $h,
+            $fn,
+            $support,
+        ): float {
             $sum = 0.0;
             if ($support !== null) {
                 $lo = self::bisectLeft($sorted, $x - $h * $support);
@@ -1081,7 +1193,9 @@ class Stat
             throw new InvalidDataInputException("The data must not be empty.");
         }
         if ($h <= 0) {
-            throw new InvalidDataInputException("Bandwidth h must be positive.");
+            throw new InvalidDataInputException(
+                "Bandwidth h must be positive.",
+            );
         }
 
         $kernel = $kernel->resolve();
@@ -1089,56 +1203,79 @@ class Stat
         // Acklam rational approximation for standard normal inverse CDF
         $normalInvCdf = static function (float $p): float {
             $a = [
-                -3.969683028665376e+01,
-                2.209460984245205e+02,
-                -2.759285104469687e+02,
-                1.383577518672690e+02,
-                -3.066479806614716e+01,
-                2.506628277459239e+00,
+                -3.969683028665376e1,
+                2.209460984245205e2,
+                -2.759285104469687e2,
+                1.38357751867269e2,
+                -3.066479806614716e1,
+                2.506628277459239,
             ];
             $b = [
-                -5.447609879822406e+01,
-                1.615858368580409e+02,
-                -1.556989798598866e+02,
-                6.680131188771972e+01,
-                -1.328068155288572e+01,
+                -5.447609879822406e1,
+                1.615858368580409e2,
+                -1.556989798598866e2,
+                6.680131188771972e1,
+                -1.328068155288572e1,
             ];
             $c = [
-                -7.784894002430293e-03,
-                -3.223964580411365e-01,
-                -2.400758277161838e+00,
-                -2.549732539343734e+00,
-                4.374664141464968e+00,
-                2.938163982698783e+00,
+                -7.784894002430293e-3,
+                -3.223964580411365e-1,
+                -2.400758277161838,
+                -2.549732539343734,
+                4.374664141464968,
+                2.938163982698783,
             ];
             $d = [
-                7.784695709041462e-03,
-                3.224671290700398e-01,
-                2.445134137142996e+00,
-                3.754408661907416e+00,
+                7.784695709041462e-3,
+                3.224671290700398e-1,
+                2.445134137142996,
+                3.754408661907416,
             ];
 
             $pLow = 0.02425;
             $pHigh = 1.0 - $pLow;
             if ($p < $pLow) {
                 $q = sqrt(-2.0 * log($p));
-                return ((((($c[0] * $q + $c[1]) * $q + $c[2]) * $q + $c[3]) * $q + $c[4]) * $q + $c[5])
-                    / (((($d[0] * $q + $d[1]) * $q + $d[2]) * $q + $d[3]) * $q + 1.0);
+                return ((((($c[0] * $q + $c[1]) * $q + $c[2]) * $q + $c[3])
+                    * $q
+                    + $c[4])
+                    * $q
+                    + $c[5])
+                    / (((($d[0] * $q + $d[1]) * $q + $d[2]) * $q + $d[3]) * $q
+                        + 1.0);
             }
 
             if ($p <= $pHigh) {
                 $q = $p - 0.5;
                 $r = $q * $q;
-                return ((((($a[0] * $r + $a[1]) * $r + $a[2]) * $r + $a[3]) * $r + $a[4]) * $r + $a[5]) * $q
-                    / ((((($b[0] * $r + $b[1]) * $r + $b[2]) * $r + $b[3]) * $r + $b[4]) * $r + 1.0);
+                return (((((($a[0] * $r + $a[1]) * $r + $a[2]) * $r + $a[3])
+                    * $r
+                    + $a[4])
+                    * $r
+                    + $a[5])
+                    * $q)
+                    / ((((($b[0] * $r + $b[1]) * $r + $b[2]) * $r + $b[3]) * $r
+                        + $b[4])
+                        * $r
+                        + 1.0);
             }
             $q = sqrt(-2.0 * log(1.0 - $p));
-            return -((((($c[0] * $q + $c[1]) * $q + $c[2]) * $q + $c[3]) * $q + $c[4]) * $q + $c[5])
+            return -(
+                (((($c[0] * $q + $c[1]) * $q + $c[2]) * $q + $c[3]) * $q
+                    + $c[4])
+                    * $q
+                + $c[5]
+            )
                 / (((($d[0] * $q + $d[1]) * $q + $d[2]) * $q + $d[3]) * $q + 1.0);
         };
 
         // Newton-Raphson solver for kernels without closed-form inverse CDF
-        $newtonRaphson = static function (float $p, callable $cdf, callable $pdf, float $x0): float {
+        $newtonRaphson = static function (
+            float $p,
+            callable $cdf,
+            callable $pdf,
+            float $x0,
+        ): float {
             $x = $x0;
             for ($i = 0; $i < 100; $i++) {
                 $err = $cdf($x) - $p;
@@ -1151,27 +1288,52 @@ class Stat
         };
 
         // Quartic CDF and PDF for Newton-Raphson
-        $quarticCdf = static fn(float $t): float
-            => $t <= -1.0 ? 0.0 : ($t >= 1.0 ? 1.0 : (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5);
-        $quarticPdf = static fn(float $t): float
-            => ($t < -1.0 || $t > 1.0) ? 0.0 : (15.0 / 16.0) * (1.0 - $t * $t) ** 2;
+        $quarticCdf = static fn(float $t): float => $t <= -1.0
+            ? 0.0
+            : ($t >= 1.0
+                ? 1.0
+                : (15.0 * $t - 10.0 * $t ** 3 + 3.0 * $t ** 5) / 16.0 + 0.5);
+        $quarticPdf = static fn(float $t): float => $t < -1.0 || $t > 1.0
+            ? 0.0
+            : (15.0 / 16.0) * (1.0 - $t * $t) ** 2;
 
         // Triweight CDF and PDF for Newton-Raphson
-        $triweightCdf = static fn(float $t): float
-            => $t <= -1.0 ? 0.0 : ($t >= 1.0 ? 1.0 : (35.0 * $t - 35.0 * $t ** 3 + 21.0 * $t ** 5 - 5.0 * $t ** 7) / 32.0 + 0.5);
-        $triweightPdf = static fn(float $t): float
-            => ($t < -1.0 || $t > 1.0) ? 0.0 : (35.0 / 32.0) * (1.0 - $t * $t) ** 3;
+        $triweightCdf = static fn(float $t): float => $t <= -1.0
+            ? 0.0
+            : ($t >= 1.0
+                ? 1.0
+                : (35.0 * $t
+                        - 35.0 * $t ** 3
+                        + 21.0 * $t ** 5
+                        - 5.0 * $t ** 7)
+                        / 32.0
+                    + 0.5);
+        $triweightPdf = static fn(float $t): float => $t < -1.0 || $t > 1.0
+            ? 0.0
+            : (35.0 / 32.0) * (1.0 - $t * $t) ** 3;
 
         $invcdfMap = [
             KdeKernel::Normal->value => $normalInvCdf,
-            KdeKernel::Logistic->value => static fn(float $p): float => log($p / (1.0 - $p)),
-            KdeKernel::Sigmoid->value => static fn(float $p): float => log(tan($p * M_PI / 2.0)),
-            KdeKernel::Rectangular->value => static fn(float $p): float => 2.0 * $p - 1.0,
-            KdeKernel::Triangular->value => static fn(float $p): float
-                => $p < 0.5 ? sqrt(2.0 * $p) - 1.0 : 1.0 - sqrt(2.0 - 2.0 * $p),
-            KdeKernel::Parabolic->value => static fn(float $p): float
-                => 2.0 * cos((acos(2.0 * $p - 1.0) + M_PI) / 3.0),
-            KdeKernel::Quartic->value => static function (float $p) use ($newtonRaphson, $quarticCdf, $quarticPdf): float {
+            KdeKernel::Logistic->value => static fn(float $p): float => log(
+                $p / (1.0 - $p),
+            ),
+            KdeKernel::Sigmoid->value => static fn(float $p): float => log(
+                tan(($p * M_PI) / 2.0),
+            ),
+            KdeKernel::Rectangular->value => static fn(float $p): float => 2.0
+                * $p
+                - 1.0,
+            KdeKernel::Triangular->value => static fn(float $p): float => $p
+            < 0.5
+                ? sqrt(2.0 * $p) - 1.0
+                : 1.0 - sqrt(2.0 - 2.0 * $p),
+            KdeKernel::Parabolic->value => static fn(float $p): float => 2.0
+                * cos((acos(2.0 * $p - 1.0) + M_PI) / 3.0),
+            KdeKernel::Quartic->value => static function (float $p) use (
+                $newtonRaphson,
+                $quarticCdf,
+                $quarticPdf,
+            ): float {
                 if ($p <= 0.5) {
                     $sign = 1.0;
                 } else {
@@ -1183,13 +1345,24 @@ class Stat
                 } else {
                     $x = (2.0 * $p) ** 0.4258865685331 - 1.0;
                     if ($p < 0.499) {
-                        $x += 0.026818732 * sin(7.101753784 * $p + 2.73230839482953);
+                        $x
+                            += 0.026818732
+                            * sin(7.101753784 * $p + 2.73230839482953);
                     }
                 }
                 $x *= $sign;
-                return $newtonRaphson($sign === 1.0 ? $p : 1.0 - $p, $quarticCdf, $quarticPdf, $x);
+                return $newtonRaphson(
+                    $sign === 1.0 ? $p : 1.0 - $p,
+                    $quarticCdf,
+                    $quarticPdf,
+                    $x,
+                );
             },
-            KdeKernel::Triweight->value => static function (float $p) use ($newtonRaphson, $triweightCdf, $triweightPdf): float {
+            KdeKernel::Triweight->value => static function (float $p) use (
+                $newtonRaphson,
+                $triweightCdf,
+                $triweightPdf,
+            ): float {
                 if ($p <= 0.5) {
                     $sign = 1.0;
                 } else {
@@ -1201,9 +1374,16 @@ class Stat
                     $x -= 0.033 * sin(1.07 * 2.0 * M_PI * ($p - 0.035));
                 }
                 $x *= $sign;
-                return $newtonRaphson($sign === 1.0 ? $p : 1.0 - $p, $triweightCdf, $triweightPdf, $x);
+                return $newtonRaphson(
+                    $sign === 1.0 ? $p : 1.0 - $p,
+                    $triweightCdf,
+                    $triweightPdf,
+                    $x,
+                );
             },
-            KdeKernel::Cosine->value => static fn(float $p): float => (2.0 / M_PI) * asin(2.0 * $p - 1.0),
+            KdeKernel::Cosine->value => static fn(float $p): float => (2.0
+                / M_PI)
+                * asin(2.0 * $p - 1.0),
         ];
 
         $invcdf = $invcdfMap[$kernel->value]; // @phpstan-ignore offsetAccess.notFound
@@ -1229,8 +1409,11 @@ class Stat
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
      * or if the elements of the array are constants
      */
-    public static function linearRegression(array $x, array $y, bool $proportional = false): array
-    {
+    public static function linearRegression(
+        array $x,
+        array $y,
+        bool $proportional = false,
+    ): array {
         $countX = count($x);
         $countY = count($y);
         if ($countX !== $countY) {

@@ -273,4 +273,18 @@ class StatisticTest extends TestCase
         $result = $s->coefficientOfVariation(2);
         $this->assertEquals(round($result, 2), $result);
     }
+
+    public function test_trimmed_mean(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 5, 6, 7, 8, 9, 100]);
+        // 10% trim removes 1 element from each side → mean of [2..9]
+        $this->assertEqualsWithDelta(5.5, $s->trimmedMean(0.1), 1e-10);
+    }
+
+    public function test_trimmed_mean_with_rounding(): void
+    {
+        $s = Statistics::make([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        $result = $s->trimmedMean(0.2, 2);
+        $this->assertEquals(round($result, 2), $result);
+    }
 }

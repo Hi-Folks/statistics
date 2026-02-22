@@ -164,6 +164,19 @@ class Statistics
     }
 
     /**
+     * Return the trimmed (truncated) mean.
+     *
+     * @param  float  $proportionToCut  fraction (0..0.5) to trim from each side
+     * @param  int|null  $round whether to round the result
+     *
+     * @see Stat::trimmedMean()
+     */
+    public function trimmedMean(float $proportionToCut = 0.1, ?int $round = null): float
+    {
+        return Stat::trimmedMean($this->numericalArray(), $proportionToCut, $round);
+    }
+
+    /**
      * Return the median (middle value) of data.
      *
      * @see Stat::median()

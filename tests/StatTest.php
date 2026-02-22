@@ -1116,4 +1116,58 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::coefficientOfVariation([5]);
     }
+
+    // --- trimmedMean ---
+
+    public function test_trimmed_mean_basic(): void
+    {
+        // [1, 2, 3, 4, 5, 6, 7, 8, 9, 100] with 10% trim
+        // removes 1 from each side → mean of [2, 3, 4, 5, 6, 7, 8, 9]
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 100];
+        $result = Stat::trimmedMean($data, 0.1);
+        $this->assertEqualsWithDelta(5.5, $result, 1e-10);
+    }
+
+    public function test_trimmed_mean_zero_trim_equals_mean(): void
+    {
+        $data = [1, 2, 3, 4, 5];
+        $this->assertEqualsWithDelta(
+            (float) Stat::mean($data),
+            Stat::trimmedMean($data, 0.0),
+            1e-10,
+        );
+    }
+
+    public function test_trimmed_mean_with_rounding(): void
+    {
+        $data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        $result = Stat::trimmedMean($data, 0.2, 2);
+        $this->assertEquals(round($result, 2), $result);
+    }
+
+    public function test_trimmed_mean_removes_outliers(): void
+    {
+        // Outliers at both ends; trimmed mean should be close to the "clean" mean
+        $data = [-1000, 2, 3, 4, 5, 6, 7, 8, 9, 1000];
+        $trimmed = Stat::trimmedMean($data, 0.1);
+        $this->assertEqualsWithDelta(5.5, $trimmed, 1e-10);
+    }
+
+    public function test_trimmed_mean_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::trimmedMean([]);
+    }
+
+    public function test_trimmed_mean_proportion_too_high_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::trimmedMean([1, 2, 3], 0.5);
+    }
+
+    public function test_trimmed_mean_negative_proportion_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::trimmedMean([1, 2, 3], -0.1);
+    }
 }

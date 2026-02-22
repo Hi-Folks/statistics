@@ -2,16 +2,14 @@
 
 ### Descriptive Statistics
 
-- Trimmed/Truncated mean - mean after removing outliers (top/bottom x%)
 - Weighted median - median with weights (like fmean supports weights, but median doesn't)
 - Standard error of the mean (SEM)
-- Coefficient of variation (CV) - stdev / mean, useful for comparing variability across datasets
 - Mean absolute deviation (MAD)
-- Percentile - arbitrary percentile (e.g., 90th percentile) — quantiles() exists but a direct percentile($data, $p) would be convenient
+
 
 ### Correlation & Regression
 
-- Spearman rank correlation - non-parametric correlation
+
 - Kendall tau correlation - another rank-based correlation
 - Multiple/polynomial regression
 - R-squared (coefficient of determination)
@@ -42,9 +40,3 @@
 
 - Rank - assign ranks to data points
 - Percentile rank - what percentile a given value falls at
-
----
-
-### Notes
-
-The most impactful additions would likely be (skewness DONE), (kurtosis DONE), coefficient of variation, percentile, and Spearman correlation — these are commonly needed and align well with the package's existing scope (inspired by Python's statistics module).

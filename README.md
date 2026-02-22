@@ -64,6 +64,7 @@ The various mathematical statistics are listed below:
 | ---------------------- | ----------- |
 | `mean()` | arithmetic mean or "average" of data |
 | `fmean()` | floating-point arithmetic mean, with optional weighting and precision |
+| `trimmedMean()` | trimmed (truncated) mean — mean after removing outliers from each side |
 | `median()` | median or "middle value" of data |
 | `medianLow()` | low median of data |
 | `medianHigh()` | high median of data |
@@ -131,6 +132,23 @@ $fmean = Stat::fmean([3.5, 4.0, 5.25], [1, 2, 1], 3);
 
 If the input is empty, or weights are invalid (e.g., length mismatch or sum is zero), an exception is thrown.
 Use this function when you need floating-point accuracy or to apply custom weighting and rounding to your average.
+
+#### Stat::trimmedMean( array $data, float $proportionToCut = 0.1, ?int $round = null )
+Return the trimmed (truncated) mean of the data. Computes the mean after removing the lowest and highest fraction of values. This is a robust measure of central tendency, less sensitive to outliers than the regular mean.
+
+The `$proportionToCut` parameter specifies the fraction to trim from **each** side (must be in the range `[0, 0.5)`). For example, `0.1` removes the bottom 10% and top 10%.
+
+```php
+use HiFolks\Statistics\Stat;
+$mean = Stat::trimmedMean([1, 2, 3, 4, 5, 6, 7, 8, 9, 100], 0.1);
+// 5.5 (outlier 100 and lowest value 1 removed)
+
+$mean = Stat::trimmedMean([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 0.2);
+// 5.5 (removes 2 values from each side)
+
+$mean = Stat::trimmedMean([1, 2, 3, 4, 5], 0.0);
+// 3.0 (no trimming, same as regular mean)
+```
 
 #### Stat::geometricMean( array $data )
 The geometric mean indicates the central tendency or typical value of the data using the product of the values (as opposed to the arithmetic mean which uses their sum).

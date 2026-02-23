@@ -1000,6 +1000,190 @@ class StatTest extends TestCase
         Stat::tTest([], 0.0);
     }
 
+    // --- tTestTwoSample (Welch's t-test) ---
+
+    public function test_t_test_two_sample_two_sided(): void
+    {
+        // Two clearly different groups
+        $group1 = [30.02, 29.99, 30.11, 29.97, 30.01, 29.99];
+        $group2 = [29.89, 29.93, 29.72, 29.98, 30.02, 29.98];
+        $result = Stat::tTestTwoSample($group1, $group2);
+        $this->assertArrayHasKey('tStatistic', $result);
+        $this->assertArrayHasKey('pValue', $result);
+        $this->assertArrayHasKey('degreesOfFreedom', $result);
+        // group1 mean > group2 mean, so tStatistic should be positive
+        $this->assertGreaterThan(0, $result['tStatistic']);
+    }
+
+    public function test_t_test_two_sample_equal_means(): void
+    {
+        $group1 = [1, 2, 3, 4, 5];
+        $group2 = [1, 2, 3, 4, 5];
+        $result = Stat::tTestTwoSample($group1, $group2);
+        $this->assertEqualsWithDelta(0.0, $result['tStatistic'], 1e-10);
+        $this->assertEqualsWithDelta(1.0, $result['pValue'], 0.01);
+    }
+
+    public function test_t_test_two_sample_significant_difference(): void
+    {
+        // Clearly different groups
+        $group1 = [10, 11, 12, 13, 14];
+        $group2 = [20, 21, 22, 23, 24];
+        $result = Stat::tTestTwoSample($group1, $group2);
+        $this->assertLessThan(0.001, $result['pValue']);
+        // group1 mean < group2 mean
+        $this->assertLessThan(0, $result['tStatistic']);
+    }
+
+    public function test_t_test_two_sample_greater(): void
+    {
+        $group1 = [10, 11, 12, 13, 14];
+        $group2 = [5, 6, 7, 8, 9];
+        $result = Stat::tTestTwoSample($group1, $group2, Alternative::Greater);
+        // group1 mean > group2 mean, so one-tailed should be very significant
+        $this->assertLessThan(0.001, $result['pValue']);
+    }
+
+    public function test_t_test_two_sample_less(): void
+    {
+        $group1 = [10, 11, 12, 13, 14];
+        $group2 = [5, 6, 7, 8, 9];
+        // group1 mean > group2 mean, so testing "less" should give large p-value
+        $result = Stat::tTestTwoSample($group1, $group2, Alternative::Less);
+        $this->assertGreaterThan(0.95, $result['pValue']);
+    }
+
+    public function test_t_test_two_sample_unequal_sizes(): void
+    {
+        $group1 = [1, 2, 3, 4, 5, 6, 7, 8];
+        $group2 = [3, 4, 5];
+        $result = Stat::tTestTwoSample($group1, $group2);
+        $this->assertArrayHasKey('tStatistic', $result);
+        $this->assertArrayHasKey('pValue', $result);
+        $this->assertArrayHasKey('degreesOfFreedom', $result);
+    }
+
+    public function test_t_test_two_sample_with_rounding(): void
+    {
+        $group1 = [30.02, 29.99, 30.11, 29.97, 30.01, 29.99];
+        $group2 = [29.89, 29.93, 29.72, 29.98, 30.02, 29.98];
+        $result = Stat::tTestTwoSample($group1, $group2, round: 3);
+        $this->assertSame(round($result['tStatistic'], 3), $result['tStatistic']);
+        $this->assertSame(round($result['pValue'], 3), $result['pValue']);
+    }
+
+    public function test_t_test_two_sample_welch_df(): void
+    {
+        // With unequal variances, Welch df should differ from simple pooled df
+        $group1 = [1, 2, 3, 4, 5]; // n=5, var=2.5
+        $group2 = [10, 20, 30, 40, 50]; // n=5, var=250
+        $result = Stat::tTestTwoSample($group1, $group2);
+        // Welch df should be less than n1+n2-2 = 8
+        $this->assertLessThan(8, $result['degreesOfFreedom']);
+        $this->assertGreaterThan(0, $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_two_sample_single_element_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTestTwoSample([42], [1, 2, 3]);
+    }
+
+    public function test_t_test_two_sample_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTestTwoSample([], [1, 2, 3]);
+    }
+
+    public function test_t_test_two_sample_zero_variance_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTestTwoSample([5, 5, 5], [5, 5, 5]);
+    }
+
+    // --- tTestPaired ---
+
+    public function test_t_test_paired_two_sided(): void
+    {
+        // Before and after treatment
+        $before = [200, 190, 210, 220, 215, 205, 195, 225];
+        $after = [192, 186, 198, 212, 208, 198, 188, 215];
+        $result = Stat::tTestPaired($before, $after);
+        $this->assertArrayHasKey('tStatistic', $result);
+        $this->assertArrayHasKey('pValue', $result);
+        $this->assertArrayHasKey('degreesOfFreedom', $result);
+        // df should be n-1 = 7
+        $this->assertEquals(7, $result['degreesOfFreedom']);
+        // Before values are generally higher, so tStatistic should be positive
+        $this->assertGreaterThan(0, $result['tStatistic']);
+    }
+
+    public function test_t_test_paired_no_difference(): void
+    {
+        // Near-equal pairs with small random differences
+        $data1 = [1.0, 2.0, 3.0, 4.0, 5.0];
+        $data2 = [1.1, 1.9, 3.1, 3.9, 5.1];
+        $result = Stat::tTestPaired($data1, $data2);
+        // Differences are very small and mixed, p-value should be large
+        $this->assertGreaterThan(0.05, $result['pValue']);
+    }
+
+    public function test_t_test_paired_significant(): void
+    {
+        // Clear systematic difference with some variation in the differences
+        $before = [10, 12, 14, 16, 18];
+        $after = [15, 18, 20, 22, 24];
+        $result = Stat::tTestPaired($before, $after);
+        // Differences: -5, -6, -6, -6, -6 — large and consistent
+        $this->assertLessThan(0.001, $result['pValue']);
+        $this->assertEquals(4, $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_paired_greater(): void
+    {
+        $before = [10, 12, 14, 16, 18];
+        $after = [15, 18, 20, 22, 24];
+        // before < after, so mean diff is negative; testing "greater" should give large p
+        $result = Stat::tTestPaired($before, $after, Alternative::Greater);
+        $this->assertGreaterThan(0.95, $result['pValue']);
+    }
+
+    public function test_t_test_paired_less(): void
+    {
+        $before = [10, 12, 14, 16, 18];
+        $after = [15, 18, 20, 22, 24];
+        // before < after, so mean diff is negative; testing "less" should be significant
+        $result = Stat::tTestPaired($before, $after, Alternative::Less);
+        $this->assertLessThan(0.001, $result['pValue']);
+    }
+
+    public function test_t_test_paired_with_rounding(): void
+    {
+        $before = [200, 190, 210, 220, 215, 205, 195, 225];
+        $after = [192, 186, 198, 212, 208, 198, 188, 215];
+        $result = Stat::tTestPaired($before, $after, round: 3);
+        $this->assertSame(round($result['tStatistic'], 3), $result['tStatistic']);
+        $this->assertSame(round($result['pValue'], 3), $result['pValue']);
+    }
+
+    public function test_t_test_paired_different_lengths_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTestPaired([1, 2, 3], [1, 2]);
+    }
+
+    public function test_t_test_paired_single_element_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTestPaired([1], [2]);
+    }
+
+    public function test_t_test_paired_empty_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::tTestPaired([], []);
+    }
+
     public function test_kde_normal(): void
     {
         $data = [-2.1, -1.3, -0.4, 1.9, 5.1, 6.2];

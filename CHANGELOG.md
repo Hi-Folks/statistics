@@ -1,6 +1,8 @@
 # Changelog
 
 ## 1.3.1 - WIP
+- Adding `tTestTwoSample()` method for two-sample independent t-test (Welch's t-test) — compares the means of two independent groups without assuming equal variances
+- Adding `tTestPaired()` method for paired t-test — tests whether the mean difference between paired observations (e.g. before/after) is significantly different from zero
 - Adding `StudentT` class for the Student's t-distribution (pdf, cdf, invCdf) — building block for t-tests and confidence intervals with small samples
 - Adding `tTest()` method for one-sample t-test — like z-test but appropriate for small samples where the population standard deviation is unknown
 - Adding `zTest()` method for one-sample Z-test — tests whether the sample mean differs significantly from a hypothesized population mean (includes p-value calculation)

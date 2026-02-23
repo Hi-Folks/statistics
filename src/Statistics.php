@@ -319,6 +319,36 @@ class Statistics
     }
 
     /**
+     * Perform a two-sample independent t-test (Welch's t-test).
+     *
+     * @param  array<int|float>  $data2  the second sample
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  whether to round the results
+     * @return array{tStatistic: float, pValue: float, degreesOfFreedom: float}
+     *
+     * @see Stat::tTestTwoSample()
+     */
+    public function tTestTwoSample(array $data2, Alternative $alternative = Alternative::TwoSided, ?int $round = null): array
+    {
+        return Stat::tTestTwoSample($this->numericalArray(), $data2, $alternative, $round);
+    }
+
+    /**
+     * Perform a paired t-test.
+     *
+     * @param  array<int|float>  $data2  the second set of observations (same length)
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  whether to round the results
+     * @return array{tStatistic: float, pValue: float, degreesOfFreedom: int}
+     *
+     * @see Stat::tTestPaired()
+     */
+    public function tTestPaired(array $data2, Alternative $alternative = Alternative::TwoSided, ?int $round = null): array
+    {
+        return Stat::tTestPaired($this->numericalArray(), $data2, $alternative, $round);
+    }
+
+    /**
      * Return the mean absolute deviation (MAD).
      *
      * @param  int|null  $round whether to round the result

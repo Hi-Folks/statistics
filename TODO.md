@@ -11,7 +11,7 @@
 
 ### Hypothesis Testing
 
-- T-test (two-sample, paired) — one-sample is done
+- ~~T-test (two-sample, paired) — one-sample is done~~ DONE: `tTestTwoSample()` (Welch's) and `tTestPaired()`
 - Chi-squared test
 
 ### Other Distributions (beyond Normal)

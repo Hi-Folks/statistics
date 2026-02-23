@@ -102,6 +102,8 @@ The various mathematical statistics are listed below:
 | `confidenceInterval()` | confidence interval for the mean using the normal (z) distribution |
 | `zTest()` | one-sample Z-test — tests whether the sample mean differs significantly from a hypothesized population mean |
 | `tTest()` | one-sample t-test — like z-test but appropriate for small samples where the population standard deviation is unknown |
+| `tTestTwoSample()` | two-sample independent t-test (Welch's) — compares the means of two independent groups without assuming equal variances |
+| `tTestPaired()` | paired t-test — tests whether the mean difference between paired observations is significantly different from zero |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 | `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 
@@ -715,6 +717,53 @@ $result = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, alternative
 
 $result = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], populationMean: 3.0, round: 4);
 // ['tStatistic' => 2.6458, 'pValue' => 0.0331, 'degreesOfFreedom' => 7]
+```
+
+#### Stat::tTestTwoSample( array $data1, array $data2, Alternative $alternative = Alternative::TwoSided, ?int $round = null )
+Perform a two-sample independent t-test (Welch's t-test). Compares the means of two independent groups without assuming equal variances. Uses the Welch–Satterthwaite approximation for degrees of freedom.
+
+Returns an associative array with `tStatistic`, `pValue`, and `degreesOfFreedom`. The alternative hypothesis can be `TwoSided` (default), `Greater`, or `Less`.
+
+Requires at least 2 data points in each sample.
+
+```php
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Enums\Alternative;
+
+// Compare two groups
+$group1 = [30.02, 29.99, 30.11, 29.97, 30.01, 29.99];
+$group2 = [29.89, 29.93, 29.72, 29.98, 30.02, 29.98];
+$result = Stat::tTestTwoSample($group1, $group2);
+// ['tStatistic' => 1.6245..., 'pValue' => 0.1444..., 'degreesOfFreedom' => 6.84...]
+
+// One-tailed test: is group1 mean greater than group2 mean?
+$result = Stat::tTestTwoSample($group1, $group2, alternative: Alternative::Greater);
+
+// Groups can have different sizes
+$result = Stat::tTestTwoSample([1, 2, 3, 4, 5, 6, 7, 8], [3, 4, 5], round: 4);
+```
+
+#### Stat::tTestPaired( array $data1, array $data2, Alternative $alternative = Alternative::TwoSided, ?int $round = null )
+Perform a paired t-test. Tests whether the mean difference between paired observations (e.g. before/after measurements on the same subjects) is significantly different from zero.
+
+Returns an associative array with `tStatistic`, `pValue`, and `degreesOfFreedom`. Both arrays must have the same length.
+
+Requires at least 2 paired observations.
+
+```php
+use HiFolks\Statistics\Stat;
+use HiFolks\Statistics\Enums\Alternative;
+
+// Before and after treatment measurements
+$before = [200, 190, 210, 220, 215, 205, 195, 225];
+$after  = [192, 186, 198, 212, 208, 198, 188, 215];
+$result = Stat::tTestPaired($before, $after);
+// ['tStatistic' => 5.715..., 'pValue' => 0.0007..., 'degreesOfFreedom' => 7]
+
+// One-tailed: did the treatment decrease the values?
+$result = Stat::tTestPaired($before, $after, alternative: Alternative::Greater);
+
+$result = Stat::tTestPaired($before, $after, round: 4);
 ```
 
 #### Stat::kde ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , bool $cumulative = false )

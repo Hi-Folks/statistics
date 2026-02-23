@@ -1874,4 +1874,115 @@ class Stat
             'degreesOfFreedom' => $df,
         ];
     }
+
+    /**
+     * Perform a two-sample independent t-test (Welch's t-test).
+     *
+     * Tests whether two independent samples have different means.
+     * Uses Welch's approximation for degrees of freedom, which does not
+     * assume equal variances.
+     *
+     * @param  array<int|float>  $data1  the first sample (at least 2 elements)
+     * @param  array<int|float>  $data2  the second sample (at least 2 elements)
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  optional decimal precision for rounding results
+     * @return array{tStatistic: float, pValue: float, degreesOfFreedom: float}
+     *
+     * @throws InvalidDataInputException if either sample has fewer than 2 elements
+     */
+    public static function tTestTwoSample(
+        array $data1,
+        array $data2,
+        Alternative $alternative = Alternative::TwoSided,
+        ?int $round = null,
+    ): array {
+        $n1 = self::count($data1);
+        $n2 = self::count($data2);
+
+        if ($n1 < 2 || $n2 < 2) {
+            throw new InvalidDataInputException(
+                "Two-sample t-test requires at least 2 data points in each sample.",
+            );
+        }
+
+        $mean1 = self::mean($data1);
+        $mean2 = self::mean($data2);
+        $var1 = self::variance($data1);
+        $var2 = self::variance($data2);
+
+        $se = sqrt($var1 / $n1 + $var2 / $n2);
+
+        if ($se === 0.0) {
+            throw new InvalidDataInputException(
+                "Two-sample t-test requires non-zero variance in at least one sample.",
+            );
+        }
+
+        $tStatistic = ($mean1 - $mean2) / $se;
+
+        // Welch–Satterthwaite degrees of freedom
+        $v1 = $var1 / $n1;
+        $v2 = $var2 / $n2;
+        $df = (($v1 + $v2) ** 2) / (($v1 ** 2) / ($n1 - 1) + ($v2 ** 2) / ($n2 - 1));
+
+        $studentT = new StudentT($df);
+
+        $pValue = match ($alternative) {
+            Alternative::TwoSided => 2 * (1 - $studentT->cdf(abs($tStatistic))),
+            Alternative::Greater => 1 - $studentT->cdf($tStatistic),
+            Alternative::Less => $studentT->cdf($tStatistic),
+        };
+
+        return [
+            'tStatistic' => Math::round($tStatistic, $round),
+            'pValue' => Math::round($pValue, $round),
+            'degreesOfFreedom' => Math::round($df, $round),
+        ];
+    }
+
+    /**
+     * Perform a paired t-test.
+     *
+     * Tests whether the mean difference between paired observations is
+     * significantly different from zero. This is equivalent to a one-sample
+     * t-test on the differences.
+     *
+     * @param  array<int|float>  $data1  the first set of observations
+     * @param  array<int|float>  $data2  the second set of observations (same length as $data1)
+     * @param  Alternative  $alternative  the alternative hypothesis
+     * @param  int|null  $round  optional decimal precision for rounding results
+     * @return array{tStatistic: float, pValue: float, degreesOfFreedom: int}
+     *
+     * @throws InvalidDataInputException if arrays have different lengths or fewer than 2 elements
+     */
+    public static function tTestPaired(
+        array $data1,
+        array $data2,
+        Alternative $alternative = Alternative::TwoSided,
+        ?int $round = null,
+    ): array {
+        $n1 = self::count($data1);
+        $n2 = self::count($data2);
+
+        if ($n1 !== $n2) {
+            throw new InvalidDataInputException(
+                "Paired t-test requires both samples to have the same number of observations.",
+            );
+        }
+
+        if ($n1 < 2) {
+            throw new InvalidDataInputException(
+                "Paired t-test requires at least 2 data points.",
+            );
+        }
+
+        // Compute differences
+        $differences = [];
+        for ($i = 0; $i < $n1; $i++) {
+            $differences[] = $data1[$i] - $data2[$i];
+        }
+
+        // Paired t-test is a one-sample t-test on the differences with μ₀ = 0
+        return self::tTest($differences, 0.0, $alternative, $round);
+    }
 }

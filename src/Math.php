@@ -2,21 +2,9 @@
 
 namespace HiFolks\Statistics;
 
-class Math
-{
-    /**
-     * Rounds value with the given precision, if the round is not null.
-     */
-    public static function round(float $value, ?int $round): float
-    {
-        return is_null($round) ? $value : round($value, $round);
-    }
+use HiFolks\Statistics\Utils\Math as UtilsMath;
 
-    /**
-     * Check if number is odd.
-     */
-    public static function isOdd(int $number): bool
-    {
-        return (bool) ($number & 1);
-    }
-}
+/**
+ * @deprecated Use \HiFolks\Statistics\Utils\Math instead.
+ */
+class Math extends UtilsMath {}

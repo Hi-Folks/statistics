@@ -4,6 +4,7 @@ namespace HiFolks\Statistics;
 
 use HiFolks\Statistics\Enums\Alternative;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
+use HiFolks\Statistics\Utils\Arr;
 
 class Statistics
 {
@@ -50,7 +51,7 @@ class Statistics
      */
     public function stripZeroes(): self
     {
-        $this->values = ArrUtil::stripZeroes($this->values);
+        $this->values = Arr::stripZeroes($this->values);
 
         return $this;
     }
@@ -539,7 +540,7 @@ class Statistics
      */
     public function valuesToString(bool|int $sample = false): string
     {
-        return ArrUtil::toString($this->values, $sample);
+        return Arr::toString($this->values, $sample);
     }
 
     /**

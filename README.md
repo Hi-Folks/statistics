@@ -1367,6 +1367,85 @@ $s->kurtosis();  // -1.2
 
 All methods throw `InvalidDataInputException` when insufficient data is available.
 
+## Utility classes
+
+The package includes utility classes under `HiFolks\Statistics\Utils` for common array and formatting operations.
+
+### `Arr` — array helpers
+
+```php
+use HiFolks\Statistics\Utils\Arr;
+```
+
+#### Arr::extract( array $data, array $columns )
+
+Extract one or more columns from an array of associative arrays. Returns one array per requested column.
+
+```php
+$runners = [
+    ['name' => 'Alice', 'age' => 30, 'score' => 95],
+    ['name' => 'Bob',   'age' => 25, 'score' => 87],
+];
+
+[$ages, $scores] = Arr::extract($runners, ['age', 'score']);
+// $ages = [30, 25], $scores = [95, 87]
+```
+
+#### Arr::partition( array $data, string $field, string $operator, mixed $value )
+
+Split an array of associative arrays into `[$matching, $nonMatching]` groups based on a condition. Supported operators: `==`, `!=`, `>`, `<`, `>=`, `<=`.
+
+```php
+[$men, $women] = Arr::partition($runners, 'gender', '==', 'M');
+[$seniors, $others] = Arr::partition($runners, 'age', '>=', 40);
+```
+
+#### Arr::toString( array $data, bool|int $sample = false )
+
+Join array values into a comma-separated string. Pass an integer to limit to the first N values.
+
+#### Arr::stripZeroes( array $data )
+
+Remove zero values from the array.
+
+### `Format` — time formatting
+
+```php
+use HiFolks\Statistics\Utils\Format;
+```
+
+#### Format::secondsToTime( int|float $seconds )
+
+Convert seconds to a human-readable time string.
+
+```php
+Format::secondsToTime(4845);  // "1:20:45"
+```
+
+#### Format::timeToSeconds( string $time )
+
+Parse a time string back to total seconds.
+
+```php
+Format::timeToSeconds('1:20:45');  // 4845
+```
+
+#### Format::secondsToHms( int|float $seconds )
+
+Convert seconds to an associative array with `hours`, `minutes`, `seconds` keys.
+
+```php
+Format::secondsToHms(4845);  // ['hours' => 1, 'minutes' => 20, 'seconds' => 45]
+```
+
+#### Format::hmsToSeconds( int $hours, int $minutes, int $seconds )
+
+Convert hours, minutes, and seconds to total seconds.
+
+```php
+Format::hmsToSeconds(1, 20, 45);  // 4845
+```
+
 ## Testing
 
 ```bash

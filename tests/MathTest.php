@@ -2,7 +2,7 @@
 
 namespace HiFolks\Statistics\Tests;
 
-use HiFolks\Statistics\Math;
+use HiFolks\Statistics\Utils\Math;
 use PHPUnit\Framework\TestCase;
 
 class MathTest extends TestCase

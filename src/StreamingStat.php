@@ -3,6 +3,7 @@
 namespace HiFolks\Statistics;
 
 use HiFolks\Statistics\Exception\InvalidDataInputException;
+use HiFolks\Statistics\Utils\Math;
 
 /**
  * StreamingStat computes descriptive statistics in a single pass with O(1) memory.

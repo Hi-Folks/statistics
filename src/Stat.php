@@ -7,6 +7,7 @@ use HiFolks\Statistics\Enums\KdeKernel;
 use HiFolks\Statistics\Exception\InvalidDataInputException;
 use HiFolks\Statistics\NormalDist;
 use HiFolks\Statistics\StudentT;
+use HiFolks\Statistics\Utils\Math;
 
 class Stat
 {

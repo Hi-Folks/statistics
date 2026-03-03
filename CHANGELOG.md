@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0 - 2026-03-03
+- Adding `Utils\Arr` class with `extract()` method for multi-column extraction from arrays of associative arrays, and `partition()` method for splitting arrays into matching/non-matching groups by field condition (supports ==, !=, >, <, >=, <= operators)
+- Adding `Utils\Format` class with `secondsToTime()`, `timeToSeconds()`, `secondsToHms()`, and `hmsToSeconds()` methods for time formatting and parsing
+- Adding `Utils\Math` class — reorganized from root namespace for consistency with `Enums/` and `Exception/` sub-directories
+- Reorganized `ArrUtil` and `Math` into `Utils\Arr` and `Utils\Math` sub-namespace; original classes remain as deprecated proxies for backward compatibility
+- Updated internal references in `Stat`, `Freq`, `StreamingStat`, and `Statistics` to use the new `Utils` namespace
+
 ## 1.3.1 - 2026-02-23
 - Adding `tTestTwoSample()` method for two-sample independent t-test (Welch's t-test) — compares the means of two independent groups without assuming equal variances
 - Adding `tTestPaired()` method for paired t-test — tests whether the mean difference between paired observations (e.g. before/after) is significantly different from zero

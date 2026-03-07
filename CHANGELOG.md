@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.0 - 2026-03-07
+- Adding `logarithmicRegression()`, `powerRegression()`, and `exponentialRegression()` methods for non-linear regression models
+
 ## 1.4.0 - 2026-03-03
 - Adding `Utils\Arr` class with `extract()` method for multi-column extraction from arrays of associative arrays, and `partition()` method for splitting arrays into matching/non-matching groups by field condition (supports ==, !=, >, <, >=, <= operators)
 - Adding `Utils\Format` class with `secondsToTime()`, `timeToSeconds()`, `secondsToHms()`, and `hmsToSeconds()` methods for time formatting and parsing

@@ -35,7 +35,7 @@
     </i>
 </p>
 
-This package provides a comprehensive set of statistical functions for PHP: descriptive statistics (mean, median, mode, standard deviation, variance, quantiles), robust measures (trimmed mean, weighted median, median absolute deviation), distribution modelling (normal distribution with PDF, CDF, and inverse CDF), outlier detection (z-score and IQR-based), z-scores, percentiles, coefficient of variation, frequency tables, correlation, linear regression, kernel density estimation, and O(1) memory streaming statistics.
+This package provides a comprehensive set of statistical functions for PHP: descriptive statistics (mean, median, mode, standard deviation, variance, quantiles), robust measures (trimmed mean, weighted median, median absolute deviation), distribution modelling (normal distribution with PDF, CDF, and inverse CDF), outlier detection (z-score and IQR-based), z-scores, percentiles, coefficient of variation, frequency tables, correlation, regression (linear, logarithmic, power, and exponential), kernel density estimation, and O(1) memory streaming statistics.
 
 It works with any numeric dataset — from sports telemetry and sensor data to race results, survey responses, and financial time series.
 
@@ -98,6 +98,9 @@ The various mathematical statistics are listed below:
 | `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
+| `logarithmicRegression()` | logarithmic regression — fits `y = a × ln(x) + b`, ideal for diminishing returns patterns (e.g., athletic improvement, learning curves) |
+| `powerRegression()` | power regression — fits `y = a × x^b`, useful for power law relationships |
+| `exponentialRegression()` | exponential regression — fits `y = a × e^(b×x)`, useful for exponential growth or decay |
 | `rSquared()` | coefficient of determination (R²) — proportion of variance explained by linear regression |
 | `confidenceInterval()` | confidence interval for the mean using the normal (z) distribution |
 | `zTest()` | one-sample Z-test — tests whether the sample mean differs significantly from a hypothesized population mean |
@@ -629,6 +632,84 @@ list($slope, $intercept) = Stat::linearRegression(
 // $intercept = 0.0
 ```
 
+#### Stat::logarithmicRegression( array $x, array $y )
+Fit a logarithmic model **y = a × ln(x) + b**. Returns `[a, b]`.
+
+This model naturally captures diminishing returns — fast initial change that gradually flattens. It is useful for data where early gains are large but improvement slows over time, such as athletic performance trends, learning curves, or market saturation.
+
+All x values must be positive (you cannot take the logarithm of zero or negative numbers).
+
+Internally, this transforms x to ln(x) and applies linear regression, so it leverages the same robust ordinary least squares implementation.
+
+```php
+use HiFolks\Statistics\Stat;
+
+// Simulated weekly running paces (seconds/km) — diminishing improvement
+$weeks = [1, 2, 3, 4, 5, 6, 7, 8];
+$paces = [350, 342, 337, 333, 330, 328, 326, 325];
+
+[$a, $b] = Stat::logarithmicRegression($weeks, $paces);
+// $a = -12.33 (pace drops by 12.33 sec per unit of ln(week))
+// $b = 350.2
+
+// Predict pace at week 12:
+$predicted = $a * log(12) + $b;
+// ~320 seconds = 5:20/km
+```
+
+Compare with linear regression to see which fits better:
+
+```php
+// R² for logarithmic model (transform x first)
+$logWeeks = array_map(fn($v) => log($v), $weeks);
+$r2Log = Stat::rSquared($logWeeks, $paces);
+// 0.9987
+
+// R² for linear model
+$r2Linear = Stat::rSquared($weeks, $paces);
+// 0.9176
+
+// Logarithmic wins — the data has diminishing returns
+```
+
+#### Stat::powerRegression( array $x, array $y )
+Fit a power model **y = a × x^b**. Returns `[a, b]`.
+
+Power regression is useful for data following power law relationships (e.g., scaling laws, allometric relationships). Both x and y values must be positive.
+
+Internally, this linearizes as ln(y) = ln(a) + b × ln(x) and applies linear regression.
+
+```php
+use HiFolks\Statistics\Stat;
+
+// Data following y = 3 * x^2
+$x = [1, 2, 3, 4, 5];
+$y = [3, 12, 27, 48, 75];
+
+[$a, $b] = Stat::powerRegression($x, $y);
+// $a = 3.0
+// $b = 2.0 (the exponent)
+```
+
+#### Stat::exponentialRegression( array $x, array $y )
+Fit an exponential model **y = a × e^(b×x)**. Returns `[a, b]`.
+
+Exponential regression is useful for data with exponential growth (positive b) or decay (negative b), such as population growth, compound interest, or radioactive decay. All y values must be positive.
+
+Internally, this linearizes as ln(y) = ln(a) + b × x and applies linear regression.
+
+```php
+use HiFolks\Statistics\Stat;
+
+// Data following y = 2 * e^(0.5*x)
+$x = [1, 2, 3, 4, 5];
+$y = [3.30, 5.44, 8.96, 14.78, 24.36];
+
+[$a, $b] = Stat::exponentialRegression($x, $y);
+// $a ≈ 2.0
+// $b ≈ 0.5
+```
+
 #### Stat::rSquared( array $x, array $y, bool $proportional = false, ?int $round = null )
 Return the coefficient of determination (R²) — the proportion of variance in the dependent variable explained by the linear regression model. Values range from 0 (no explanatory power) to 1 (perfect fit).
 
@@ -656,6 +737,23 @@ $r2 = Stat::rSquared(
     proportional: true,
 );
 // 1.0
+```
+
+To compute R² for non-linear models, transform the data the same way the regression method does:
+
+```php
+// R² for logarithmic regression
+$logX = array_map(fn($v) => log($v), $x);
+$r2 = Stat::rSquared($logX, $y);
+
+// R² for power regression
+$logX = array_map(fn($v) => log($v), $x);
+$logY = array_map(fn($v) => log($v), $y);
+$r2 = Stat::rSquared($logX, $logY);
+
+// R² for exponential regression
+$logY = array_map(fn($v) => log($v), $y);
+$r2 = Stat::rSquared($x, $logY);
 ```
 
 #### Stat::confidenceInterval( array $data, float $confidenceLevel = 0.95, ?int $round = null )

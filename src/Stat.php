@@ -1633,7 +1633,7 @@ class Stat
     /**
      * @param  array<int|float>  $x
      * @param  array<int|float>  $y
-     * @return array<int|float>
+     * @return array{float, float}
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
@@ -1687,6 +1687,109 @@ class Stat
         $intercept = ($sumY - $slope * $sumX) / $countX;
 
         return [$slope, $intercept];
+    }
+
+    /**
+     * Logarithmic regression: fits y = a * ln(x) + b.
+     *
+     * Transforms x values to ln(x) and applies linear regression.
+     * Useful for data with diminishing returns (e.g., athletic improvement,
+     * learning curves) where growth slows over time.
+     *
+     * @param  array<int|float>  $x  must be positive values
+     * @param  array<int|float>  $y
+     * @return array{0: float, 1: float}  [a, b] coefficients
+     *
+     * @throws InvalidDataInputException if x contains non-positive values,
+     * or if arrays have different sizes or fewer than 2 elements
+     */
+    public static function logarithmicRegression(
+        array $x,
+        array $y,
+    ): array {
+        foreach ($x as $value) {
+            if ($value <= 0) {
+                throw new InvalidDataInputException(
+                    "Logarithmic regression requires all x values to be positive.",
+                );
+            }
+        }
+
+        $logX = array_map(log(...), $x);
+
+        return self::linearRegression($logX, $y);
+    }
+
+    /**
+     * Power regression: fits y = a * x^b.
+     *
+     * Linearizes as ln(y) = ln(a) + b * ln(x) and applies linear regression.
+     * Useful for data following power law relationships.
+     *
+     * @param  array<int|float>  $x  must be positive values
+     * @param  array<int|float>  $y  must be positive values
+     * @return array{0: float, 1: float}  [a, b] coefficients where y = a * x^b
+     *
+     * @throws InvalidDataInputException if x or y contain non-positive values,
+     * or if arrays have different sizes or fewer than 2 elements
+     */
+    public static function powerRegression(
+        array $x,
+        array $y,
+    ): array {
+        foreach ($x as $value) {
+            if ($value <= 0) {
+                throw new InvalidDataInputException(
+                    "Power regression requires all x values to be positive.",
+                );
+            }
+        }
+        foreach ($y as $value) {
+            if ($value <= 0) {
+                throw new InvalidDataInputException(
+                    "Power regression requires all y values to be positive.",
+                );
+            }
+        }
+
+        $logX = array_map(log(...), $x);
+        $logY = array_map(log(...), $y);
+
+        [$b, $logA] = self::linearRegression($logX, $logY);
+
+        return [exp($logA), $b];
+    }
+
+    /**
+     * Exponential regression: fits y = a * e^(b*x).
+     *
+     * Linearizes as ln(y) = ln(a) + b*x and applies linear regression.
+     * Useful for data with exponential growth or decay.
+     *
+     * @param  array<int|float>  $x
+     * @param  array<int|float>  $y  must be positive values
+     * @return array{0: float, 1: float}  [a, b] coefficients where y = a * e^(b*x)
+     *
+     * @throws InvalidDataInputException if y contains non-positive values,
+     * or if arrays have different sizes or fewer than 2 elements
+     */
+    public static function exponentialRegression(
+        array $x,
+        array $y,
+    ): array {
+        foreach ($y as $value) {
+            if ($value <= 0) {
+                throw new InvalidDataInputException(
+                    "Exponential regression requires all y values to be positive.",
+                );
+            }
+        }
+
+        $logY = array_map(log(...), $y);
+
+        [$b, $logA] = self::linearRegression($x, $logY);
+
+        return [exp($logA), $b];
     }
 
     /**

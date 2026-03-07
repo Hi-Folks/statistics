@@ -786,6 +786,96 @@ class StatTest extends TestCase
         Stat::rSquared([1, 2, 3, 4, 5], [3, 3, 3, 3, 3]);
     }
 
+    public function test_logarithmic_regression(): void
+    {
+        // y = 10 * ln(x) + 5
+        $x = [1, 2, 3, 4, 5, 6, 7, 8];
+        $y = array_map(fn(int $v): float => 10 * log($v) + 5, $x);
+
+        [$a, $b] = Stat::logarithmicRegression($x, $y);
+        $this->assertEqualsWithDelta(10.0, $a, 1e-10);
+        $this->assertEqualsWithDelta(5.0, $b, 1e-10);
+    }
+
+    public function test_logarithmic_regression_running_pace(): void
+    {
+        // Simulated weekly running pace (seconds/km) — diminishing improvement
+        $weeks = [1, 2, 3, 4, 5, 6, 7, 8];
+        $paces = [350, 342, 337, 333, 330, 328, 326, 325];
+
+        [$a, $b] = Stat::logarithmicRegression($weeks, $paces);
+        // a should be negative (improvement = pace decreasing)
+        $this->assertLessThan(0, $a);
+        // Prediction for week 12 using log model should be more conservative
+        // than linear (higher pace = slower, closer to reality)
+        $logPrediction = $a * log(12) + $b;
+        [$slope, $intercept] = Stat::linearRegression($weeks, $paces);
+        $linearPrediction = $slope * 12 + $intercept;
+        $this->assertGreaterThan($linearPrediction, $logPrediction);
+    }
+
+    public function test_logarithmic_regression_diminishing_values(): void
+    {
+        $x = range(1, 15);
+        $y = [59, 50, 44, 38, 33, 28, 23, 20, 17, 15, 13, 12, 11, 10, 9.5];
+
+        [$a, $b] = Stat::logarithmicRegression($x, $y);
+        $this->assertEqualsWithDelta(-20.1987, $a, 0.001);
+        $this->assertEqualsWithDelta(63.0686, $b, 0.001);
+    }
+
+    public function test_logarithmic_regression_with_non_positive_x(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::logarithmicRegression([0, 1, 2], [1, 2, 3]);
+    }
+
+    public function test_logarithmic_regression_with_negative_x(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::logarithmicRegression([-1, 1, 2], [1, 2, 3]);
+    }
+
+    public function test_power_regression(): void
+    {
+        // y = 3 * x^2
+        $x = [1, 2, 3, 4, 5];
+        $y = array_map(fn(int $v): int => 3 * $v ** 2, $x);
+
+        [$a, $b] = Stat::powerRegression($x, $y);
+        $this->assertEqualsWithDelta(3.0, $a, 1e-10);
+        $this->assertEqualsWithDelta(2.0, $b, 1e-10);
+    }
+
+    public function test_power_regression_with_non_positive_x(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::powerRegression([0, 1, 2], [1, 2, 3]);
+    }
+
+    public function test_power_regression_with_non_positive_y(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::powerRegression([1, 2, 3], [0, 2, 3]);
+    }
+
+    public function test_exponential_regression(): void
+    {
+        // y = 2 * e^(0.5*x)
+        $x = [1, 2, 3, 4, 5];
+        $y = array_map(fn(int $v): float => 2 * exp(0.5 * $v), $x);
+
+        [$a, $b] = Stat::exponentialRegression($x, $y);
+        $this->assertEqualsWithDelta(2.0, $a, 1e-10);
+        $this->assertEqualsWithDelta(0.5, $b, 1e-10);
+    }
+
+    public function test_exponential_regression_with_non_positive_y(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::exponentialRegression([1, 2, 3], [0, 2, 3]);
+    }
+
     public function test_confidence_interval_95(): void
     {
         $data = [2, 4, 4, 4, 5, 5, 7, 9];

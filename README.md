@@ -110,6 +110,8 @@ The various mathematical statistics are listed below:
 | `tTest()` | one-sample t-test — like z-test but appropriate for small samples where the population standard deviation is unknown |
 | `tTestTwoSample()` | two-sample independent t-test (Welch's) — compares the means of two independent groups without assuming equal variances |
 | `tTestPaired()` | paired t-test — tests whether the mean difference between paired observations is significantly different from zero |
+| `chiSquaredTest()` | chi-squared goodness-of-fit test for observed vs expected category counts |
+| `chiSquaredIndependence()` | chi-squared test of independence for contingency tables |
 | `kde()` | kernel density estimation — returns a closure that estimates the probability density (or CDF) at any point |
 | `kdeRandom()` | random sampling from a kernel density estimate — returns a closure that generates random floats from the KDE distribution |
 
@@ -928,6 +930,45 @@ $result = Stat::tTestPaired($before, $after);
 $result = Stat::tTestPaired($before, $after, alternative: Alternative::Greater);
 
 $result = Stat::tTestPaired($before, $after, round: 4);
+```
+
+#### Stat::chiSquaredTest( array $observed, ?array $expected = null, ?int $round = null )
+Perform a chi-squared goodness-of-fit test. Use it when you want to check whether observed category counts differ from expected counts.
+
+If `$expected` is omitted, a uniform distribution is assumed. Returns an associative array with `chiSquared`, `pValue`, and `degreesOfFreedom`.
+
+```php
+use HiFolks\Statistics\Stat;
+
+// Are these category counts different from a uniform distribution?
+$result = Stat::chiSquaredTest([8, 12, 10], round: 4);
+// ['chiSquared' => 0.8, 'pValue' => 0.6703, 'degreesOfFreedom' => 2]
+
+// Compare observed counts to expected counts
+$result = Stat::chiSquaredTest([18, 32, 50], [20, 30, 50], round: 4);
+// ['chiSquared' => 0.3333, 'pValue' => 0.8465, 'degreesOfFreedom' => 2]
+```
+
+#### Stat::chiSquaredIndependence( array $table, ?int $round = null )
+Perform a chi-squared test of independence on a contingency table. Use it when you want to check whether two categorical variables are associated.
+
+Returns an associative array with `chiSquared`, `pValue`, `degreesOfFreedom`, and the expected-count table.
+
+```php
+use HiFolks\Statistics\Stat;
+
+$table = [
+    [10, 20, 30],
+    [6, 9, 17],
+];
+
+$result = Stat::chiSquaredIndependence($table, round: 4);
+// [
+//     'chiSquared' => 0.2716,
+//     'pValue' => 0.873,
+//     'degreesOfFreedom' => 2,
+//     'expected' => [[10.4348, 18.913, 30.6522], [5.5652, 10.087, 16.3478]],
+// ]
 ```
 
 #### Stat::kde ( array $data , float $h , KdeKernel $kernel = KdeKernel::Normal , bool $cumulative = false )

@@ -350,6 +350,20 @@ class Statistics
     }
 
     /**
+     * Perform a chi-squared goodness-of-fit test.
+     *
+     * @param  array<int|float>|null  $expected  expected category counts, or null for uniform expected counts
+     * @param  int|null  $round  whether to round the results
+     * @return array{chiSquared: float, pValue: float, degreesOfFreedom: int}
+     *
+     * @see Stat::chiSquaredTest()
+     */
+    public function chiSquaredTest(?array $expected = null, ?int $round = null): array
+    {
+        return Stat::chiSquaredTest($this->numericalArray(), $expected, $round);
+    }
+
+    /**
      * Return the mean absolute deviation (MAD).
      *
      * @param  int|null  $round whether to round the result

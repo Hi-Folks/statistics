@@ -446,4 +446,18 @@ class StatisticTest extends TestCase
         $this->assertSame($expected['pValue'], $result['pValue']);
         $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
     }
+
+    public function test_chi_squared_test(): void
+    {
+        $data = [18, 32, 50];
+        $expectedCounts = [20, 30, 50];
+        $s = Statistics::make($data);
+
+        $result = $s->chiSquaredTest($expectedCounts, 4);
+        $expected = Stat::chiSquaredTest($data, $expectedCounts, 4);
+
+        $this->assertSame($expected['chiSquared'], $result['chiSquared']);
+        $this->assertSame($expected['pValue'], $result['pValue']);
+        $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
+    }
 }

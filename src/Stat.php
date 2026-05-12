@@ -2362,4 +2362,259 @@ class Stat
         // Paired t-test is a one-sample t-test on the differences with μ₀ = 0
         return self::tTest($differences, 0.0, $alternative, $round);
     }
+
+    /**
+     * Perform a chi-squared goodness-of-fit test.
+     *
+     * Tests whether observed category counts differ from expected counts.
+     * If expected counts are omitted, a uniform distribution is assumed.
+     *
+     * @param  array<mixed>  $observed  observed category counts
+     * @param  array<mixed>|null  $expected  expected category counts, or null for uniform expected counts
+     * @param  int|null  $round  optional decimal precision for rounding results
+     * @return array{chiSquared: float, pValue: float, degreesOfFreedom: int}
+     *
+     * @throws InvalidDataInputException if inputs are invalid
+     */
+    public static function chiSquaredTest(
+        array $observed,
+        ?array $expected = null,
+        ?int $round = null,
+    ): array {
+        $count = count($observed);
+        if ($count < 2) {
+            throw new InvalidDataInputException(
+                "Chi-squared test requires at least 2 categories.",
+            );
+        }
+
+        $observedValues = self::validateChiSquaredCounts($observed, "Observed");
+        $observedTotal = array_sum($observedValues);
+        if ($observedTotal <= 0) {
+            throw new InvalidDataInputException(
+                "Chi-squared test requires a positive observed total.",
+            );
+        }
+
+        if ($expected === null) {
+            $expectedValues = array_fill(0, $count, $observedTotal / $count);
+        } else {
+            if (count($expected) !== $count) {
+                throw new InvalidDataInputException(
+                    "Chi-squared test requires observed and expected counts to have the same length.",
+                );
+            }
+            $expectedValues = self::validateChiSquaredCounts($expected, "Expected", positive: true);
+            $expectedTotal = array_sum($expectedValues);
+            if (abs($observedTotal - $expectedTotal) > 1e-9) {
+                throw new InvalidDataInputException(
+                    "Chi-squared test requires observed and expected totals to be equal.",
+                );
+            }
+        }
+
+        $chiSquared = 0.0;
+        foreach ($observedValues as $i => $observedValue) {
+            $expectedValue = $expectedValues[$i];
+            $chiSquared += (($observedValue - $expectedValue) ** 2) / $expectedValue;
+        }
+
+        $degreesOfFreedom = $count - 1;
+        $pValue = self::chiSquaredSurvival($chiSquared, $degreesOfFreedom);
+
+        return [
+            'chiSquared' => Math::round($chiSquared, $round),
+            'pValue' => Math::round($pValue, $round),
+            'degreesOfFreedom' => $degreesOfFreedom,
+        ];
+    }
+
+    /**
+     * Perform a chi-squared test of independence for a contingency table.
+     *
+     * Tests whether row and column categories are independent.
+     *
+     * @param  array<mixed>  $table  two-dimensional contingency table of observed counts
+     * @param  int|null  $round  optional decimal precision for rounding results
+     * @return array{chiSquared: float, pValue: float, degreesOfFreedom: int, expected: array<int, array<int, float>>}
+     *
+     * @throws InvalidDataInputException if the table is invalid
+     */
+    public static function chiSquaredIndependence(array $table, ?int $round = null): array
+    {
+        $rowCount = count($table);
+        if ($rowCount < 2) {
+            throw new InvalidDataInputException(
+                "Chi-squared independence test requires at least 2 rows.",
+            );
+        }
+        if (!is_array($table[0]) || count($table[0]) < 2) {
+            throw new InvalidDataInputException(
+                "Chi-squared independence test requires at least 2 columns.",
+            );
+        }
+
+        $columnCount = count($table[0]);
+        $observed = [];
+        foreach ($table as $row) {
+            if (!is_array($row) || count($row) !== $columnCount) {
+                throw new InvalidDataInputException(
+                    "Chi-squared independence test requires a rectangular table.",
+                );
+            }
+            $observed[] = self::validateChiSquaredCounts($row, "Observed");
+        }
+
+        $rowTotals = array_map(array_sum(...), $observed);
+        $columnTotals = array_fill(0, $columnCount, 0.0);
+        foreach ($observed as $row) {
+            foreach ($row as $column => $value) {
+                $columnTotals[$column] += $value;
+            }
+        }
+        $grandTotal = array_sum($rowTotals);
+        if ($grandTotal <= 0) {
+            throw new InvalidDataInputException(
+                "Chi-squared independence test requires a positive total.",
+            );
+        }
+        if (min($rowTotals) <= 0 || min($columnTotals) <= 0) {
+            throw new InvalidDataInputException(
+                "Chi-squared independence test requires positive row and column totals.",
+            );
+        }
+
+        $chiSquared = 0.0;
+        $expected = [];
+        foreach ($observed as $rowIndex => $row) {
+            $expected[$rowIndex] = [];
+            foreach ($row as $columnIndex => $observedValue) {
+                $expectedValue = ($rowTotals[$rowIndex] * $columnTotals[$columnIndex]) / $grandTotal;
+                $chiSquared += (($observedValue - $expectedValue) ** 2) / $expectedValue;
+                $expected[$rowIndex][$columnIndex] = Math::round($expectedValue, $round);
+            }
+        }
+
+        $degreesOfFreedom = ($rowCount - 1) * ($columnCount - 1);
+        $pValue = self::chiSquaredSurvival($chiSquared, $degreesOfFreedom);
+
+        return [
+            'chiSquared' => Math::round($chiSquared, $round),
+            'pValue' => Math::round($pValue, $round),
+            'degreesOfFreedom' => $degreesOfFreedom,
+            'expected' => $expected,
+        ];
+    }
+
+    /**
+     * @param  array<mixed>  $counts
+     * @return array<float>
+     */
+    private static function validateChiSquaredCounts(
+        array $counts,
+        string $label,
+        bool $positive = false,
+    ): array {
+        $values = [];
+        foreach ($counts as $count) {
+            if (!is_int($count) && !is_float($count)) {
+                throw new InvalidDataInputException(
+                    $label . " counts must be numeric.",
+                );
+            }
+            if ($count < 0 || ($positive && $count <= 0)) {
+                throw new InvalidDataInputException(
+                    $label . " counts must be " . ($positive ? "positive." : "non-negative."),
+                );
+            }
+            $values[] = (float) $count;
+        }
+
+        return $values;
+    }
+
+    private static function chiSquaredSurvival(float $chiSquared, int $degreesOfFreedom): float
+    {
+        return self::regularizedGammaQ($degreesOfFreedom / 2.0, $chiSquared / 2.0);
+    }
+
+    private static function regularizedGammaQ(float $a, float $x): float
+    {
+        if ($x === 0.0) {
+            return 1.0;
+        }
+        if ($x < $a + 1.0) {
+            return 1.0 - self::regularizedGammaPSeries($a, $x);
+        }
+
+        return self::regularizedGammaQContinuedFraction($a, $x);
+    }
+
+    private static function regularizedGammaPSeries(float $a, float $x): float
+    {
+        $sum = 1.0 / $a;
+        $term = $sum;
+        $ap = $a;
+
+        for ($n = 1; $n <= 1000; $n++) {
+            $ap++;
+            $term *= $x / $ap;
+            $sum += $term;
+            if (abs($term) < abs($sum) * 1e-15) {
+                break;
+            }
+        }
+
+        return $sum * exp(-$x + $a * log($x) - self::logGamma($a));
+    }
+
+    private static function regularizedGammaQContinuedFraction(float $a, float $x): float
+    {
+        $b = $x + 1.0 - $a;
+        $c = 1.0 / 1e-30;
+        $d = 1.0 / $b;
+        $h = $d;
+
+        for ($i = 1; $i <= 1000; $i++) {
+            $an = -$i * ($i - $a);
+            $b += 2.0;
+            $d = $an * $d + $b;
+            $c = $b + $an / $c;
+            $d = 1.0 / $d;
+            $delta = $d * $c;
+            $h *= $delta;
+            if (abs($delta - 1.0) < 1e-15) {
+                break;
+            }
+        }
+
+        return exp(-$x + $a * log($x) - self::logGamma($a)) * $h;
+    }
+
+    /**
+     * Log-gamma function using the Lanczos approximation.
+     */
+    private static function logGamma(float $x): float
+    {
+        $coef = [
+            0.99999999999980993,
+            676.5203681218851,
+            -1259.1392167224028,
+            771.32342877765313,
+            -176.61502916214059,
+            12.507343278686905,
+            -0.13857109526572012,
+            9.9843695780195716e-6,
+            1.5056327351493116e-7,
+        ];
+
+        $x -= 1.0;
+        $a = $coef[0];
+        $t = $x + 7.5;
+        for ($i = 1; $i < 9; $i++) {
+            $a += $coef[$i] / ($x + $i);
+        }
+
+        return 0.5 * log(2.0 * M_PI) + ($x + 0.5) * log($t) - $t + log($a);
+    }
 }

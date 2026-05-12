@@ -2185,4 +2185,144 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         Stat::iqrOutliers([5]);
     }
+
+    // --- chi-squared tests ---
+
+    public function test_chi_squared_test_uniform_expected(): void
+    {
+        $result = Stat::chiSquaredTest([8, 12, 10]);
+
+        $this->assertEqualsWithDelta(0.8, $result['chiSquared'], 1e-12);
+        $this->assertEqualsWithDelta(0.6703200460356393, $result['pValue'], 1e-12);
+        $this->assertSame(2, $result['degreesOfFreedom']);
+    }
+
+    public function test_chi_squared_test_custom_expected(): void
+    {
+        $result = Stat::chiSquaredTest([18, 32, 50], [20, 30, 50], 4);
+
+        $this->assertSame(0.3333, $result['chiSquared']);
+        $this->assertSame(0.8465, $result['pValue']);
+        $this->assertSame(2, $result['degreesOfFreedom']);
+    }
+
+    public function test_chi_squared_test_equal_counts_has_p_value_one(): void
+    {
+        $result = Stat::chiSquaredTest([10, 10, 20], [10, 10, 20]);
+
+        $this->assertEqualsWithDelta(0.0, $result['chiSquared'], 1e-12);
+        $this->assertEqualsWithDelta(1.0, $result['pValue'], 1e-12);
+    }
+
+    public function test_chi_squared_test_large_statistic(): void
+    {
+        $result = Stat::chiSquaredTest([100, 0]);
+
+        $this->assertSame(100.0, $result['chiSquared']);
+        $this->assertLessThan(0.000001, $result['pValue']);
+        $this->assertSame(1, $result['degreesOfFreedom']);
+    }
+
+    public function test_chi_squared_test_too_few_categories_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([10]);
+    }
+
+    public function test_chi_squared_test_non_numeric_observed_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([10, 'a']);
+    }
+
+    public function test_chi_squared_test_negative_observed_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([10, -1]);
+    }
+
+    public function test_chi_squared_test_zero_observed_total_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([0, 0]);
+    }
+
+    public function test_chi_squared_test_expected_length_mismatch_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([10, 20], [10, 10, 10]);
+    }
+
+    public function test_chi_squared_test_zero_expected_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([10, 20], [0, 30]);
+    }
+
+    public function test_chi_squared_test_unequal_totals_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredTest([10, 20], [15, 20]);
+    }
+
+    public function test_chi_squared_independence(): void
+    {
+        $result = Stat::chiSquaredIndependence([
+            [10, 20, 30],
+            [6, 9, 17],
+        ]);
+
+        $this->assertEqualsWithDelta(0.27157465150403504, $result['chiSquared'], 1e-12);
+        $this->assertEqualsWithDelta(0.873028283380073, $result['pValue'], 1e-12);
+        $this->assertSame(2, $result['degreesOfFreedom']);
+        $this->assertEqualsWithDelta(10.434782608695652, $result['expected'][0][0], 1e-12);
+    }
+
+    public function test_chi_squared_independence_with_rounding(): void
+    {
+        $result = Stat::chiSquaredIndependence([
+            [10, 20, 30],
+            [6, 9, 17],
+        ], 4);
+
+        $this->assertSame(0.2716, $result['chiSquared']);
+        $this->assertSame(0.873, $result['pValue']);
+        $this->assertSame(10.4348, $result['expected'][0][0]);
+    }
+
+    public function test_chi_squared_independence_requires_two_rows(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredIndependence([[1, 2]]);
+    }
+
+    public function test_chi_squared_independence_requires_two_columns(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredIndependence([[1], [2]]);
+    }
+
+    public function test_chi_squared_independence_requires_rectangular_table(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredIndependence([[1, 2], [3]]);
+    }
+
+    public function test_chi_squared_independence_requires_numeric_counts(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredIndependence([[1, 2], [3, 'a']]);
+    }
+
+    public function test_chi_squared_independence_requires_positive_total(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredIndependence([[0, 0], [0, 0]]);
+    }
+
+    public function test_chi_squared_independence_requires_positive_row_and_column_totals(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::chiSquaredIndependence([[1, 0], [2, 0]]);
+    }
 }

@@ -16,8 +16,8 @@
 ### Priority 3: Hypothesis Testing
 
 - ~~T-test (two-sample, paired) - one-sample is done~~ DONE: `tTestTwoSample()` (Welch's) and `tTestPaired()`.
-- `chiSquaredTest()` - chi-squared goodness-of-fit test.
-- `chiSquaredIndependence()` - chi-squared test for contingency tables.
+- DONE: `chiSquaredTest()` - chi-squared goodness-of-fit test.
+- DONE: `chiSquaredIndependence()` - chi-squared test for contingency tables.
 
 ### Priority 4: Distributions
 

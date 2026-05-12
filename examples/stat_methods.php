@@ -38,6 +38,10 @@ $correlation = Stat::kendallTau([12, 2, 1, 12, 2], [1, 4, 7, 1, 0], 4);
 // -0.4714
 $correlation = Stat::correlation([12, 2, 1, 12, 2], [1, 4, 7, 1, 0], 'kendall');
 // -0.47140452079103173
+$chiSquared = Stat::chiSquaredTest([18, 32, 50], [20, 30, 50], 4);
+// ['chiSquared' => 0.3333, 'pValue' => 0.8465, 'degreesOfFreedom' => 2]
+$chiSquared = Stat::chiSquaredIndependence([[10, 20, 30], [6, 9, 17]], 4);
+// ['chiSquared' => 0.2716, 'pValue' => 0.873, 'degreesOfFreedom' => 2, 'expected' => ...]
 $quantiles = Stat::quantiles([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88]);
 // [ 55.0, 88.0, 92.0 ]
 $quantiles = Stat::quantiles([105, 129, 87, 86, 111, 111, 89, 81, 108, 92, 110, 100, 75, 105, 103, 109, 76, 119, 99, 91, 103, 129, 106, 101, 84, 111, 74, 87, 86, 103, 103, 106, 86, 111, 75, 87, 102, 121, 111, 88, 89, 101, 106, 95, 103, 107, 101, 81, 109, 104], 10);

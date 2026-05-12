@@ -3,6 +3,9 @@
 ## 1.5.2 - WIP
 - Adding `kendallTau()` method for Kendall tau-b rank correlation with tie handling
 - Adding `kendall` method support to `correlation()`
+- Adding `chiSquaredTest()` method for chi-squared goodness-of-fit tests
+- Adding `chiSquaredIndependence()` method for chi-squared tests on contingency tables
+- Adding fluent `Statistics::chiSquaredTest()` wrapper method
 
 ## 1.5.1 - 2026-05-12
 - Adding `rank()` method for assigning 1-based ranks to data points, with support for `average`, `min`, `max`, `dense`, and `ordinal` tie strategies

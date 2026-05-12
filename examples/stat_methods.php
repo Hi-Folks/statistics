@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use HiFolks\Statistics\Stat;
@@ -24,6 +26,14 @@ $percentile = Stat::firstQuartile([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88]);
 // 55.0
 $percentile = Stat::thirdQuartile([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88]);
 // 92.0
+$ranks = Stat::rank([10, 20, 20, 30]);
+// [1, 2.5, 2.5, 4]
+$ranks = Stat::rank([10, 20, 20, 30], Stat::RANK_DENSE);
+// [1, 2, 2, 3]
+$percentileRank = Stat::percentileRank([10, 20, 20, 30, 40], 20);
+// 60.0
+$percentileRank = Stat::percentileRank([10, 20, 20, 30, 40], 20, Stat::PERCENTILE_RANK_STRICT);
+// 20.0
 $quantiles = Stat::quantiles([98, 90, 70, 18, 92, 92, 55, 83, 45, 95, 88]);
 // [ 55.0, 88.0, 92.0 ]
 $quantiles = Stat::quantiles([105, 129, 87, 86, 111, 111, 89, 81, 108, 92, 110, 100, 75, 105, 103, 109, 76, 119, 99, 91, 103, 129, 106, 101, 84, 111, 74, 87, 86, 103, 103, 106, 86, 111, 75, 87, 102, 121, 111, 88, 89, 101, 106, 95, 103, 107, 101, 81, 109, 104], 10);

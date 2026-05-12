@@ -1,31 +1,56 @@
 ## Missing Functions
 
+### Priority 1: Ranking & Order Statistics
 
+- DONE: `rank()` - assign ranks to data points.
+  - Supports tie strategies: `average`, `min`, `max`, `dense`, `ordinal`.
+- DONE: `percentileRank()` - calculate what percentile a given value falls at.
+  - Supports `weak`, `strict`, `mean`, and `rank` variants.
 
+### Priority 2: Correlation
 
-### Correlation & Regression
+- `kendallTau()` - Kendall tau rank correlation.
+  - Useful for ordinal data and small samples.
+  - Complements the existing Pearson and Spearman support in `correlation()`.
+- Consider extending `correlation()` with a Kendall method option.
 
+### Priority 3: Hypothesis Testing
 
-- Kendall tau correlation - another rank-based correlation
-- Multiple/polynomial regression
+- ~~T-test (two-sample, paired) - one-sample is done~~ DONE: `tTestTwoSample()` (Welch's) and `tTestPaired()`.
+- `chiSquaredTest()` - chi-squared goodness-of-fit test.
+- `chiSquaredIndependence()` - chi-squared test for contingency tables.
 
-### Hypothesis Testing
+### Priority 4: Distributions
 
-- ~~T-test (two-sample, paired) — one-sample is done~~ DONE: `tTestTwoSample()` (Welch's) and `tTestPaired()`
-- Chi-squared test
+- `ChiSquaredDist`
+  - Needed for chi-squared tests.
+  - Include `pdf()`, `cdf()`, `invCdf()` if practical, mean, variance.
+- `BinomialDist`
+  - Include `pmf()`, `cdf()`, mean, variance, samples.
+- `PoissonDist`
+  - Include `pmf()`, `cdf()`, mean, variance, samples.
+- `ExponentialDist`
+  - Include `pdf()`, `cdf()`, `invCdf()`, mean, variance, samples.
+- `UniformDist`
+  - Include `pdf()`, `cdf()`, `invCdf()`, mean, variance, samples.
 
-### Other Distributions (beyond Normal)
+### Priority 5: Statistics Wrapper Completeness
 
-- Chi-squared distribution
-- Binomial distribution
-- Poisson distribution
-- Uniform distribution
-- Exponential distribution
+Add fluent `Statistics` wrapper methods for existing `Stat` APIs where useful:
 
+- `correlation()`
+- `covariance()`
+- `linearRegression()`
+- `logarithmicRegression()`
+- `powerRegression()`
+- `exponentialRegression()`
+- `rSquared()`
+- `kde()`
+- `kdeRandom()`
 
+### Priority 6: Regression & Modeling
 
-
-### Ranking & Order Statistics
-
-- Rank - assign ranks to data points
-- Percentile rank - what percentile a given value falls at
+- `polynomialRegression()` - fit polynomial models of configurable degree.
+- `multipleLinearRegression()` - fit linear models with multiple predictors.
+  - This likely needs a small matrix/linear-algebra helper layer.
+  - Add after simpler ranking, correlation, testing, and distribution work.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace HiFolks\Statistics\Tests;
 
 use HiFolks\Statistics\NormalDist;

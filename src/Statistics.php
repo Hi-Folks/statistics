@@ -346,7 +346,7 @@ class Statistics
      */
     public function tTestPaired(array $data2, Alternative $alternative = Alternative::TwoSided, ?int $round = null): array
     {
-        return Stat::tTestPaired($this->numericalArray(), $data2, $alternative, $round);
+        return Stat::tTestPaired($this->originalNumericalArray(), $data2, $alternative, $round);
     }
 
     /**
@@ -498,6 +498,31 @@ class Statistics
     }
 
     /**
+     * Return ranks for each data point, preserving the original array keys.
+     *
+     * @see Stat::rank()
+     *
+     * @return array<int|float>
+     */
+    public function rank(string $method = Stat::RANK_AVERAGE): array
+    {
+        return Stat::rank($this->originalNumericalArray(), $method);
+    }
+
+    /**
+     * Return the percentile rank of a value in the data.
+     *
+     * @see Stat::percentileRank()
+     */
+    public function percentileRank(
+        int|float $value,
+        string $kind = Stat::PERCENTILE_RANK_WEAK,
+        ?int $round = null,
+    ): float {
+        return Stat::percentileRank($this->numericalArray(), $value, $kind, $round);
+    }
+
+    /**
      * Return the coefficient of variation (CV%) of the numeric data.
      *
      * @param  int|null  $round whether to round the result
@@ -564,5 +589,21 @@ class Statistics
         }
 
         return $this->values;
+    }
+
+    /**
+     * Return the original values as a numerical array.
+     *
+     * @return array<int|float>
+     */
+    private function originalNumericalArray(): array
+    {
+        foreach ($this->originalArray as $value) {
+            if (!is_numeric($value)) {
+                throw new InvalidDataInputException('The data must not contain non-number elements.');
+            }
+        }
+
+        return $this->originalArray;
     }
 }

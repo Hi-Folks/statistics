@@ -41,12 +41,12 @@ function parseGpx(string $filePath): array
         $point = [
             "lat" => (float) $trkpt["lat"],
             "lon" => (float) $trkpt["lon"],
-            "ele" =>
-                property_exists($trkpt, "ele") && $trkpt->ele !== null
+            "ele"
+                => property_exists($trkpt, "ele") && $trkpt->ele !== null
                     ? (float) $trkpt->ele
                     : 0.0,
-            "time" =>
-                property_exists($trkpt, "time") && $trkpt->time !== null
+            "time"
+                => property_exists($trkpt, "time") && $trkpt->time !== null
                     ? strtotime((string) $trkpt->time)
                     : 0,
             "hr" => null,
@@ -58,8 +58,8 @@ function parseGpx(string $filePath): array
             if ($extensions) {
                 $gpxtpx = $extensions->children($namespaces["gpxtpx"]);
                 if (
-                    property_exists($gpxtpx->TrackPointExtension, "hr") &&
-                    $gpxtpx->TrackPointExtension->hr !== null
+                    property_exists($gpxtpx->TrackPointExtension, "hr")
+                    && $gpxtpx->TrackPointExtension->hr !== null
                 ) {
                     $point["hr"] = (int) $gpxtpx->TrackPointExtension->hr;
                 }
@@ -84,9 +84,9 @@ function haversineDistance(
     $R = 6371000; // Earth radius in meters
     $dLat = deg2rad($lat2 - $lat1);
     $dLon = deg2rad($lon2 - $lon1);
-    $a =
-        sin($dLat / 2) ** 2 +
-        cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) ** 2;
+    $a
+        = sin($dLat / 2) ** 2
+        + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) ** 2;
 
     return $R * 2 * atan2(sqrt($a), sqrt(1 - $a));
 }
@@ -138,8 +138,8 @@ function buildKmSplits(array $trackpoints): array
                 "pace" => $kmTime,
                 "eleGain" => round($kmEleGain, 1),
                 "eleLoss" => round($kmEleLoss, 1),
-                "avgHr" =>
-                    count($kmHrValues) > 0
+                "avgHr"
+                    => count($kmHrValues) > 0
                         ? (int) round(Stat::mean($kmHrValues))
                         : null,
             ];
@@ -306,25 +306,25 @@ echo "=== STEP 2: Pace Descriptive Statistics ===" . PHP_EOL;
 echo "Mean pace:       " . formatPace($meanPace) . PHP_EOL;
 echo "Median pace:     " . formatPace($medianPace) . PHP_EOL;
 echo "Std deviation:   " . round($stdevPace, 1) . " sec" . PHP_EOL;
-echo "Fastest km:      " .
-    formatPace(min($paces)) .
-    " (km " .
-    $splits[array_search(min($paces), $paces)]["km"] .
-    ")" .
-    PHP_EOL;
-echo "Slowest km:      " .
-    formatPace(max($paces)) .
-    " (km " .
-    $splits[array_search(max($paces), $paces)]["km"] .
-    ")" .
-    PHP_EOL;
-echo "Quartiles:       Q1=" .
-    formatPace($quartiles[0]) .
-    "  Q2=" .
-    formatPace($quartiles[1]) .
-    "  Q3=" .
-    formatPace($quartiles[2]) .
-    PHP_EOL;
+echo "Fastest km:      "
+    . formatPace(min($paces))
+    . " (km "
+    . $splits[array_search(min($paces), $paces)]["km"]
+    . ")"
+    . PHP_EOL;
+echo "Slowest km:      "
+    . formatPace(max($paces))
+    . " (km "
+    . $splits[array_search(max($paces), $paces)]["km"]
+    . ")"
+    . PHP_EOL;
+echo "Quartiles:       Q1="
+    . formatPace($quartiles[0])
+    . "  Q2="
+    . formatPace($quartiles[1])
+    . "  Q3="
+    . formatPace($quartiles[2])
+    . PHP_EOL;
 echo PHP_EOL;
 
 // ============================================================
@@ -342,34 +342,34 @@ $splitPct = round(($splitDiff / $meanFirst) * 100, 1);
 
 echo "=== STEP 3: Pacing Consistency ===" . PHP_EOL;
 echo "Coefficient of Variation: " . $cv . "%" . PHP_EOL;
-echo "First half avg pace:  " .
-    formatPace($meanFirst) .
-    " (km 1-" .
-    $halfPoint .
-    ")" .
-    PHP_EOL;
-echo "Second half avg pace: " .
-    formatPace($meanSecond) .
-    " (km " .
-    ($halfPoint + 1) .
-    "-" .
-    $totalDistance .
-    ")" .
-    PHP_EOL;
+echo "First half avg pace:  "
+    . formatPace($meanFirst)
+    . " (km 1-"
+    . $halfPoint
+    . ")"
+    . PHP_EOL;
+echo "Second half avg pace: "
+    . formatPace($meanSecond)
+    . " (km "
+    . ($halfPoint + 1)
+    . "-"
+    . $totalDistance
+    . ")"
+    . PHP_EOL;
 if ($splitDiff > 0) {
-    echo "Positive split: +" .
-        round($splitDiff, 1) .
-        " sec/km slower (" .
-        $splitPct .
-        "% fade)" .
-        PHP_EOL;
+    echo "Positive split: +"
+        . round($splitDiff, 1)
+        . " sec/km slower ("
+        . $splitPct
+        . "% fade)"
+        . PHP_EOL;
 } elseif ($splitDiff < 0) {
-    echo "Negative split: " .
-        round(abs($splitDiff), 1) .
-        " sec/km faster (" .
-        abs($splitPct) .
-        "% improvement)" .
-        PHP_EOL;
+    echo "Negative split: "
+        . round(abs($splitDiff), 1)
+        . " sec/km faster ("
+        . abs($splitPct)
+        . "% improvement)"
+        . PHP_EOL;
 } else {
     echo "Even split: perfectly consistent pacing" . PHP_EOL;
 }
@@ -385,16 +385,16 @@ $r2Ele = Stat::rSquared($eleGains, $paces, false, 4);
 
 echo "=== STEP 4: Elevation Impact on Pace ===" . PHP_EOL;
 echo "Correlation (elevation gain vs pace): " . round($corrEle, 4) . PHP_EOL;
-echo "Linear regression: pace = " .
-    round($regEle[0], 2) .
-    " x eleGain + " .
-    round($regEle[1], 1) .
-    PHP_EOL;
+echo "Linear regression: pace = "
+    . round($regEle[0], 2)
+    . " x eleGain + "
+    . round($regEle[1], 1)
+    . PHP_EOL;
 echo "R-squared: " . $r2Ele . PHP_EOL;
-echo "Interpretation: each meter of elevation gain costs ~" .
-    round($regEle[0], 1) .
-    " seconds per km" .
-    PHP_EOL;
+echo "Interpretation: each meter of elevation gain costs ~"
+    . round($regEle[0], 1)
+    . " seconds per km"
+    . PHP_EOL;
 echo PHP_EOL;
 
 // ============================================================
@@ -417,21 +417,21 @@ echo "=== STEP 5: Heart Rate Analysis ===" . PHP_EOL;
 echo "Mean HR:    " . round($meanHr) . " bpm" . PHP_EOL;
 echo "Median HR:  " . round($medianHr) . " bpm" . PHP_EOL;
 echo "Std dev:    " . round($stdevHr, 1) . " bpm" . PHP_EOL;
-echo "Min HR:     " .
-    min($hrValues) .
-    " bpm | Max HR: " .
-    max($hrValues) .
-    " bpm" .
-    PHP_EOL;
+echo "Min HR:     "
+    . min($hrValues)
+    . " bpm | Max HR: "
+    . max($hrValues)
+    . " bpm"
+    . PHP_EOL;
 echo PHP_EOL;
 
 echo "Cardiac drift (HR vs km):" . PHP_EOL;
 echo "  Correlation:      " . round($corrHrKm, 4) . PHP_EOL;
-echo "  Regression:       HR = " .
-    round($regHrKm[0], 2) .
-    " x km + " .
-    round($regHrKm[1], 1) .
-    PHP_EOL;
+echo "  Regression:       HR = "
+    . round($regHrKm[0], 2)
+    . " x km + "
+    . round($regHrKm[1], 1)
+    . PHP_EOL;
 echo "  R-squared:        " . $r2HrKm . PHP_EOL;
 echo "  HR drift per km:  +" . round($regHrKm[0], 1) . " bpm/km" . PHP_EOL;
 echo PHP_EOL;
@@ -443,14 +443,14 @@ echo PHP_EOL;
 $hrZones = Freq::frequencyTableBySize($hrValues, 10);
 echo "Heart Rate Zone Distribution:" . PHP_EOL;
 foreach ($hrZones as $range => $count) {
-    echo "  " .
-        $range .
-        " bpm: " .
-        str_repeat("#", $count) .
-        " (" .
-        $count .
-        " km)" .
-        PHP_EOL;
+    echo "  "
+        . $range
+        . " bpm: "
+        . str_repeat("#", $count)
+        . " ("
+        . $count
+        . " km)"
+        . PHP_EOL;
 }
 echo PHP_EOL;
 
@@ -459,38 +459,42 @@ echo PHP_EOL;
 // ============================================================
 
 $zscores = Stat::zscores($paces, 2);
+$paceRanks = Stat::rank($paces, Stat::RANK_DENSE);
 $zOutliers = Stat::outliers($paces, 2.0);
 $iqrOutliers = Stat::iqrOutliers($paces);
 
 echo "=== STEP 6: Outlier Detection ===" . PHP_EOL;
-echo "Per-km z-scores (negative = faster than average):" . PHP_EOL;
+echo "Per-km z-scores and pace ranks (negative = faster than average):"
+    . PHP_EOL;
 foreach ($splits as $i => $split) {
     $z = $zscores[$i];
-    $bar =
-        $z < 0
+    $bar
+        = $z < 0
             ? str_repeat("<", (int) abs(round($z * 5)))
             : str_repeat(">", (int) round($z * 5));
-    echo "  km " .
-        str_pad((string) $split["km"], 2, " ", STR_PAD_LEFT) .
-        ": " .
-        formatPace($split["pace"]) .
-        "  z=" .
-        sprintf("%+.2f", $z) .
-        "  " .
-        $bar .
-        PHP_EOL;
+    echo "  km "
+        . str_pad((string) $split["km"], 2, " ", STR_PAD_LEFT)
+        . ": "
+        . formatPace($split["pace"])
+        . "  rank="
+        . $paceRanks[$i]
+        . "  z="
+        . sprintf("%+.2f", $z)
+        . "  "
+        . $bar
+        . PHP_EOL;
 }
 echo PHP_EOL;
-echo "Z-score outliers (|z| > 2.0): " .
-    (count($zOutliers) > 0
+echo "Z-score outliers (|z| > 2.0): "
+    . (count($zOutliers) > 0
         ? implode(", ", array_map(formatPace(...), $zOutliers))
-        : "none") .
-    PHP_EOL;
-echo "IQR outliers:                 " .
-    (count($iqrOutliers) > 0
+        : "none")
+    . PHP_EOL;
+echo "IQR outliers:                 "
+    . (count($iqrOutliers) > 0
         ? implode(", ", array_map(formatPace(...), $iqrOutliers))
-        : "none") .
-    PHP_EOL;
+        : "none")
+    . PHP_EOL;
 echo PHP_EOL;
 
 // ============================================================
@@ -502,11 +506,11 @@ echo "Your pace distribution across this run:" . PHP_EOL;
 $percentiles = [10, 25, 50, 75, 90];
 foreach ($percentiles as $p) {
     $val = Stat::percentile($paces, $p, 0);
-    echo "  P" .
-        str_pad((string) $p, 2, " ", STR_PAD_LEFT) .
-        ": " .
-        formatPace($val) .
-        PHP_EOL;
+    echo "  P"
+        . str_pad((string) $p, 2, " ", STR_PAD_LEFT)
+        . ": "
+        . formatPace($val)
+        . PHP_EOL;
 }
 echo PHP_EOL;
 echo "P10 = your fastest 10% of km were at this pace or faster" . PHP_EOL;
@@ -524,11 +528,11 @@ echo "=== STEP 8: Distribution Shape ===" . PHP_EOL;
 echo "Skewness: " . $skewness . PHP_EOL;
 echo "Kurtosis: " . $kurtosis . PHP_EOL;
 if ($skewness > 0.2) {
-    echo "Right-skewed: you have a tail of slower km (hills? fatigue?)" .
-        PHP_EOL;
+    echo "Right-skewed: you have a tail of slower km (hills? fatigue?)"
+        . PHP_EOL;
 } elseif ($skewness < -0.2) {
-    echo "Left-skewed: you have a tail of faster km (downhills? strong start?)" .
-        PHP_EOL;
+    echo "Left-skewed: you have a tail of faster km (downhills? strong start?)"
+        . PHP_EOL;
 } else {
     echo "Approximately symmetric pacing" . PHP_EOL;
 }
@@ -542,11 +546,11 @@ $ci = Stat::confidenceInterval($paces, 0.95, 0);
 $sem = Stat::sem($paces, 1);
 
 echo "=== STEP 9: Confidence Interval ===" . PHP_EOL;
-echo "95% CI for your true pace: " .
-    formatPace($ci[0]) .
-    " to " .
-    formatPace($ci[1]) .
-    PHP_EOL;
+echo "95% CI for your true pace: "
+    . formatPace($ci[0])
+    . " to "
+    . formatPace($ci[1])
+    . PHP_EOL;
 echo "Standard Error of the Mean: " . $sem . " sec" . PHP_EOL;
 echo "With more km (longer runs), this interval would narrow." . PHP_EOL;
 echo PHP_EOL;
@@ -570,24 +574,24 @@ foreach ($weeks as $i => $w) {
     echo "  Week " . $w . ": " . formatPace($weeklyPaces[$i]) . PHP_EOL;
 }
 echo PHP_EOL;
-echo "Trend regression: pace = " .
-    round($trendReg[0], 2) .
-    " x week + " .
-    round($trendReg[1], 1) .
-    PHP_EOL;
+echo "Trend regression: pace = "
+    . round($trendReg[0], 2)
+    . " x week + "
+    . round($trendReg[1], 1)
+    . PHP_EOL;
 echo "R-squared:        " . $trendR2 . PHP_EOL;
 echo "Correlation:      " . round($trendCorr, 4) . PHP_EOL;
-echo "Improvement rate:  " .
-    round(abs($trendReg[0]), 1) .
-    " seconds/km per week" .
-    PHP_EOL;
+echo "Improvement rate:  "
+    . round(abs($trendReg[0]), 1)
+    . " seconds/km per week"
+    . PHP_EOL;
 echo PHP_EOL;
 
 // Linear prediction for week 12
 $linearPrediction12 = $trendReg[0] * 12 + $trendReg[1];
-echo "Linear prediction at week 12: " .
-    formatPace(max(0, $linearPrediction12)) .
-    PHP_EOL;
+echo "Linear prediction at week 12: "
+    . formatPace(max(0, $linearPrediction12))
+    . PHP_EOL;
 echo "(Extrapolation — use with caution!)" . PHP_EOL;
 echo PHP_EOL;
 
@@ -603,11 +607,11 @@ $logReg = Stat::logarithmicRegression($weeks, $weeklyPaces);
 $logWeeks = array_map(log(...), $weeks);
 $logR2 = Stat::rSquared($logWeeks, $weeklyPaces, false, 4);
 
-echo "Logarithmic regression: pace = " .
-    round($logReg[0], 2) .
-    " x ln(week) + " .
-    round($logReg[1], 1) .
-    PHP_EOL;
+echo "Logarithmic regression: pace = "
+    . round($logReg[0], 2)
+    . " x ln(week) + "
+    . round($logReg[1], 1)
+    . PHP_EOL;
 echo "R-squared:              " . $logR2 . PHP_EOL;
 echo PHP_EOL;
 
@@ -615,9 +619,9 @@ echo PHP_EOL;
 echo "Model comparison:" . PHP_EOL;
 echo "  Linear R²:      " . $trendR2 . PHP_EOL;
 echo "  Logarithmic R²: " . $logR2 . PHP_EOL;
-echo "  Better fit:      " .
-    ($logR2 > $trendR2 ? "Logarithmic" : "Linear") .
-    PHP_EOL;
+echo "  Better fit:      "
+    . ($logR2 > $trendR2 ? "Logarithmic" : "Linear")
+    . PHP_EOL;
 echo PHP_EOL;
 
 // Compare predictions
@@ -626,21 +630,21 @@ $logPrediction20 = $logReg[0] * log(20) + $logReg[1];
 $linearPrediction20 = $trendReg[0] * 20 + $trendReg[1];
 
 echo "Predictions:" . PHP_EOL;
-echo "  Week 12 — Linear: " .
-    formatPace(max(0, $linearPrediction12)) .
-    "  |  Logarithmic: " .
-    formatPace(max(0, $logPrediction12)) .
-    PHP_EOL;
-echo "  Week 20 — Linear: " .
-    formatPace(max(0, $linearPrediction20)) .
-    "  |  Logarithmic: " .
-    formatPace(max(0, $logPrediction20)) .
-    PHP_EOL;
+echo "  Week 12 — Linear: "
+    . formatPace(max(0, $linearPrediction12))
+    . "  |  Logarithmic: "
+    . formatPace(max(0, $logPrediction12))
+    . PHP_EOL;
+echo "  Week 20 — Linear: "
+    . formatPace(max(0, $linearPrediction20))
+    . "  |  Logarithmic: "
+    . formatPace(max(0, $logPrediction20))
+    . PHP_EOL;
 echo PHP_EOL;
-echo "The logarithmic model predicts more conservative (realistic) paces" .
-    PHP_EOL;
-echo "because it accounts for the natural plateau in athletic improvement." .
-    PHP_EOL;
+echo "The logarithmic model predicts more conservative (realistic) paces"
+    . PHP_EOL;
+echo "because it accounts for the natural plateau in athletic improvement."
+    . PHP_EOL;
 echo PHP_EOL;
 
 // ============================================================
@@ -680,21 +684,21 @@ $models = [
     ],
 ];
 
-echo str_pad("Model", 18) .
-    str_pad("R²", 11) .
-    str_pad("Week 12", 11) .
-    str_pad("Week 20", 11) .
-    "Week 52" .
-    PHP_EOL;
+echo str_pad("Model", 18)
+    . str_pad("R²", 11)
+    . str_pad("Week 12", 11)
+    . str_pad("Week 20", 11)
+    . "Week 52"
+    . PHP_EOL;
 echo str_repeat("-", 58) . PHP_EOL;
 
 foreach ($models as $name => $model) {
-    echo str_pad($name, 18) .
-        str_pad((string) $model["r2"], 11) .
-        str_pad(formatPace(max(0, $model["predict"](12))), 11) .
-        str_pad(formatPace(max(0, $model["predict"](20))), 11) .
-        formatPace(max(0, $model["predict"](52))) .
-        PHP_EOL;
+    echo str_pad($name, 18)
+        . str_pad((string) $model["r2"], 11)
+        . str_pad(formatPace(max(0, $model["predict"](12))), 11)
+        . str_pad(formatPace(max(0, $model["predict"](20))), 11)
+        . formatPace(max(0, $model["predict"](52)))
+        . PHP_EOL;
 }
 echo PHP_EOL;
 
@@ -708,5 +712,5 @@ foreach ($models as $name => $model) {
     }
 }
 echo "Best fit by R²: " . $bestModel . " (R² = " . $bestR2 . ")" . PHP_EOL;
-echo "The data tells us the improvement pattern follows a curve, not a straight line." .
-    PHP_EOL;
+echo "The data tells us the improvement pattern follows a curve, not a straight line."
+    . PHP_EOL;

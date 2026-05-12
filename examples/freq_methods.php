@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $data = [55, 70, 57, 73, 55, 59, 64, 72,

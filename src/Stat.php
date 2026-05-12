@@ -17,6 +17,24 @@ class Stat
 
     final public const MEDIAN_TYPE_MIDDLE = "MIDDLE";
 
+    final public const RANK_AVERAGE = "average";
+
+    final public const RANK_MIN = "min";
+
+    final public const RANK_MAX = "max";
+
+    final public const RANK_DENSE = "dense";
+
+    final public const RANK_ORDINAL = "ordinal";
+
+    final public const PERCENTILE_RANK_WEAK = "weak";
+
+    final public const PERCENTILE_RANK_STRICT = "strict";
+
+    final public const PERCENTILE_RANK_MEAN = "mean";
+
+    final public const PERCENTILE_RANK_RANK = "rank";
+
     /**
      * Count the element in the array
      *
@@ -579,6 +597,177 @@ class Stat
             = $data[$lower] + $fraction * ($data[$lower + 1] - $data[$lower]);
 
         return Math::round($interpolated, $round);
+    }
+
+    /**
+     * Return ranks for each data point, preserving the original array keys.
+     *
+     * Rank values are 1-based. Ties can be handled with the following methods:
+     * - average: average rank for tied values
+     * - min: lowest rank in the tied group
+     * - max: highest rank in the tied group
+     * - dense: consecutive ranks without gaps
+     * - ordinal: ranks by sorted order, with ties ordered by original input order
+     *
+     * @param  array<mixed>  $data
+     * @return array<array-key, int|float>
+     *
+     * @throws InvalidDataInputException if the data is empty or method is invalid
+     */
+    public static function rank(
+        array $data,
+        string $method = self::RANK_AVERAGE,
+    ): array {
+        if ($data === []) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+        if (
+            !in_array(
+                $method,
+                [
+                    self::RANK_AVERAGE,
+                    self::RANK_MIN,
+                    self::RANK_MAX,
+                    self::RANK_DENSE,
+                    self::RANK_ORDINAL,
+                ],
+                true,
+            )
+        ) {
+            throw new InvalidDataInputException("Invalid rank method.");
+        }
+        if (array_filter($data, fn(mixed $value): bool => !is_int($value) && !is_float($value)) !== []) {
+            throw new InvalidDataInputException(
+                "The data array contains a non-numeric value.",
+            );
+        }
+
+        $indexed = [];
+        $position = 0;
+        foreach ($data as $key => $value) {
+            $indexed[] = [
+                "key" => $key,
+                "position" => $position,
+                "value" => $value,
+            ];
+            $position++;
+        }
+
+        usort(
+            $indexed,
+            fn(array $a, array $b): int => $a["value"] <=> $b["value"]
+                ?: $a["position"] <=> $b["position"],
+        );
+
+        $ranks = array_fill_keys(array_keys($data), 0);
+        if ($method === self::RANK_ORDINAL) {
+            foreach ($indexed as $i => $item) {
+                $ranks[$item["key"]] = $i + 1;
+            }
+
+            return $ranks;
+        }
+
+        $denseRank = 1;
+        $count = count($indexed);
+        for ($i = 0; $i < $count;) {
+            $j = $i + 1;
+            while ($j < $count && $indexed[$j]["value"] == $indexed[$i]["value"]) {
+                $j++;
+            }
+
+            $minRank = $i + 1;
+            $maxRank = $j;
+            $rank = match ($method) {
+                self::RANK_MIN => $minRank,
+                self::RANK_MAX => $maxRank,
+                self::RANK_DENSE => $denseRank,
+                default => ($minRank + $maxRank) / 2,
+            };
+
+            for ($k = $i; $k < $j; $k++) {
+                $ranks[$indexed[$k]["key"]] = $rank;
+            }
+
+            $denseRank++;
+            $i = $j;
+        }
+
+        return $ranks;
+    }
+
+    /**
+     * Return the percentile rank of a value in the data.
+     *
+     * Supported kinds:
+     * - weak: percentage of values less than or equal to value
+     * - strict: percentage of values strictly less than value
+     * - mean: average of weak and strict percentile ranks
+     * - rank: average percentage rank for exact matches, falling back to mean when value is absent
+     *
+     * @param  array<mixed>  $data
+     * @param  int|null  $round whether to round the result
+     *
+     * @throws InvalidDataInputException if the data is empty or kind is invalid
+     */
+    public static function percentileRank(
+        array $data,
+        int|float $value,
+        string $kind = self::PERCENTILE_RANK_WEAK,
+        ?int $round = null,
+    ): float {
+        if ($data === []) {
+            throw new InvalidDataInputException("The data must not be empty.");
+        }
+        if (
+            !in_array(
+                $kind,
+                [
+                    self::PERCENTILE_RANK_WEAK,
+                    self::PERCENTILE_RANK_STRICT,
+                    self::PERCENTILE_RANK_MEAN,
+                    self::PERCENTILE_RANK_RANK,
+                ],
+                true,
+            )
+        ) {
+            throw new InvalidDataInputException("Invalid percentile rank kind.");
+        }
+        if (array_filter($data, fn(mixed $item): bool => !is_int($item) && !is_float($item)) !== []) {
+            throw new InvalidDataInputException(
+                "The data array contains a non-numeric value.",
+            );
+        }
+
+        $count = count($data);
+        $strictCount = 0;
+        $weakCount = 0;
+        $equalCount = 0;
+        foreach ($data as $item) {
+            if ($item < $value) {
+                $strictCount++;
+                $weakCount++;
+                continue;
+            }
+            if ($item == $value) {
+                $weakCount++;
+                $equalCount++;
+            }
+        }
+
+        $strict = ($strictCount / $count) * 100;
+        $weak = ($weakCount / $count) * 100;
+
+        $percentileRank = match ($kind) {
+            self::PERCENTILE_RANK_STRICT => $strict,
+            self::PERCENTILE_RANK_MEAN => ($strict + $weak) / 2,
+            self::PERCENTILE_RANK_RANK => $equalCount > 0
+                ? (($strictCount + 1 + $strictCount + $equalCount) / 2) / $count * 100
+                : ($strict + $weak) / 2,
+            default => $weak,
+        };
+
+        return Math::round($percentileRank, $round);
     }
 
     /**

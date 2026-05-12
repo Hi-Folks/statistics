@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.1 - 2026-05-12
+- Adding `rank()` method for assigning 1-based ranks to data points, with support for `average`, `min`, `max`, `dense`, and `ordinal` tie strategies
+- Adding `percentileRank()` method for calculating the percentile position of a value, with `weak`, `strict`, `mean`, and `rank` variants
+- Adding fluent `Statistics::rank()` and `Statistics::percentileRank()` wrapper methods
+- Fixing `Statistics::tTestPaired()` to preserve the original input order for paired observations
+- Updating README documentation and examples for ranking and percentile-rank usage
+- Improving `Statistics` test coverage for two-sample and paired t-test wrappers
+
 ## 1.5.0 - 2026-03-07
 - Adding `logarithmicRegression()`, `powerRegression()`, and `exponentialRegression()` methods for non-linear regression models
 

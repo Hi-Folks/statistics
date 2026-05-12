@@ -1619,6 +1619,86 @@ class StatTest extends TestCase
         Stat::percentile([1, 2, 3], -1);
     }
 
+    // --- ranking and percentile rank ---
+
+    public function test_rank_average_ties_preserves_original_keys(): void
+    {
+        $data = ["a" => 30, "b" => 10, "c" => 20, "d" => 20];
+
+        $this->assertSame(
+            ["a" => 4, "b" => 1, "c" => 2.5, "d" => 2.5],
+            Stat::rank($data),
+        );
+    }
+
+    public function test_rank_tie_methods(): void
+    {
+        $data = [10, 20, 20, 30];
+
+        $this->assertSame([1, 2, 2, 4], Stat::rank($data, Stat::RANK_MIN));
+        $this->assertSame([1, 3, 3, 4], Stat::rank($data, Stat::RANK_MAX));
+        $this->assertSame([1, 2, 2, 3], Stat::rank($data, Stat::RANK_DENSE));
+        $this->assertSame([1, 2, 3, 4], Stat::rank($data, Stat::RANK_ORDINAL));
+    }
+
+    public function test_rank_with_invalid_method_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::rank([1, 2, 3], "invalid");
+    }
+
+    public function test_rank_with_empty_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::rank([]);
+    }
+
+    public function test_rank_with_non_numeric_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::rank([1, "2", 3]);
+    }
+
+    public function test_percentile_rank_kinds(): void
+    {
+        $data = [10, 20, 20, 30, 40];
+
+        $this->assertEquals(60.0, Stat::percentileRank($data, 20));
+        $this->assertEquals(20.0, Stat::percentileRank($data, 20, Stat::PERCENTILE_RANK_STRICT));
+        $this->assertEquals(40.0, Stat::percentileRank($data, 20, Stat::PERCENTILE_RANK_MEAN));
+        $this->assertEquals(50.0, Stat::percentileRank($data, 20, Stat::PERCENTILE_RANK_RANK));
+    }
+
+    public function test_percentile_rank_absent_value_uses_mean_for_rank_kind(): void
+    {
+        $data = [10, 20, 30, 40];
+
+        $this->assertEquals(50.0, Stat::percentileRank($data, 25, Stat::PERCENTILE_RANK_RANK));
+    }
+
+    public function test_percentile_rank_rounding(): void
+    {
+        $this->assertEquals(66.67, Stat::percentileRank([10, 20, 30], 20, round: 2));
+    }
+
+    public function test_percentile_rank_with_invalid_kind_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::percentileRank([1, 2, 3], 2, "invalid");
+    }
+
+    public function test_percentile_rank_with_empty_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::percentileRank([], 2);
+    }
+
+    public function test_percentile_rank_with_non_numeric_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+        Stat::percentileRank([1, "2", 3], 2);
+    }
+
     // --- coefficientOfVariation ---
 
     public function test_coefficient_of_variation(): void

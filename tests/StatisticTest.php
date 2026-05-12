@@ -259,6 +259,29 @@ class StatisticTest extends TestCase
         $this->assertEquals(round($result, 2), $result);
     }
 
+    public function test_rank(): void
+    {
+        $s = Statistics::make([30, 10, 20, 20]);
+
+        $this->assertSame([4, 1, 2.5, 2.5], $s->rank());
+        $this->assertSame([3, 1, 2, 2], $s->rank(Stat::RANK_DENSE));
+    }
+
+    public function test_rank_with_non_numeric_data_throws(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+
+        Statistics::make([1, "not numeric", 3])->rank();
+    }
+
+    public function test_percentile_rank(): void
+    {
+        $s = Statistics::make([10, 20, 20, 30, 40]);
+
+        $this->assertEquals(60.0, $s->percentileRank(20));
+        $this->assertEquals(20.0, $s->percentileRank(20, Stat::PERCENTILE_RANK_STRICT));
+    }
+
     public function test_coefficient_of_variation(): void
     {
         $s = Statistics::make([10, 20, 30, 40, 50]);
@@ -391,6 +414,34 @@ class StatisticTest extends TestCase
         $s = Statistics::make([2, 4, 4, 4, 5, 5, 7, 9]);
         $result = $s->tTest(3.0, Alternative::Greater, round: 4);
         $expected = Stat::tTest([2, 4, 4, 4, 5, 5, 7, 9], 3.0, Alternative::Greater, round: 4);
+        $this->assertSame($expected['tStatistic'], $result['tStatistic']);
+        $this->assertSame($expected['pValue'], $result['pValue']);
+        $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_two_sample(): void
+    {
+        $data = [12, 14, 15, 16, 17];
+        $data2 = [9, 10, 11, 13, 14];
+        $s = Statistics::make($data);
+
+        $result = $s->tTestTwoSample($data2, Alternative::Greater, round: 4);
+        $expected = Stat::tTestTwoSample($data, $data2, Alternative::Greater, round: 4);
+
+        $this->assertSame($expected['tStatistic'], $result['tStatistic']);
+        $this->assertSame($expected['pValue'], $result['pValue']);
+        $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_paired(): void
+    {
+        $before = [88, 92, 94, 89, 91];
+        $after = [84, 90, 91, 86, 88];
+        $s = Statistics::make($before);
+
+        $result = $s->tTestPaired($after, Alternative::Greater, round: 4);
+        $expected = Stat::tTestPaired($before, $after, Alternative::Greater, round: 4);
+
         $this->assertSame($expected['tStatistic'], $result['tStatistic']);
         $this->assertSame($expected['pValue'], $result['pValue']);
         $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);

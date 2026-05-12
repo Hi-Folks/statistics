@@ -79,6 +79,8 @@ The various mathematical statistics are listed below:
 | `thirdQuartile()` | 3rd quartile, is the value at which 75 percent of the data is below it |
 | `firstQuartile()` | first quartile, is the value at which 25 percent of the data is below it |
 | `percentile()` | value at any percentile (0–100) with linear interpolation |
+| `rank()` | rank each data point, with configurable tie handling |
+| `percentileRank()` | percentile position of a value within a dataset |
 | `pstdev()` | Population standard deviation |
 | `stdev()` | Sample standard deviation |
 | `sem()` | Standard error of the mean (SEM) — measures precision of the sample mean |
@@ -333,6 +335,45 @@ $value = Stat::percentile([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 50);
 
 $value = Stat::percentile([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], 90);
 // 91.0
+```
+
+#### Stat::rank( array $data, string $method = Stat::RANK_AVERAGE )
+Return 1-based ranks for each data point, preserving the original array keys.
+
+The `$method` parameter controls how tied values are ranked:
+- `Stat::RANK_AVERAGE` (default): tied values receive the average rank.
+- `Stat::RANK_MIN`: tied values receive the lowest rank in the tied group.
+- `Stat::RANK_MAX`: tied values receive the highest rank in the tied group.
+- `Stat::RANK_DENSE`: tied values receive the same rank and ranks do not skip numbers.
+- `Stat::RANK_ORDINAL`: tied values are ranked by their sorted order, preserving input order inside ties.
+
+```php
+use HiFolks\Statistics\Stat;
+
+$ranks = Stat::rank([10, 20, 20, 30]);
+// [1, 2.5, 2.5, 4]
+
+$ranks = Stat::rank([10, 20, 20, 30], Stat::RANK_DENSE);
+// [1, 2, 2, 3]
+```
+
+#### Stat::percentileRank( array $data, int|float $value, string $kind = Stat::PERCENTILE_RANK_WEAK, ?int $round = null )
+Return the percentile position of a value within a dataset.
+
+The `$kind` parameter controls the calculation:
+- `Stat::PERCENTILE_RANK_WEAK` (default): percentage of values less than or equal to the value.
+- `Stat::PERCENTILE_RANK_STRICT`: percentage of values strictly less than the value.
+- `Stat::PERCENTILE_RANK_MEAN`: average of weak and strict percentile ranks.
+- `Stat::PERCENTILE_RANK_RANK`: average percentage rank for exact matches, falling back to mean when the value is absent.
+
+```php
+use HiFolks\Statistics\Stat;
+
+$rank = Stat::percentileRank([10, 20, 20, 30, 40], 20);
+// 60.0
+
+$rank = Stat::percentileRank([10, 20, 20, 30, 40], 20, Stat::PERCENTILE_RANK_STRICT);
+// 20.0
 ```
 
 #### Stat::pstdev( array $data )

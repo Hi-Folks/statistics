@@ -9,10 +9,9 @@
 
 ### Priority 2: Correlation
 
-- `kendallTau()` - Kendall tau rank correlation.
-  - Useful for ordinal data and small samples.
-  - Complements the existing Pearson and Spearman support in `correlation()`.
-- Consider extending `correlation()` with a Kendall method option.
+- DONE: `kendallTau()` - Kendall tau-b rank correlation.
+  - Useful for ordinal data, small samples, and datasets with ties.
+- DONE: Extend `correlation()` with a Kendall method option.
 
 ### Priority 3: Hypothesis Testing
 

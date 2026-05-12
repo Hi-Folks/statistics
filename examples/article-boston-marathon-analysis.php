@@ -199,11 +199,13 @@ echo "\"How many minutes per year of age does the marathon cost you?\"" . PHP_EO
 
 $pearson = Stat::correlation($ages, $finishTimes);
 $spearman = Stat::correlation($ages, $finishTimes, 'ranked');
+$kendall = Stat::correlation($ages, $finishTimes, 'kendall');
 $regression = Stat::linearRegression($ages, $finishTimes);
 $r2 = Stat::rSquared($ages, $finishTimes, false, 4);
 
 echo "Pearson correlation:  " . round($pearson, 4) . PHP_EOL;
 echo "Spearman correlation: " . round($spearman, 4) . PHP_EOL;
+echo "Kendall tau:          " . round($kendall, 4) . PHP_EOL;
 echo PHP_EOL;
 echo "Linear regression:    finish = " . round($regression[0], 1) . " × age + " . round($regression[1]) . PHP_EOL;
 echo "R-squared:            " . $r2 . PHP_EOL;
@@ -212,6 +214,7 @@ echo PHP_EOL;
 echo "How to interpret:" . PHP_EOL;
 echo "- Pearson and Spearman close to +1 = strong positive relationship (older = slower)." . PHP_EOL;
 echo "- If both correlations are similar, the relationship is linear, not just monotonic." . PHP_EOL;
+echo "- Kendall tau is stricter and useful for rank agreement, especially with ties." . PHP_EOL;
 echo "- The slope tells you seconds added per year of age. Divide by 60 for minutes." . PHP_EOL;
 echo "- R-squared tells you what fraction of variation age explains (0 = none, 1 = all)." . PHP_EOL;
 
@@ -458,6 +461,7 @@ $functions = [
     ['Stat::tTestPaired()', '3'],
     ['Stat::correlation() — Pearson', '4'],
     ['Stat::correlation() — Spearman', '4'],
+    ['Stat::correlation() — Kendall', '4'],
     ['Stat::linearRegression()', '4'],
     ['Stat::rSquared()', '4'],
     ['Stat::coefficientOfVariation()', '5'],

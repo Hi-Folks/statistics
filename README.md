@@ -97,7 +97,8 @@ The various mathematical statistics are listed below:
 | `iqrOutliers()` | outlier detection based on IQR method (box plot whiskers), robust for skewed data |
 | `geometricMean()` | geometric mean |
 | `harmonicMean()` | harmonic mean |
-| `correlation()` | Pearson’s or Spearman’s rank correlation coefficient for two inputs |
+| `correlation()` | Pearson’s, Spearman’s rank, or Kendall tau correlation coefficient for two inputs |
+| `kendallTau()` | Kendall tau-b rank correlation coefficient for ordinal association with tie handling |
 | `covariance()` | the sample covariance of two inputs |
 | `linearRegression()` | return the slope and intercept of simple linear regression parameters estimated using ordinary least squares (supports `proportional: true` for regression through the origin) |
 | `logarithmicRegression()` | logarithmic regression — fits `y = a × ln(x) + b`, ideal for diminishing returns patterns (e.g., athletic improvement, learning curves) |
@@ -609,10 +610,12 @@ $covariance = Stat::covariance(
 // -7.5
 ```
 
-#### Stat::correlation ( array $x , array $y, string $method = ‘linear’ )
+#### Stat::correlation ( array $x , array $y, string $method = 'linear' )
 Return the Pearson’s correlation coefficient for two inputs. Pearson’s correlation coefficient r takes values between -1 and +1. It measures the strength and direction of the linear relationship, where +1 means very strong, positive linear relationship, -1 very strong, negative linear relationship, and 0 no linear relationship.
 
-Use `$method = ‘ranked’` for Spearman’s rank correlation, which measures monotonic relationships (not just linear). Spearman’s correlation is computed by applying Pearson’s formula to the ranks of the data.
+Use `$method = 'ranked'` for Spearman’s rank correlation, which measures monotonic relationships (not just linear). Spearman’s correlation is computed by applying Pearson’s formula to the ranks of the data.
+
+Use `$method = 'kendall'` for Kendall tau-b correlation, which measures ordinal association by comparing concordant and discordant pairs. Kendall tau-b is often useful for ordinal data, small samples, and datasets with ties.
 
 ```php
 $correlation = Stat::correlation(
@@ -635,9 +638,31 @@ Spearman’s rank correlation (non-linear but monotonic relationship):
 $correlation = Stat::correlation(
     [1, 2, 3, 4, 5],
     [1, 4, 9, 16, 25],
-    ‘ranked’
+    'ranked'
 );
 // 1.0
+```
+
+Kendall tau-b rank correlation with ties:
+```php
+$correlation = Stat::correlation(
+    [12, 2, 1, 12, 2],
+    [1, 4, 7, 1, 0],
+    'kendall'
+);
+// -0.47140452079103173
+```
+
+#### Stat::kendallTau ( array $x , array $y, ?int $round = null )
+Return Kendall's tau-b rank correlation coefficient for two inputs.
+
+```php
+$correlation = Stat::kendallTau(
+    [12, 2, 1, 12, 2],
+    [1, 4, 7, 1, 0],
+    4
+);
+// -0.4714
 ```
 
 #### Stat::linearRegression ( array $x , array $y , bool $proportional = false )

@@ -1257,8 +1257,8 @@ class Stat
      * Return the sample covariance of two inputs *$x* and *$y*.
      * Covariance is a measure of the joint variability of two inputs.
      *
-     * @param  array<int|float>  $x
-     * @param  array<int|float>  $y
+     * @param  array<mixed>  $x
+     * @param  array<mixed>  $y
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements
@@ -1311,8 +1311,8 @@ class Stat
      * -1 very strong, negative linear relationship,
      * and 0 no linear relationship.
      *
-     * @param  array<int|float>  $x
-     * @param  array<int|float>  $y
+     * @param  array<mixed>  $x
+     * @param  array<mixed>  $y
      *
      * @throws InvalidDataInputException if 2 arrays have different size,
      * or if the length of arrays are < 2, or if the 2 input arrays has not numeric elements,
@@ -1323,9 +1323,9 @@ class Stat
         array $y,
         string $method = "linear",
     ): false|float {
-        if ($method !== "linear" && $method !== "ranked") {
+        if (!in_array($method, ["linear", "ranked", "kendall"], true)) {
             throw new InvalidDataInputException(
-                "Correlation method must be 'linear' or 'ranked'.",
+                "Correlation method must be 'linear', 'ranked', or 'kendall'.",
             );
         }
 
@@ -1345,6 +1345,9 @@ class Stat
         if ($method === "ranked") {
             $x = self::ranks($x);
             $y = self::ranks($y);
+        }
+        if ($method === "kendall") {
+            return self::kendallTau($x, $y);
         }
 
         $meanX = self::mean($x);
@@ -1368,6 +1371,87 @@ class Stat
         }
 
         return $a / $b;
+    }
+
+    /**
+     * Return Kendall's tau-b rank correlation coefficient for two inputs.
+     *
+     * Kendall's tau measures ordinal association by comparing concordant and
+     * discordant pairs. The tau-b variant adjusts for ties in either input.
+     *
+     * @param  array<mixed>  $x
+     * @param  array<mixed>  $y
+     * @param  int|null  $round whether to round the result
+     *
+     * @throws InvalidDataInputException if inputs have different sizes, fewer than 2 data points,
+     * or non-numeric/constant data
+     */
+    public static function kendallTau(array $x, array $y, ?int $round = null): float
+    {
+        $countX = count($x);
+        $countY = count($y);
+        if ($countX !== $countY) {
+            throw new InvalidDataInputException(
+                "Kendall tau requires that both inputs have same number of data points.",
+            );
+        }
+        if ($countX < 2) {
+            throw new InvalidDataInputException(
+                "Kendall tau requires at least two data points.",
+            );
+        }
+
+        $concordant = 0;
+        $discordant = 0;
+        $tiesX = 0;
+        $tiesY = 0;
+
+        for ($i = 0; $i < $countX - 1; $i++) {
+            if (!is_numeric($x[$i]) || !is_numeric($y[$i])) {
+                throw new InvalidDataInputException(
+                    "Kendall tau requires numeric data points.",
+                );
+            }
+            for ($j = $i + 1; $j < $countX; $j++) {
+                if (!is_numeric($x[$j]) || !is_numeric($y[$j])) {
+                    throw new InvalidDataInputException(
+                        "Kendall tau requires numeric data points.",
+                    );
+                }
+
+                $xComparison = $x[$i] <=> $x[$j];
+                $yComparison = $y[$i] <=> $y[$j];
+
+                if ($xComparison === 0 && $yComparison === 0) {
+                    continue;
+                }
+                if ($xComparison === 0) {
+                    $tiesX++;
+                    continue;
+                }
+                if ($yComparison === 0) {
+                    $tiesY++;
+                    continue;
+                }
+                if ($xComparison === $yComparison) {
+                    $concordant++;
+                    continue;
+                }
+                $discordant++;
+            }
+        }
+
+        $denominator = sqrt(
+            ($concordant + $discordant + $tiesX)
+            * ($concordant + $discordant + $tiesY),
+        );
+        if ($denominator == 0) {
+            throw new InvalidDataInputException(
+                "Kendall tau, at least one of the inputs is constant.",
+            );
+        }
+
+        return Math::round(($concordant - $discordant) / $denominator, $round);
     }
 
     /**

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.2 - WIP
+- Adding `kendallTau()` method for Kendall tau-b rank correlation with tie handling
+- Adding `kendall` method support to `correlation()`
+
 ## 1.5.1 - 2026-05-12
 - Adding `rank()` method for assigning 1-based ranks to data points, with support for `average`, `min`, `max`, `dense`, and `ordinal` tie strategies
 - Adding `percentileRank()` method for calculating the percentile position of a value, with `weak`, `strict`, `mean`, and `rank` variants

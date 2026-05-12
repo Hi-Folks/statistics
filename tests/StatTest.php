@@ -522,14 +522,14 @@ class StatTest extends TestCase
     {
         $this->expectException(InvalidDataInputException::class);
         // Intentionally passing non-numeric values to test exception handling
-        Stat::covariance(['a', 1], ['b', 2]); // @phpstan-ignore argument.type, argument.type
+        Stat::covariance(['a', 1], ['b', 2]);
     }
 
     public function test_calculates_covariance_with_non_numeric_second(): void
     {
         $this->expectException(InvalidDataInputException::class);
         // Intentionally passing non-numeric values to test exception handling
-        Stat::covariance([3, 1], ['b', 2]); // @phpstan-ignore argument.type
+        Stat::covariance([3, 1], ['b', 2]);
     }
 
     public function test_calculates_correlation(): void
@@ -627,6 +627,87 @@ class StatTest extends TestCase
         );
         $this->assertIsFloat($correlation);
         $this->assertEqualsWithDelta(1.0, $correlation, 1e-9);
+    }
+
+    public function test_calculates_kendall_tau(): void
+    {
+        $this->assertEqualsWithDelta(
+            1.0,
+            Stat::kendallTau([1, 2, 3, 4], [10, 20, 30, 40]),
+            1e-9,
+        );
+        $this->assertEqualsWithDelta(
+            -1.0,
+            Stat::kendallTau([1, 2, 3, 4], [40, 30, 20, 10]),
+            1e-9,
+        );
+    }
+
+    public function test_calculates_kendall_tau_with_ties(): void
+    {
+        $tau = Stat::kendallTau([12, 2, 1, 12, 2], [1, 4, 7, 1, 0]);
+
+        $this->assertEqualsWithDelta(-0.47140452079103173, $tau, 1e-12);
+    }
+
+    public function test_calculates_kendall_tau_with_ties_in_y_only(): void
+    {
+        $tau = Stat::kendallTau([1, 2, 3], [1, 1, 2]);
+
+        $this->assertEqualsWithDelta(0.8164965809277261, $tau, 1e-12);
+    }
+
+    public function test_calculates_kendall_tau_with_rounding(): void
+    {
+        $tau = Stat::kendallTau([12, 2, 1, 12, 2], [1, 4, 7, 1, 0], 4);
+
+        $this->assertSame(-0.4714, $tau);
+    }
+
+    public function test_calculates_correlation_with_kendall_method(): void
+    {
+        $correlation = Stat::correlation(
+            [12, 2, 1, 12, 2],
+            [1, 4, 7, 1, 0],
+            'kendall',
+        );
+
+        $this->assertEqualsWithDelta(-0.47140452079103173, $correlation, 1e-12);
+    }
+
+    public function test_calculates_kendall_tau_wrong_usage_different_lengths(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+
+        Stat::kendallTau([1, 2], [1, 2, 3]);
+    }
+
+    public function test_calculates_kendall_tau_wrong_usage_empty(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+
+        Stat::kendallTau([], []);
+    }
+
+    public function test_calculates_kendall_tau_wrong_usage_constant(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+
+        Stat::kendallTau([1, 1, 1], [1, 2, 3]);
+    }
+
+    public function test_calculates_kendall_tau_with_non_numeric_data(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+
+        Stat::kendallTau([1, 'a', 3], [1, 2, 3]);
+    }
+
+    public function test_calculates_kendall_tau_with_non_numeric_first_pair(): void
+    {
+        $this->expectException(InvalidDataInputException::class);
+
+        Stat::kendallTau(['a', 1, 3], [1, 2, 3]);
     }
 
     public function test_calculates_correlation_invalid_method(): void
@@ -1493,13 +1574,13 @@ class StatTest extends TestCase
         $this->expectException(InvalidDataInputException::class);
         // true passes mean()'s string filter and array_sum without warnings,
         // but is_numeric(true) returns false, triggering the loop guard
-        Stat::covariance([true, 1, 2], [3, 4, 5]); // @phpstan-ignore argument.type
+        Stat::covariance([true, 1, 2], [3, 4, 5]);
     }
 
     public function test_covariance_non_numeric_y_throws(): void
     {
         $this->expectException(InvalidDataInputException::class);
-        Stat::covariance([1, 2, 3], [true, 4, 5]); // @phpstan-ignore argument.type
+        Stat::covariance([1, 2, 3], [true, 4, 5]);
     }
 
     public function test_kde_cumulative_bounded_kernels(): void

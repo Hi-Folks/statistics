@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.2 - WIP
+## 1.5.2 - 2026-05-13
 - Adding `kendallTau()` method for Kendall tau-b rank correlation with tie handling
 - Adding `kendall` method support to `correlation()`
 - Adding `chiSquaredTest()` method for chi-squared goodness-of-fit tests

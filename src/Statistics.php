@@ -612,12 +612,14 @@ class Statistics
      */
     private function originalNumericalArray(): array
     {
-        foreach ($this->originalArray as $value) {
+        $numericalArray = [];
+        foreach ($this->originalArray as $key => $value) {
             if (!is_numeric($value)) {
                 throw new InvalidDataInputException('The data must not contain non-number elements.');
             }
+            $numericalArray[$key] = $value + 0;
         }
 
-        return $this->originalArray;
+        return $numericalArray;
     }
 }

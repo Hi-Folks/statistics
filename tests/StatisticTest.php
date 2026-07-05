@@ -267,6 +267,14 @@ class StatisticTest extends TestCase
         $this->assertSame([3, 1, 2, 2], $s->rank(Stat::RANK_DENSE));
     }
 
+    public function test_rank_with_numeric_string_data(): void
+    {
+        $s = Statistics::make(["first" => "30", "second" => "10", "third" => "20", "fourth" => "20"]);
+
+        $this->assertSame(["first" => 4, "second" => 1, "third" => 2.5, "fourth" => 2.5], $s->rank());
+        $this->assertSame(["first" => 3, "second" => 1, "third" => 2, "fourth" => 2], $s->rank(Stat::RANK_DENSE));
+    }
+
     public function test_rank_with_non_numeric_data_throws(): void
     {
         $this->expectException(InvalidDataInputException::class);
@@ -441,6 +449,21 @@ class StatisticTest extends TestCase
 
         $result = $s->tTestPaired($after, Alternative::Greater, round: 4);
         $expected = Stat::tTestPaired($before, $after, Alternative::Greater, round: 4);
+
+        $this->assertSame($expected['tStatistic'], $result['tStatistic']);
+        $this->assertSame($expected['pValue'], $result['pValue']);
+        $this->assertSame($expected['degreesOfFreedom'], $result['degreesOfFreedom']);
+    }
+
+    public function test_t_test_paired_with_numeric_string_data(): void
+    {
+        $before = ["88", "92", "94", "89", "91"];
+        $numericBefore = [88, 92, 94, 89, 91];
+        $after = [84, 90, 91, 86, 88];
+        $s = Statistics::make($before);
+
+        $result = $s->tTestPaired($after, Alternative::Greater, round: 4);
+        $expected = Stat::tTestPaired($numericBefore, $after, Alternative::Greater, round: 4);
 
         $this->assertSame($expected['tStatistic'], $result['tStatistic']);
         $this->assertSame($expected['pValue'], $result['pValue']);
